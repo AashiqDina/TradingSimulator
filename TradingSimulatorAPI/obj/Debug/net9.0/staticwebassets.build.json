@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "CBzyA8QT8cCO4Ipu3su1MG5YlmghCp/ouUImzuB0mOI=",
+  "Source": "TradingSimulatorAPI",
+  "BasePath": "_content/TradingSimulatorAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

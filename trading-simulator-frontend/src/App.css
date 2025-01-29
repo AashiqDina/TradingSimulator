@@ -1,0 +1,22 @@
+
+body {
+  animation-name: BodyBackground;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.App {
+  text-align: center;
+}
+
+@keyframes BodyBackground{
+  from{
+    background-color: rgb(11, 16, 18);
+  }
+  to{
+    background-color: rgb(14, 19, 23);
+  }
+}
