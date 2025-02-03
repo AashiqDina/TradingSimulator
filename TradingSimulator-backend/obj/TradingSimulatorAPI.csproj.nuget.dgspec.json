@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {}
+    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {
+    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorAPI.csproj",
         "projectName": "TradingSimulatorAPI",
-        "projectPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
+        "projectPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorAPI.csproj",
         "packagesPath": "C:\\Users\\Aashi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\obj\\",
+        "outputPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Aashi\\AppData\\Roaming\\NuGet\\NuGet.Config"
