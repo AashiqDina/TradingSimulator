@@ -5,17 +5,37 @@ import "./Login.css";
 const Login = () => {
   const [username, setUsername] = useState(""); // creates state variables for the username and password
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate(); // so that we can redirect the user if successful
 
-  const handleLogin = (e: React.FormEvent) => { // when the form is completed and Login is clicked...
-    e.preventDefault(); // prevent blank login
-    
-    
-    if (username === "user" && password === "password") { // if the updated state variables are equal to the values...
-      localStorage.setItem("isAuthenticated", "true"); // create local variable on the client side as seen and sets it to true
-      navigate("/portfolio"); // navigates to the portfolio page
-    } else {
-      alert("Invalid credentials"); 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5048/api/User", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Redirect to another page or update the UI to show success
+        console.log("Login successful");
+        navigate("/portfolio")
+      } else {
+        // Handle login failure
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("Something went wrong. Please try again.");
     }
   };
 

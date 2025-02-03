@@ -1,52 +1,38 @@
-using Microsoft.OpenApi.Models;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
-
+using TradingSimulatorAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
-// Add services to the container.
-builder.Services.AddControllers();  // Add controller services (for API endpoints)
-builder.Services.AddEndpointsApiExplorer();  // Required for OpenAPI support
-builder.Services.AddSwaggerGen();  // Adds Swagger generation
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")  // Allow frontend's origin
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();  // Generates Swagger JSON
-    app.UseSwaggerUI();  // Displays the Swagger UI
+    app.UseSwagger();  // Enable Swagger in development mode
+    app.UseSwaggerUI();  // Display Swagger UI to test API
 }
 
-app.UseHttpsRedirection();  // Redirect HTTP requests to HTTPS
+app.UseRouting();
+app.UseAuthorization();
+app.UseCors("AllowLocalhost");
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

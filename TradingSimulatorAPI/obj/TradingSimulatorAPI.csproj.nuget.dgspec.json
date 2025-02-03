@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aashi\\projects\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {}
+    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aashi\\projects\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {
+    "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aashi\\projects\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
         "projectName": "TradingSimulatorAPI",
-        "projectPath": "C:\\Users\\Aashi\\projects\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
+        "projectPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\TradingSimulatorAPI.csproj",
         "packagesPath": "C:\\Users\\Aashi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aashi\\projects\\TradingSimulatorAPI\\obj\\",
+        "outputPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulatorAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Aashi\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -44,6 +44,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.1, )"
@@ -53,6 +57,10 @@
               "version": "[9.0.1, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[9.0.1, )"
             },
