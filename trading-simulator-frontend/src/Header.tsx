@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react"; // to use state variables
+import { Link } from "react-router-dom"; // link changes the url and updates the page
 import "./Header.css";
 
 const Header: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // declare state variable for the state of the menu and set it to false
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => setMenuOpen(!menuOpen); // declare function to change the state of the variable
 
-  return (
+  return ( 
     <header className="Header">
       <div className="Header-content">
 
@@ -29,8 +29,8 @@ const Header: React.FC = () => {
 
       </div>
 
- 
-      {menuOpen && (
+      
+      {menuOpen && ( // if menu is true this part will render
         <nav className="DropdownMenu">
           <ul>
             <li>
