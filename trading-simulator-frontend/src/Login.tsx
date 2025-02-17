@@ -1,23 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useAuth } from "./AuthContext";
 
 const Login = () => {
-  const [username, setUsername] = useState(""); // creates state variables for the username and password
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { user, login } = useAuth();
 
-  const navigate = useNavigate(); // so that we can redirect the user if successful
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user is already logged in, navigate to the dashboard
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5048/api/User", {
+      const response = await fetch("http://192.168.1.111:5048/api/User/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           username,
           password,
@@ -26,16 +36,24 @@ const Login = () => {
 
       const data = await response.json();
 
-      if (data.success) {
-        // Redirect to another page or update the UI to show success
+      if (response.ok) {
+        // Store the user info (including id) in the AuthContext
+        login({
+          id: data.user.id,
+          username: data.user.username,
+          investedAmount: data.user.investedAmount,
+          currentValue: data.user.currentValue,
+          profitLoss: data.user.profitLoss,
+        });
+
         console.log("Login successful");
-        navigate("/portfolio")
+        navigate("/portfolio"); // Redirect after successful login
       } else {
-        // Handle login failure
         setError(data.message);
       }
     } catch (error) {
-      setError("Something went wrong. Please try again.");
+      const errStr = `${error}`
+      setError(errStr);
     }
   };
 
@@ -54,7 +72,7 @@ const Login = () => {
             id="username"
             placeholder="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}  // updates username state variable
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -65,12 +83,13 @@ const Login = () => {
             id="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}  // updates password state variable
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         <button type="submit">Login</button>
       </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <p>Don't have an account?</p>
       <a href="/register">Register</a>
     </div>

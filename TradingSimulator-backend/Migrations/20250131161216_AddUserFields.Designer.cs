@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TradingSimulatorAPI.Data;
+using TradingSimulator_Backend.Data;
 
 #nullable disable
 
-namespace TradingSimulatorAPI.Migrations
+namespace TradingSimulator_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250131161216_AddUserFields")]
@@ -19,7 +19,7 @@ namespace TradingSimulatorAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
 
-            modelBuilder.Entity("TradingSimulatorAPI.Models.User", b =>
+            modelBuilder.Entity("TradingSimulator_Backend.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

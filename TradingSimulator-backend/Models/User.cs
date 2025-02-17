@@ -1,4 +1,4 @@
-namespace TradingSimulatorAPI.Models
+namespace TradingSimulator_Backend.Models
 {
     public class User
     {

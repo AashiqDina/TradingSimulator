@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TradingSimulatorAPI.Data;
+using TradingSimulator_Backend.Data;
 
 #nullable disable
 
-namespace TradingSimulatorAPI.Migrations
+namespace TradingSimulator_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -16,7 +16,53 @@ namespace TradingSimulatorAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
 
-            modelBuilder.Entity("TradingSimulatorAPI.Models.User", b =>
+            modelBuilder.Entity("Portfolio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Portfolios");
+                });
+
+            modelBuilder.Entity("Stock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("CurrentPrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PortfolioId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("PurchasePrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PortfolioId");
+
+                    b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("TradingSimulator_Backend.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,6 +88,29 @@ namespace TradingSimulatorAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Portfolio", b =>
+                {
+                    b.HasOne("TradingSimulator_Backend.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Portfolio", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Stock", b =>
+                {
+                    b.HasOne("Portfolio", null)
+                        .WithMany("Stocks")
+                        .HasForeignKey("PortfolioId");
+                });
+
+            modelBuilder.Entity("Portfolio", b =>
+                {
+                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }

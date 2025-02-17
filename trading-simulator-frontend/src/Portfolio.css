@@ -18,4 +18,70 @@
     font-size: 1.2rem;
     max-width: 600px;
   }
+
+  .QuickStats {
+    position: relative;
+    top: 3vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5vw;
+    flex-wrap: wrap;
+}
+
+
+
+.Box1{
+    width: 15rem;
+    height: 10rem;
+    background-color: #45a049;
+    border-radius: 2rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.Box2{
+    width: 15rem;
+    height: 10rem;
+    border-radius: 2rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.Box3{
+    width: 15rem;
+    height: 10rem;
+    border-radius: 2rem;
+    text-align: center;
+    font-size: 2rem;
+}
   
+.StocksTable{
+  position: relative;
+  top: 3rem;
+}
+
+.Table{
+  position: relative;
+  font-size: 1.5rem;
+  
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  
+}
+
+th, td {
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 0.5rem;
+  padding: 8px;
+  text-align: center;
+}
+
+.PLTitle{
+  color: green;
+}

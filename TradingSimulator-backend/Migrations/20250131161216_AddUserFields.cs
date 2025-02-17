@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TradingSimulatorAPI.Migrations
+namespace TradingSimulator_Backend.Migrations
 {
     /// <inheritdoc />
     public partial class AddUserFields : Migration

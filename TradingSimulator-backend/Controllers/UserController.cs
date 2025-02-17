@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using TradingSimulatorAPI.Models;
+using TradingSimulator_Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using TradingSimulatorAPI.Data;
+using TradingSimulator_Backend.Data;
 
 
-namespace TradingSimulatorAPI.Controllers
+namespace TradingSimulator_Backend.Controllers
 {
     [ApiController]
 [Route("api/[controller]")]
@@ -54,22 +54,34 @@ public class UserController : ControllerBase
         return NoContent(); // This means the user was deleted successfully.
     }
 
-    [HttpPost]
-    public async Task<IActionResult> RegisterUser([FromBody] User user)
+[HttpPost]
+public async Task<IActionResult> RegisterUser([FromBody] User user)
+{
+    // Check if the user already exists
+    var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+    if (existingUser != null)
     {
-        // Check if the user already exists
-        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
-        if (existingUser != null)
-        {
-            return BadRequest(new { success = false, message = "Username already taken." });
-        }
-
-        // If no user exists, create a new one
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { success = true, message = "User registered successfully." });
+        return BadRequest(new { success = false, message = "Username already taken." });
     }
+
+
+    _context.Users.Add(user);
+    await _context.SaveChangesAsync();
+
+
+    var portfolio = new Portfolio
+    {
+        UserId = user.Id,
+        Stocks = new List<Stock>()
+    };
+
+
+    _context.Portfolios.Add(portfolio);
+    await _context.SaveChangesAsync();
+
+    return Ok(new { success = true, message = "User registered successfully and portfolio created." });
+}
+
 
     [HttpPost("checkUsername")]
     public async Task<IActionResult> CheckUsername([FromBody] UsernameCheckRequest request)
@@ -78,5 +90,55 @@ public class UserController : ControllerBase
 
         return Ok(new { exists = userExists });
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] User model)
+    {
+        var user = await _context.Users
+                                .FirstOrDefaultAsync(u => u.Username == model.Username && u.Password == model.Password);
+
+        if (user == null)
+        {
+            return Unauthorized(new { success = false, message = "Invalid username or password" });
+        }
+
+        // Return user info as part of the response
+        return Ok(new
+        {
+            success = true,
+            user = new
+            {
+                user.Id,
+                user.Username,
+                user.InvestedAmount,
+                user.CurrentValue,
+                user.ProfitLoss
+            }
+        });
+    }
+
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return Ok(new { message = "Logged out successfully" });
+    }
+
+    [HttpGet("profile")]
+    public IActionResult GetProfile()
+    {
+        var username = HttpContext.Session.GetString("Username");
+        
+        if (string.IsNullOrEmpty(username))
+        {
+            return Unauthorized(new { message = "Not logged in" });
+        }
+
+        return Ok(new { username });
+    }
+
+
+
 }
 }

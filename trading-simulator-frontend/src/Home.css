@@ -1,0 +1,134 @@
+
+.StockSearch {
+    position: relative;
+    top: 15vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+
+}
+
+.BuyViewButtonsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.StockSearchInput{
+    border-radius: 10rem;
+}
+
+.StockSearchButton{
+    border-radius: 10rem;
+}
+
+.Modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the modal */
+    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000; /* Make sure it's above other content */
+  }
+  
+  .ModalContent {
+    animation-name: BodyBackground;
+        animation-duration: 15s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    padding: 2rem;
+    border-radius: 4rem;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .ModalBody {
+    margin: 10px 0;
+  }
+  
+  .QuantityInput {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid #ccc; /* Optional: Add border around input */
+    border-radius: 5rem; /* Rounded corners for the input */
+  }
+  
+  .ModalFooter {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 1rem;
+  }
+  
+  .CancelButton,
+  .ConfirmButton {
+    padding: 1;
+    border: none;
+    cursor: pointer;
+    border-radius: 5rem;
+  }
+  
+  .CancelButton {
+    background-color: #45a049;
+    color: #ffffff;
+  }
+  
+  .ConfirmButton {
+    background-color: #45a049;
+    color: #ffffff;
+  }
+
+  .CancelButton:hover {
+    background-color: #3e9143;
+    color: #ffffff;
+  }
+  
+  .ConfirmButton:hover {
+    background-color: #3e9143;
+    color: #ffffff;
+  }
+
+
+
+  .BuyViewButtons{
+    position: relative;
+    top: 6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50vw;
+    gap: 5vw;
+  }
+
+  .StockPriceText{
+    color: white;
+    font-weight: bolder;
+  }
+
+  .BuyButton{
+    border-radius: 10rem;
+  }
+
+  .ViewButton{
+    border-radius: 10rem
+  }
+
+
+
+  
+
+  @keyframes BodyBackground{
+    from{
+      background-color: rgb(11, 16, 18);
+    }
+    to{
+      background-color: rgb(14, 19, 23);
+    }
+  }

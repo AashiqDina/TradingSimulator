@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",                             // Set the target to ES5 for compatibility
-    "lib": ["dom", "esnext"],                    // Specify the libraries to include
-    "allowJs": true,                             // Allow JavaScript files to be compiled
-    "skipLibCheck": true,                        // Skip type checking of declaration files
-    "esModuleInterop": true,                     // Ensure proper module import compatibility
-    "jsx": "react-jsx",                          // Enable the new JSX transform for React 17 and above
-    "strict": true,                              // Enable all strict type-checking options
-    "moduleResolution": "node",                  // Use Node.js style module resolution
-    "resolveJsonModule": true,                   // Allow importing JSON modules
-    "noEmit": true,                              // Don't generate output files
-    "isolatedModules": true                      // Ensures each file is treated as a separate module
+    "target": "es2015",                             // Change target to ES2015 for better compatibility with modern features
+    "lib": ["dom", "es2015"],                       // Specify libraries that support ES2015 or higher
+    "allowJs": true,                                // Allow JavaScript files to be compiled
+    "skipLibCheck": true,                           // Skip type checking of declaration files
+    "esModuleInterop": true,                        // Ensure proper module import compatibility
+    "jsx": "react-jsx",                             // Enable the new JSX transform for React 17 and above
+    "strict": true,                                 // Enable all strict type-checking options
+    "moduleResolution": "node",                     // Use Node.js style module resolution
+    "resolveJsonModule": true,                      // Allow importing JSON modules
+    "noEmit": true,                                 // Don't generate output files
+    "isolatedModules": true,                        // Ensures each file is treated as a separate module
+    "downlevelIteration": true                      // Enable downlevel iteration to support iterating over Sets in ES5
   },
-  "include": ["src"],                            // Include all files in the "src" folder
-  "exclude": ["node_modules"]                    // Exclude the "node_modules" folder
+  "include": ["src"],                               // Include all files in the "src" folder
+  "exclude": ["node_modules"]                       // Exclude the "node_modules" folder
 }
