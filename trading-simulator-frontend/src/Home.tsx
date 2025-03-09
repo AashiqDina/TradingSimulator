@@ -30,11 +30,10 @@ const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Function to fetch stock price
   const searchStock = async () => {
     try {
       setError('');
-      const response = await axios.get<{ symbol: string; price: number }>(`http://192.168.1.111:5048/api/stocks/${stockSymbol}`);
+      const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
       setStockPrice(response.data.price);
     } catch (err) {
       setError('Stock not found');
@@ -63,7 +62,7 @@ const Home: React.FC = () => {
     try {
       // Ensure you're calling the correct endpoint based on your controller
       const response = await axios.post(
-        `http://192.168.1.111:5048/api/portfolio/${user?.id}/stocks`, // Make sure this matches the route in PortfolioController
+        `http://localhost:3000/api/portfolio/${user?.id}/stocks`,
         stockPurchaseRequest
       );
       alert('Stock purchased successfully');
@@ -77,23 +76,40 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {user ? (
-        <>
-          <div className='StockSearch'>
-            <input 
-              type="text" 
-              placeholder="Enter stock symbol (e.g, AAPL)" 
-              className='StockSearchInput'
-              value={stockSymbol} 
-              onChange={(e) => setStockSymbol(e.target.value)} 
-            />
-            <button className='StockSearchButton' onClick={searchStock}>Search</button>
+      <div className='StockSearch'>
+        <input 
+          type="text" 
+          placeholder="Enter stock symbol (e.g, AAPL)" 
+          className='StockSearchInput'
+          value={stockSymbol} 
+          onChange={(e) => setStockSymbol(e.target.value.toUpperCase())} 
+          />
+        <button className='StockSearchButton' onClick={searchStock}>Search</button>
+        {((stockPrice !== null) &&
+        <div className='SearchResult'>
             {stockPrice !== null && (
-              <p className='StockPriceText'>Current Price of {stockSymbol.toUpperCase()}: <span className='StockPrice'> £{stockPrice}</span></p>
+              <>
+                <p className='StockPriceText'>Current Price of {stockSymbol.toUpperCase()}:</p>
+                <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
+              </>
             )}
             {error && <p style={{ color: 'red' }}>{error}</p>}
-          </div>
-
+            {(stockPrice !== null) && !user && (
+              <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
+            )}
+            {(stockPrice !== null) && user && (
+              <div className="BuyViewButtonsContainer">
+                <div className='BuyViewButtons'>
+                  <button className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
+                  <button className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                </div>
+              </div>
+            )}
+          </div>)}
+       </div>
+      {user ? (
+        <>
+      
           {/* Modal for selecting quantity */}
           {isModalOpen && (
             <div className="Modal">
@@ -119,21 +135,6 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Conditionally render Buy button and View button */}
-          {stockPrice !== null && (
-            <div className="BuyViewButtonsContainer">
-              <div className='BuyViewButtons'>
-                <button className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
-                <button 
-  className="ViewButton" 
-  onClick={() => navigate(`/stock/${stockSymbol}`)}
->
-  View
-</button>
-            </div>
-          </div>
           )}
         </>
       ) : (

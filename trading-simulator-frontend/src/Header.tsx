@@ -6,7 +6,9 @@ import { useAuth } from "./AuthContext";
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false); // declare state variable for the state of the menu and set it to false
   const { user, logout } = useAuth();
-  const toggleMenu = () => setMenuOpen(!menuOpen); // declare function to change the state of the variable
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const MouseEnter = () => setMenuOpen(true)
+  const MouseLeave = () => setMenuOpen(false)
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,11 +24,12 @@ const Header: React.FC = () => {
     navigate(page);
   };
 
+
+
   return ( 
     <header className="Header">
-      <div className="Header-content">
 
-        <div className="Header-menu" onClick={toggleMenu}>
+        <div className="Header-menu" onMouseEnter={MouseEnter} onClick={toggleMenu}>
           <div className="Hamburger"></div>
           <div className="Hamburger"></div>
           <div className="Hamburger"></div>
@@ -42,13 +45,10 @@ const Header: React.FC = () => {
             <img src="/UserIcon.png" alt="User" className="UserIcon" onClick={() => handleLink("/login")} />
         )}
 
-    
-
-      </div>
 
       
-      {menuOpen && ( // if menu is true this part will render
-        <nav className="DropdownMenu">
+      {menuOpen && (
+        <nav className="DropdownMenu" onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
           <ul>
             <li>
               <Link to="/" onClick={toggleMenu}>

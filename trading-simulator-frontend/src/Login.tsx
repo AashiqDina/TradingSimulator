@@ -7,7 +7,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { user, login } = useAuth();
+  const {user, login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://192.168.1.111:5048/api/User/login", {
+      const response = await fetch("http://localhost:3000/api/User/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,28 +66,28 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
           <input
             type="text"
             id="username"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className="UsernameInput"
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="PasswordInput"
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button className="SubmitButton" type="submit">Login</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <p>Don't have an account?</p>

@@ -3,7 +3,6 @@ import axios from "axios";
 import "./Portfolio.css";
 import { useAuth } from "./AuthContext";
 
-// Define error type to handle different types of errors (AxiosError)
 interface AxiosErrorType {
   response?: { data: string; status: number; statusText: string };
   message: string;
@@ -11,7 +10,7 @@ interface AxiosErrorType {
 
 const Portfolio = () => {
   const { user, logout } = useAuth();
-  const [portfolio, setPortfolio] = useState<any>(null); // Set state for portfolio data
+  const [portfolio, setPortfolio] = useState<any>(null);
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -22,7 +21,7 @@ const Portfolio = () => {
     try {
       // Send the request with no body to trigger the update of all stocks
       const response = await axios.put(
-        `http://192.168.1.111:5048/api/portfolio/${user?.id}/stocks/update`
+        `http://localhost:3000/api/portfolio/${user?.id}/stocks/update`
       );
   
       console.log("Stocks updated:", response.data);
@@ -40,7 +39,7 @@ const Portfolio = () => {
 
     try {
       const response = await axios.get(
-        `http://192.168.1.111:5048/api/portfolio/${user?.id}`
+        `http://localhost:3000/api/portfolio/${user?.id}`
       );
       console.log("Fetched portfolio data:", response.data); // Log the portfolio data here
 
@@ -100,26 +99,28 @@ const Portfolio = () => {
             <div className="Box1">
               <h2>Invested</h2>
               <div className="Values">
-                <p>£{portfolio.totalInvested}</p>
+                <p>£{portfolio.totalInvested.toFixed(2)}</p>
               </div>
             </div>
-            <div className="Box2" style={{ backgroundColor: ValueColour }}>
+            <div className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
               <h2>Current Value</h2>
               <div className="Values">
-                <p>£{portfolio.currentValue}</p>
+                <p>£{portfolio.currentValue.toFixed(2)}</p>
               </div>
             </div>
-            <div className="Box3" style={{ backgroundColor: ProfitColour }}>
+            <div className="Box3" style={{ color: ProfitColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
               <h2>{ProfitLossTitle}</h2>
               <div className="Values">
-                <p>£{portfolio.profitLoss}</p>
+                <p>£{portfolio.profitLoss.toFixed(2)}</p>
               </div>
             </div>
           </div>
 
-          {/* Stocks Table */}
+          <div className="LineOne"></div>
+          <h2>Stocks in Portfolio</h2>
+          <div className="LineTwo"></div>
+
           <div className="StocksTable">
-            <h2>Stocks in Portfolio</h2>
             <table className="Table">
               <thead>
                 <tr>
@@ -147,7 +148,10 @@ const Portfolio = () => {
           </div>
         </>
       ) : (
-        <p>Loading portfolio...</p>
+        <>
+          <img src="/Loading.gif" alt="Loading..." />
+          <h1>Loading...</h1>
+        </>
       )}
     </>
   );

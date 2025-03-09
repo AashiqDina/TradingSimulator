@@ -3,12 +3,13 @@
   .register-container {
     position: relative;
     top: 4rem;
-    width: 18rem;
+    width: 23rem;
     margin: 0 auto;
     padding: 1.5rem;
-    border: 1px solid #ccc;
-    border-radius: 1rem;
-    background-color: #1f174a1f;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border: 1px solid #45a049;
+    border-radius: 2rem;
   }
   
   h2 {
@@ -16,6 +17,7 @@
     font-size: 2rem;
     margin-top: 1rem;
     margin-bottom: 2rem;
+    font-family: Inter, sans-serif;
   }
   
   .form-group {
@@ -66,3 +68,44 @@
     text-align: center;
   }
   
+  .UsernameInput{
+    border-radius: 10rem;
+    height: 2.5rem;
+    font-size: 0.9rem;
+    border: none;
+  }
+
+  .UsernameInput{
+    outline-color: #45a049;
+  }
+
+  .PasswordInput{
+    border-radius: 10rem;
+    height: 2.5rem;
+    font-size: 0.9rem;
+    border: none;
+  }
+
+  .PasswordInput{
+    outline-color: #45a049;
+  }
+
+  .ConfirmPasswordInput{
+    border-radius: 10rem;
+    height: 2.5rem;
+    font-size: 0.9rem;
+    border: none;
+  }
+
+  .ConfirmPasswordInput{
+    outline-color: #45a049;
+  }
+
+  .SubmitButton{
+      border-radius: 10rem;
+      width: 12rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      font-family: Inter, sans-serif;
+
+  }

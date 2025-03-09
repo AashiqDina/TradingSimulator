@@ -10,8 +10,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",  // Make sure this name matches
         policy =>
         {
-            // Make sure the frontend is using this IP address
-            policy.WithOrigins("http://192.168.1.111:3000")
+            // Make sure the frontend is using localhost
+            policy.WithOrigins("http://localhost:5048")  // Changed to localhost
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
     {
-        Url = "http://192.168.1.111:5048",  // Your server's IP address here
+        Url = "http://localhost:5048",  // Changed to localhost
         Description = "API Server"
     });
 });

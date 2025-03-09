@@ -1,25 +1,42 @@
-
-.StockSearch {
-    position: relative;
-    top: 15vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-
+* {
+  box-sizing: border-box;
 }
 
-.BuyViewButtonsContainer {
+.StockSearch {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
+  position: relative;
+  top: 2rem;
+  flex-grow: 2;
+  font-family: Inter, sans-serif;
 }
 
 .StockSearchInput{
     border-radius: 10rem;
+    min-width: 30rem;
+    max-width: 50rem;
+    height: 2.7rem;
+    font-size: 1rem;
+    font-family: Inter, sans-serif;;
+    font-weight: 600;
+}
+
+.StockSearchInput:focus{
+    outline-color: #45a049;
+
 }
 
 .StockSearchButton{
     border-radius: 10rem;
+    min-width: 20rem;
+    max-width: 30rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    font-family: Inter, sans-serif;;
+    font-weight: 600;
+    text-align: center;
 }
 
 .Modal {
@@ -56,7 +73,7 @@
     width: 100%;
     padding: 5px;
     margin-top: 10px;
-    border: 1px solid #ccc; /* Optional: Add border around input */
+    border: 1px solid #ccc;
     border-radius: 5rem; /* Rounded corners for the input */
   }
   
@@ -95,23 +112,6 @@
     color: #ffffff;
   }
 
-
-
-  .BuyViewButtons{
-    position: relative;
-    top: 6vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50vw;
-    gap: 5vw;
-  }
-
-  .StockPriceText{
-    color: white;
-    font-weight: bolder;
-  }
-
   .BuyButton{
     border-radius: 10rem;
   }
@@ -131,4 +131,40 @@
     to{
       background-color: rgb(14, 19, 23);
     }
+  }
+
+  .SearchResult{
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid #45a049;
+    border-radius: 3rem;
+    padding-top: 1rem;
+    padding-left: 1.7rem;
+    padding-right: 1.7rem;
+    padding-bottom: 2rem;
+    box-shadow: 0px 5px 10px 1px #3e9143;
+  }
+
+  .StockPriceText{
+    font-family: Inter, sans-serif;;
+    font-size: 1.3rem;
+  }
+
+  .StockPrice{
+    font-family: Inter, sans-serif;;
+    font-weight: 750;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    color: #45a049;
+  }
+
+  .BuyViewButtons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20vw;
+    gap: 1vw;
   }

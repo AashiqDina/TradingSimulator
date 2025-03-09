@@ -1,20 +1,14 @@
 .Header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
     background-color: rgb(13, 15, 17);
     color: white;
     padding: 0.5rem 1rem;
     position: relative;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .Header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
+    height: 4.5rem;
   }
 
   .Logo{
@@ -22,15 +16,24 @@
   }
   
   .Header-logo {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     margin: 0;
     cursor: pointer;
+    font-family: Inter, sans-serif;;
+    font-weight: 500;
   }
   
   .Header-logo a {
     text-decoration: none;
     color: white;
+  }
+
+  .Header-logo > img{
+    position: relative;
+    bottom: 0.4rem;
+    width: 1.7rem;
+    height: auto;
   }
   
   .Header-user {
@@ -95,9 +98,12 @@
   .HeaderUsername{
     color: white;
     cursor: pointer;
+    font-size: 1.2rem;
+    font-family: Inter, sans-serif;;
+    font-weight: 500;
   }
 
   .HeaderUsername:hover{
-    color: #65fa6a;
+    color: #45a049;
   }
   

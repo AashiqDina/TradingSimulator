@@ -20,7 +20,7 @@ function Register() {
   
     try {
       // Check if the username already exists
-      const checkResponse = await fetch("http://localhost:5048/api/User/checkUsername", {
+      const checkResponse = await fetch("http://localhost:3000/api/User/checkUsername", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ function Register() {
       }
   
       // If username is available, proceed with registration
-      const response = await fetch("http://localhost:5048/api/User", {
+      const response = await fetch("http://localhost:3000/api/User", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ function Register() {
   
       if (data.success) {
         console.log("Register successful");
-        navigate("/portfolio");
+        navigate("/");
       } else {
         setError(data.message || "Registration failed");
       }
@@ -86,42 +86,42 @@ function Register() {
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
           <input
             type="text"
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
+            className="UsernameInput"
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
+            className="PasswordInput"
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm your password"
+            className="ConfirmPasswordInput"
             required
           />
         </div>
 
         {error && <p className="error">{error}</p>}
 
-        <button type="submit">Register</button>
+        <button className="SubmitButton" type="submit">Register</button>
       </form>
       <p>
         Already have an account? <a href="/login">Login here</a>

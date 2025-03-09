@@ -10,7 +10,7 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "c3f7cb68b4224b359350520fb7c19696";
+        private readonly string _apiKey = "nope";
         
         // Cache for storing stock prices
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal?, DateTime)>();
@@ -24,7 +24,7 @@ namespace TradingSimulator_Backend.Services
         public async Task<decimal?> GetStockPriceAsync(string symbol)
         {
             // Check if the stock price is already cached and still valid (within 10 minutes)
-            if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(480))
+            if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(1))
             {
                 return _stockCache[symbol].Price; // Return the cached price if valid
             }
