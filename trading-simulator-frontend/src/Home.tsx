@@ -24,6 +24,7 @@ const Home: React.FC = () => {
   // State for stock search
   const [stockSymbol, setStockSymbol] = useState<string>('');
   const [stockPrice, setStockPrice] = useState<number | null>(null);
+  const [stockLogo, setStockLogo] = useState<string>('')
   const [error, setError] = useState<string>('');
 
   // State for modal
@@ -35,6 +36,9 @@ const Home: React.FC = () => {
       setError('');
       const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
       setStockPrice(response.data.price);
+      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
+      setStockLogo(response2.data.image)
+      console.log(response2.data.image)
     } catch (err) {
       setError('Stock not found');
       setStockPrice(null);
@@ -89,7 +93,7 @@ const Home: React.FC = () => {
         <div className='SearchResult'>
             {stockPrice !== null && (
               <>
-                <p className='StockPriceText'>Current Price of {stockSymbol.toUpperCase()}:</p>
+                <p className='StockPriceText'>Current Price of {stockSymbol} <img className='StockLogo' src={`${stockLogo}`} alt="Stock Logo" /> :</p>
                 <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
               </>
             )}

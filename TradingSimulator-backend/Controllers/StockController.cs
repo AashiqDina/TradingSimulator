@@ -30,6 +30,14 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(new { Symbol = symbol, Price = price });
         }
 
+        [HttpGet("StockImage/{symbol}")]
+        public async Task<IActionResult> GetStockImage(string symbol)
+        {
+            var img = await _stockService.GetStockImage(symbol);
+            if(img == null) return NotFound("Logo not found");
+            return Ok(new { Symbol = symbol, Image = img });
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)
         {

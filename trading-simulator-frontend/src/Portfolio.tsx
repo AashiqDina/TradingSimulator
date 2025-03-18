@@ -11,6 +11,7 @@ interface AxiosErrorType {
 const Portfolio = () => {
   const { user, logout } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
+  const [StockLogoArray, setSLA] = useState<any[]>([]);
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -41,15 +42,36 @@ const Portfolio = () => {
       const response = await axios.get(
         `http://localhost:3000/api/portfolio/${user?.id}`
       );
-      console.log("Fetched portfolio data:", response.data); // Log the portfolio data here
+      console.log("Fetched portfolio data:", response.data); 
+
 
       if (response.data) {
-        setPortfolio(response.data); // Set portfolio data
+        setPortfolio(response.data);
+        console.log(response.data);
+
+        const stocks = response.data.stocks.map((stock: any) => ({
+          symbol: stock.symbol
+        }));
+        
+        for (const {symbol} of stocks){
+          try{
+            const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
+            console.log("HERE")
+            console.log(response2.data.image)
+            setSLA(preSLA => {
+              return [...preSLA, response2.data.image]
+            });
+          }
+          catch (error){
+            handleAxiosError(error)
+          }
+        };
+
       } else {
         console.error("No portfolio data found");
       }
     } catch (error) {
-      handleAxiosError(error); // Use the error handler for better logging
+      handleAxiosError(error);
     }
   };
 
@@ -133,9 +155,9 @@ const Portfolio = () => {
                 </tr>
               </thead>
               <tbody>
-                {portfolio.stocks.map((stock: any) => (
+                {portfolio.stocks.map((stock: any, index: number) => (
                   <tr key={stock.symbol}>
-                    <td>{stock.symbol}</td>
+                    <td className="StockNameLogo"><img className="StockLogo" src={StockLogoArray[index]} alt="Stock Logo" />{stock.symbol}</td>
                     <td>{stock.quantity}</td>
                     <td>{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
                     <td>£{stock.currentPrice.toFixed(2)}</td>

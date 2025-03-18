@@ -6,4 +6,6 @@ public interface IStockService
 {
     Task<decimal?> GetStockPriceAsync(string symbol);
     Task<Dictionary<string, decimal?>> GetMultipleStockPricesAsync(List<string> symbols);
+
+    Task<string?> GetStockImage(string symbol);
 }

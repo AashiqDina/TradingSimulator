@@ -133,6 +133,11 @@
     }
   }
 
+  .StockLogo{
+    width: 30px;
+    border-radius: 10rem;
+  }
+
   .SearchResult{
     margin-top: 2.5rem;
     display: flex;
@@ -149,6 +154,10 @@
   }
 
   .StockPriceText{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
     font-family: Inter, sans-serif;;
     font-size: 1.3rem;
   }

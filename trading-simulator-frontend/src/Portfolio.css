@@ -140,3 +140,15 @@ th{
 .Table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
+
+.StockNameLogo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+StockLogo{
+  width: 20px;
+  border-radius: 10rem;
+}
