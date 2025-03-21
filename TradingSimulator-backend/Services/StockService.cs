@@ -11,11 +11,14 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "c3f7cb68b4224b359350520fb7c19696";
+        private readonly string _apiKey = "Nope";
         
         // Cache for storing stock prices
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
-        private static Dictionary<string, (string? Logo, string? Name)> _stockNameCache = new Dictionary<string, (string? Logo, string? Name)>();
+        private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
+        private static Dictionary<string, StockApiInfo?> _stockApiInfoCache = new Dictionary<string, StockApiInfo?>();
+
+
         
         public StockService(HttpClient httpClient)
         {
@@ -67,9 +70,9 @@ namespace TradingSimulator_Backend.Services
 
     public async Task<string?> GetStockImage(string symbol)
     {
-        if (_stockNameCache.ContainsKey(symbol)){
-            Console.WriteLine($"Before: {_stockNameCache[symbol].Logo}");
-            return _stockNameCache[symbol].Logo;
+        if (_stockImageCache.ContainsKey(symbol)){
+            Console.WriteLine($"Before: {_stockImageCache[symbol].Logo}");
+            return _stockImageCache[symbol].Logo;
         }
 
         var (StockImage, StockName) = await FetchLogoAndNameFromApi(symbol);
@@ -80,11 +83,29 @@ namespace TradingSimulator_Backend.Services
         Console.WriteLine($"After: {StockImage}");
 
         if (StockImage != null){
-            _stockNameCache[symbol] = (StockImage, StockName);
+            _stockImageCache[symbol] = (StockImage, StockName);
         }
-        Console.WriteLine($"Cache after update: {_stockNameCache.ContainsKey(symbol)}");
+        Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
 
         return StockImage;
+    }
+
+    public async Task<string?> ConvertSymbolToName(string symbol)
+    {
+        if(_stockApiInfoCache.ContainsKey(symbol)){
+            return _stockApiInfoCache[symbol].Name;
+        }
+
+        var result = await FetchStockInfoFromApi(symbol);
+
+        if(result == null){
+            Console.WriteLine("Unable to find name, returning symbol");
+            return symbol;
+        }
+
+        _stockApiInfoCache[symbol] = result;
+
+        return result.Name;
     }
 
 
@@ -117,7 +138,7 @@ namespace TradingSimulator_Backend.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Error: Unable to fetch data for symbol {symbol}. HTTP Status: {response.StatusCode}");
+                Console.WriteLine($"Error: {response.StatusCode}");
                 return (null, null);
             }
 
@@ -128,10 +149,8 @@ namespace TradingSimulator_Backend.Services
             {
                 var stockData = JsonConvert.DeserializeObject<StockResponseNameLogo>(json);
 
-                // Check if 'meta' and 'name' are not null before accessing them
                 if (stockData?.Meta?.name == null)
                 {
-                    Console.WriteLine($"No name found for symbol {symbol}. Using fallback name.");
                     return (stockData?.url, "Unknown Company");
                 }
 
@@ -139,9 +158,29 @@ namespace TradingSimulator_Backend.Services
             }
             catch (JsonException ex)
             {
-                // Log deserialization issues for better debugging
                 Console.WriteLine($"Error deserializing response for symbol {symbol}: {ex.Message}");
                 return (null, null);
+            }
+        }
+
+        private async Task<StockApiInfo> FetchStockInfoFromApi(string symbol){
+            var url = $"https://api.twelvedata.com/quote?symbol={symbol}&apikey={_apiKey}";
+            var response = await _httpClient.GetAsync(url);
+
+            if(!response.IsSuccessStatusCode){
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            
+            try{
+                var stockInfo = JsonConvert.DeserializeObject<StockApiInfo>(json);
+
+                return stockInfo;
+            }
+            catch{
+                return null;
             }
         }
 

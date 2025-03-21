@@ -24,7 +24,8 @@ const Home: React.FC = () => {
   // State for stock search
   const [stockSymbol, setStockSymbol] = useState<string>('');
   const [stockPrice, setStockPrice] = useState<number | null>(null);
-  const [stockLogo, setStockLogo] = useState<string>('')
+  const [stockLogo, setStockLogo] = useState<string>('');
+  const [stockName, setStockName] = useState<string>('');
   const [error, setError] = useState<string>('');
 
   // State for modal
@@ -37,8 +38,10 @@ const Home: React.FC = () => {
       const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
       setStockPrice(response.data.price);
       const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
-      setStockLogo(response2.data.image)
-      console.log(response2.data.image)
+      setStockLogo(response2.data.image);
+      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
+      console.log(response3)
+      setStockName(response3.data);
     } catch (err) {
       setError('Stock not found');
       setStockPrice(null);
@@ -52,10 +55,9 @@ const Home: React.FC = () => {
       return; // Exit the function if stockPrice is null
     }
 
-    // Check that the quantity is greater than 0
     if (quantity <= 0) {
       alert('Please enter a valid quantity.');
-      return; // Exit if quantity is invalid
+      return;
     }
 
     const stockPurchaseRequest = {
@@ -64,13 +66,12 @@ const Home: React.FC = () => {
     };
 
     try {
-      // Ensure you're calling the correct endpoint based on your controller
       const response = await axios.post(
         `http://localhost:3000/api/portfolio/${user?.id}/stocks`,
         stockPurchaseRequest
       );
       alert('Stock purchased successfully');
-      setIsModalOpen(false); // Close the modal after purchase
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error purchasing stock:', error);
       alert('Error purchasing stock');
@@ -93,7 +94,8 @@ const Home: React.FC = () => {
         <div className='SearchResult'>
             {stockPrice !== null && (
               <>
-                <p className='StockPriceText'>Current Price of {stockSymbol} <img className='StockLogo' src={`${stockLogo}`} alt="Stock Logo" /> :</p>
+                <p className='StockPriceText'>Current Price of</p>
+                <p className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </p>
                 <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
               </>
             )}
@@ -114,7 +116,6 @@ const Home: React.FC = () => {
       {user ? (
         <>
       
-          {/* Modal for selecting quantity */}
           {isModalOpen && (
             <div className="Modal">
               <div className="ModalContent">

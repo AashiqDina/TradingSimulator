@@ -38,6 +38,13 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(new { Symbol = symbol, Image = img });
         }
 
+        [HttpGet("GetStockName/{symbol}")]
+        public async Task<IActionResult> GetStockName(string symbol)
+        {
+            var name = await _stockService.ConvertSymbolToName(symbol);
+            return Ok(name);
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)
         {

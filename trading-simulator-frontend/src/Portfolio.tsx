@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Portfolio.css";
 import { useAuth } from "./AuthContext";
+import { red } from "@mui/material/colors";
+import { Padding } from "@mui/icons-material";
 
 interface AxiosErrorType {
   response?: { data: string; status: number; statusText: string };
@@ -12,6 +14,8 @@ const Portfolio = () => {
   const { user, logout } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
+  const [StockNameArray, setSNA] = useState<any[]>([]);
+  const Fetched = useRef(false)
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -33,6 +37,7 @@ const Portfolio = () => {
   
   // Fetch portfolio data
   const fetchPortfolioData = async () => {
+    setSLA([])  
     if (!user?.id) {
       console.error("User ID is not available for fetching portfolio");
       return;
@@ -52,20 +57,28 @@ const Portfolio = () => {
         const stocks = response.data.stocks.map((stock: any) => ({
           symbol: stock.symbol
         }));
-        
-        for (const {symbol} of stocks){
-          try{
-            const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
-            console.log("HERE")
-            console.log(response2.data.image)
-            setSLA(preSLA => {
-              return [...preSLA, response2.data.image]
-            });
-          }
-          catch (error){
-            handleAxiosError(error)
-          }
-        };
+
+        let i = 0;
+        if(StockLogoArray.length == 0){
+          for (const {symbol} of stocks){
+            try{
+              console.log(i)
+              const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
+              console.log(response2.data.image)
+              setSLA(preSLA => {
+                return [...preSLA, response2.data.image]
+              });
+              const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
+              setSNA(prevSNA => {
+                return [...prevSNA, response3.data]
+              })
+
+            }
+            catch (error){
+              handleAxiosError(error)
+            }
+          };
+        }
 
       } else {
         console.error("No portfolio data found");
@@ -103,7 +116,8 @@ const Portfolio = () => {
   }
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && !Fetched.current) {
+      Fetched.current = true;
       const updateAndFetch = async () => {
         await UpdateAllStocksInPortfolio(); // Wait for update to finish
         await fetchPortfolioData(); // Then fetch portfolio data
@@ -146,23 +160,27 @@ const Portfolio = () => {
             <table className="Table">
               <thead>
                 <tr>
-                  <th>Symbol</th>
+                  <th style={{padding: "1rem 0.5rem 1rem 1rem"}}></th>
+                  <th style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
                   <th>Quantity</th>
                   <th>Bought Price</th>
                   <th>Current Price</th>
                   <th>Total Value</th>
-                  <th className="PLTitle">Profit/Loss</th>
+                  <th style={{padding: "1rem 0rem 1rem 1rem"}} className="PLTitle">Profit/Loss</th>
+                  <th style={{padding: "1rem 1rem 1rem 0.3rem"}}>%</th>
                 </tr>
               </thead>
               <tbody>
                 {portfolio.stocks.map((stock: any, index: number) => (
-                  <tr key={stock.symbol}>
-                    <td className="StockNameLogo"><img className="StockLogo" src={StockLogoArray[index]} alt="Stock Logo" />{stock.symbol}</td>
+                  <tr key={index}>
+                    <td style={{padding: "1rem 0.5rem 1rem 1rem"}}><img className="StockLogo" src={StockLogoArray[index]} alt="Stock Logo" /></td>
+                    <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{StockNameArray[index]}</td>
                     <td>{stock.quantity}</td>
                     <td>{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
                     <td>£{stock.currentPrice.toFixed(2)}</td>
                     <td>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
-                    <td>£{(stock.profitLoss).toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
+                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
                   </tr>
                 ))}
               </tbody>
