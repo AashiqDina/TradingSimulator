@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using TradingSimulator_Backend.Data; // Ensure your Data context is imported
-using TradingSimulator_Backend.Services; // Add the correct namespace for IStockService
+using TradingSimulator_Backend.Services;
 
 namespace TradingSimulator_Backend.Controllers
 {
@@ -11,7 +11,7 @@ namespace TradingSimulator_Backend.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        private readonly IStockService _stockService; // Use IStockService instead of StockService directly
+        private readonly IStockService _stockService;
         private readonly AppDbContext _context; // Add context to the controller
 
         // Inject the context and IStockService
@@ -44,6 +44,28 @@ namespace TradingSimulator_Backend.Controllers
             var name = await _stockService.ConvertSymbolToName(symbol);
             return Ok(name);
         }
+
+        [HttpGet("GetStockInfo/{symbol}")]
+        public async Task<IActionResult> GetStockInfo(string symbol)
+        {
+            var stockData = await _stockService.GetQuickData(symbol);
+
+            if (stockData == (null, null, null, null, null, null))
+            {
+                Console.WriteLine("Data is unavailable.");
+            }
+
+            return Ok(new
+            {
+                LastUpdated = stockData.LastUpdated,
+                LowPrice = stockData.LowPrice,
+                HighPrice = stockData.HighPrice,
+                FiftyTwoWeekRange = stockData.FiftyTwoWeekRange,
+                ClosePrice = stockData.ClosePrice,
+                PercentChange = stockData.PercentChange
+            });
+        }
+
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)

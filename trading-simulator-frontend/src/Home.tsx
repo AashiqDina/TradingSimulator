@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { green } from '@mui/material/colors';
+
+interface StockInfoResponse {
+  lastUpdated: string | null;
+  lowPrice: number | null;
+  highPrice: number | null;
+  fiftyTwoWeekRange: string | null;
+  closePrice: number | null;
+  percentChange: number | null;
+}
 
 const Home: React.FC = () => {
   const { user, logout } = useAuth();
@@ -26,9 +36,8 @@ const Home: React.FC = () => {
   const [stockPrice, setStockPrice] = useState<number | null>(null);
   const [stockLogo, setStockLogo] = useState<string>('');
   const [stockName, setStockName] = useState<string>('');
+  const [stockQuickData, setStockQuickData] = useState<StockInfoResponse | null>(null)
   const [error, setError] = useState<string>('');
-
-  // State for modal
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -40,8 +49,10 @@ const Home: React.FC = () => {
       const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
       setStockLogo(response2.data.image);
       const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
-      console.log(response3)
       setStockName(response3.data);
+      const response4 = await axios.get<StockInfoResponse>(`http://localhost:3000/api/stocks/GetStockInfo/${stockSymbol}`);
+      setStockQuickData(response4.data);
+
     } catch (err) {
       setError('Stock not found');
       setStockPrice(null);
@@ -49,10 +60,9 @@ const Home: React.FC = () => {
   };
 
   const handleBuyStock = async () => {
-    // First, check that stockPrice is not null
     if (stockPrice === null) {
       alert('Stock price not available.');
-      return; // Exit the function if stockPrice is null
+      return;
     }
 
     if (quantity <= 0) {
@@ -78,6 +88,11 @@ const Home: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (stockQuickData) {
+      console.log('Updated Stock Data:', stockQuickData);
+    }
+  }, [stockQuickData]);
 
   return (
     <>
@@ -91,27 +106,47 @@ const Home: React.FC = () => {
           />
         <button className='StockSearchButton' onClick={searchStock}>Search</button>
         {((stockPrice !== null) &&
-        <div className='SearchResult'>
-            {stockPrice !== null && (
-              <>
-                <p className='StockPriceText'>Current Price of</p>
-                <p className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </p>
-                <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
-              </>
-            )}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {(stockPrice !== null) && !user && (
-              <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
-            )}
-            {(stockPrice !== null) && user && (
-              <div className="BuyViewButtonsContainer">
-                <div className='BuyViewButtons'>
-                  <button className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
-                  <button className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
-                </div>
+          <div className='CompleteSearchResult'>
+            <div className='SearchResult'>
+                {stockPrice !== null && (
+                  <>
+                    <p className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </p>
+                    <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
+                  </>
+                )}
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {(stockPrice !== null) && !user && (
+                  <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
+                )}
+                {(stockPrice !== null) && user && (
+                  <div className="BuyViewButtonsContainer">
+                    <div className='BuyViewButtons'>
+                      <button className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
+                      <button className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>)}
+              <div className='SearchResult2'>
+                <h3>Useful data for {stockName} ({stockSymbol}):</h3>
+                  <p>Last Updated: <span style={{color: "#45a049"}}>{stockQuickData?.lastUpdated 
+                    ? new Date(stockQuickData.lastUpdated).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
+                    : 'N/A'} </span></p>
+                  <p>24h-Hour range: <span style={{color: "#45a049"}}>£{stockQuickData?.lowPrice ?? 'N/A'} - £{stockQuickData?.highPrice ?? 'N/A'} ({stockQuickData?.percentChange?.toFixed(2) ?? 'N/A'}%)</span></p>
+                  <p>52-Week range:  <span style={{color: "#45a049"}}> {stockQuickData?.fiftyTwoWeekRange 
+                      ? stockQuickData?.fiftyTwoWeekRange
+                          .split(' - ')
+                          .map((price, index) => `£${price}`)
+                          .join(' - ')
+                      : 'N/A'} </span></p>
+                  <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p>
+              </div>
+            </div>
+        )}
        </div>
       {user ? (
         <>

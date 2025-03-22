@@ -13,10 +13,10 @@ namespace TradingSimulator_Backend.Services
         private readonly HttpClient _httpClient;
         private readonly string _apiKey = "Nope";
         
-        // Cache for storing stock prices
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
         private static Dictionary<string, StockApiInfo?> _stockApiInfoCache = new Dictionary<string, StockApiInfo?>();
+        private static DateTime? StockInfoDateTime = null;
 
 
         
@@ -25,30 +25,24 @@ namespace TradingSimulator_Backend.Services
             _httpClient = httpClient;
         }
 
-        // Method to fetch the stock price for a single symbol
         public async Task<decimal?> GetStockPriceAsync(string symbol)
         {
-            // Check if the stock price is already cached and still valid (within 10 minutes)
             if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(480))
             {
-                return _stockCache[symbol].Price; // Return the cached price if valid
+                return _stockCache[symbol].Price;
             }
 
-            // Fetch the price from the external API if not cached or cache expired
             var price = await FetchStockPriceFromApi(symbol);
 
-            // Cache the price with the current timestamp
             _stockCache[symbol] = (price, DateTime.Now);
 
             return price;
         }
 
-        // Method to get stock prices for multiple symbols
         public async Task<Dictionary<string, decimal?>> GetMultipleStockPricesAsync(List<string> symbols)
         {
             var stockPrices = new Dictionary<string, decimal?>();
 
-            // For each symbol, check the cache first and then fetch from API if necessary
             foreach (var symbol in symbols)
             {
                 if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(480))
@@ -68,48 +62,86 @@ namespace TradingSimulator_Backend.Services
             return stockPrices;
         }
 
-    public async Task<string?> GetStockImage(string symbol)
-    {
-        if (_stockImageCache.ContainsKey(symbol)){
-            Console.WriteLine($"Before: {_stockImageCache[symbol].Logo}");
-            return _stockImageCache[symbol].Logo;
+        public async Task<string?> GetStockImage(string symbol)
+        {
+            if (_stockImageCache.ContainsKey(symbol)){
+                Console.WriteLine($"Before: {_stockImageCache[symbol].Logo}");
+                return _stockImageCache[symbol].Logo;
+            }
+
+            var (StockImage, StockName) = await FetchLogoAndNameFromApi(symbol);
+            
+            if (StockImage == null){
+                Console.WriteLine($"No image found for {symbol}.");
+            }
+            Console.WriteLine($"After: {StockImage}");
+
+            if (StockImage != null){
+                _stockImageCache[symbol] = (StockImage, StockName);
+            }
+            Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
+
+            return StockImage;
         }
 
-        var (StockImage, StockName) = await FetchLogoAndNameFromApi(symbol);
-        
-        if (StockImage == null){
-            Console.WriteLine($"No image found for {symbol}.");
-        }
-        Console.WriteLine($"After: {StockImage}");
+        public async Task<string?> ConvertSymbolToName(string symbol)
+        {
+            if(_stockApiInfoCache.ContainsKey(symbol)){
+                return _stockApiInfoCache[symbol].Name;
+            }
 
-        if (StockImage != null){
-            _stockImageCache[symbol] = (StockImage, StockName);
-        }
-        Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
+            var result = await FetchStockInfoFromApi(symbol);
 
-        return StockImage;
-    }
+            if(result == null){
+                Console.WriteLine("Unable to find name, returning symbol");
+                return symbol;
+            }
 
-    public async Task<string?> ConvertSymbolToName(string symbol)
-    {
-        if(_stockApiInfoCache.ContainsKey(symbol)){
-            return _stockApiInfoCache[symbol].Name;
+            _stockApiInfoCache[symbol] = result;
+
+            return result.Name;
         }
 
-        var result = await FetchStockInfoFromApi(symbol);
+        public async Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol)
+        {
+            if (StockInfoDateTime == null)
+            {
+                StockInfoDateTime = DateTime.Now;
+            }
 
-        if(result == null){
-            Console.WriteLine("Unable to find name, returning symbol");
-            return symbol;
+            if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
+            {
+                var cachedData = _stockApiInfoCache[symbol];
+                Console.WriteLine(cachedData.FiftyTwoWeek);
+                return (TryParseDateTime(cachedData.Datetime), cachedData.Low, cachedData.High, cachedData.FiftyTwoWeek?.Range, cachedData.Close, cachedData.PercentChange);
+            }
+
+            var result = await FetchStockInfoFromApi(symbol);
+
+            if (result == null)
+            {
+                Console.WriteLine("Unable to find information");
+                return (null, null, null, null, null, null);
+            }
+
+            _stockApiInfoCache[symbol] = result;
+            StockInfoDateTime = DateTime.Now;
+            return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
         }
 
-        _stockApiInfoCache[symbol] = result;
+        private DateTime? TryParseDateTime(string datetime)
+        {
+            if (DateTime.TryParse(datetime, out var parsedDate))
+            {
+                return parsedDate;
+            }
+            return null; 
+        }
 
-        return result.Name;
-    }
 
 
-        // Helper method to fetch a stock price from the API
+
+
         private async Task<decimal?> FetchStockPriceFromApi(string symbol)
         {
             var url = $"https://api.twelvedata.com/price?symbol={symbol}&apikey={_apiKey}";

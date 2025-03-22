@@ -160,9 +160,9 @@ const Portfolio = () => {
             <table className="Table">
               <thead>
                 <tr>
-                  <th style={{padding: "1rem 0.5rem 1rem 1rem"}}></th>
+                  <th style={{padding: "1rem 0.8rem 1rem 1rem"}}></th>
                   <th style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th>Quantity</th>
+                  <th style={{padding: "1rem 0rem 1rem 0rem"}}>Quantity</th>
                   <th>Bought Price</th>
                   <th>Current Price</th>
                   <th>Total Value</th>
@@ -173,9 +173,9 @@ const Portfolio = () => {
               <tbody>
                 {portfolio.stocks.map((stock: any, index: number) => (
                   <tr key={index}>
-                    <td style={{padding: "1rem 0.5rem 1rem 1rem"}}><img className="StockLogo" src={StockLogoArray[index]} alt="Stock Logo" /></td>
+                    <td style={{padding: "1rem 0.8rem 1rem 1rem"}}><img className="StockLogos" src={StockLogoArray[index]} alt="Stock Logo" /></td>
                     <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{StockNameArray[index]}</td>
-                    <td>{stock.quantity}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stock.quantity}</td>
                     <td>{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
                     <td>£{stock.currentPrice.toFixed(2)}</td>
                     <td>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>

@@ -1,3 +1,5 @@
+    using Newtonsoft.Json;
+
 public class StockApiInfo
 {
     public string Symbol { get; set; }
@@ -16,6 +18,7 @@ public class StockApiInfo
 
     public decimal PreviousClose { get; set; }
     public decimal Change { get; set; }
+    [JsonProperty("percent_change")]
     public decimal PercentChange { get; set; }
     public long AverageVolume { get; set; }
 
@@ -24,6 +27,7 @@ public class StockApiInfo
     public decimal RollingPeriodChange { get; set; }
 
     public bool IsMarketOpen { get; set; }
+    [JsonProperty("fifty_two_week")]
     public FiftyTwoWeek FiftyTwoWeek { get; set; }
 
     public decimal ExtendedChange { get; set; }
@@ -31,14 +35,26 @@ public class StockApiInfo
     public decimal ExtendedPrice { get; set; }
     public long ExtendedTimestamp { get; set; } 
 }
-
 public class FiftyTwoWeek
 {
+    [JsonProperty("low")]
     public decimal Low { get; set; }
+
+    [JsonProperty("high")]
     public decimal High { get; set; }
+
+    [JsonProperty("low_change")]
     public decimal LowChange { get; set; }
+
+    [JsonProperty("high_change")]
     public decimal HighChange { get; set; }
+
+    [JsonProperty("low_change_percent")]
     public decimal LowChangePercent { get; set; }
+
+    [JsonProperty("high_change_percent")]
     public decimal HighChangePercent { get; set; }
+
+    [JsonProperty("range")]
     public string Range { get; set; }
 }

@@ -143,8 +143,8 @@ th{
 
 
 
-StockLogo{
-  width: 20px;
-  border-radius: 10rem;
+.StockLogos{
+  width: 35px;
+  border-radius: 0.5rem;
 }
 

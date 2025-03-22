@@ -134,8 +134,9 @@
   }
 
   .StockLogo{
-    width: 30px;
-    border-radius: 10rem;
+    margin-right: 0.5rem;
+    width: 35px;
+    border-radius: 0.5rem;
   }
 
   .SearchResult{
@@ -153,27 +154,20 @@
     box-shadow: 0px 5px 10px 1px #3e9143;
   }
 
-  .StockPriceText{
-    margin: 1rem 0rem 0rem 0rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 7px;
-    font-family: Inter, sans-serif;;
-    font-size: 1.3rem;
-  }
-
   .StockPriceText2{
     margin-top: 0.7rem;
+    margin-bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 7px;
     font-family: Inter, sans-serif;
-    font-size: 1.1rem;
+    font-size: 2rem;
   }
 
   .StockPrice{
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
     font-family: Inter, sans-serif;;
     font-weight: 750;
     font-size: 2rem;
@@ -187,4 +181,32 @@
     align-items: center;
     width: 20vw;
     gap: 1vw;
+  }
+
+  .CompleteSearchResult{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .SearchResult2{
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items:baseline;
+    flex-direction: column;
+    border: 1px solid #45a049;
+    border-radius: 3rem;
+    padding-top: 1rem;
+    padding-left: 1.7rem;
+    padding-right: 1.7rem;
+    padding-bottom: 2rem;
+    box-shadow: 0px 5px 10px 1px #3e9143;
+    text-align: left;
+  }
+
+  .SearchResult2 > p{
+    margin: 0.25rem;
   }
