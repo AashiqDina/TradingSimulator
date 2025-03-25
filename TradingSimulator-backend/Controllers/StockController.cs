@@ -12,13 +12,12 @@ namespace TradingSimulator_Backend.Controllers
     public class StockController : ControllerBase
     {
         private readonly IStockService _stockService;
-        private readonly AppDbContext _context; // Add context to the controller
+        private readonly AppDbContext _context; 
 
-        // Inject the context and IStockService
         public StockController(IStockService stockService, AppDbContext context)
         {
             _stockService = stockService;
-            _context = context; // Initialize context
+            _context = context; 
         }
 
         [HttpGet("{symbol}")]
@@ -66,6 +65,21 @@ namespace TradingSimulator_Backend.Controllers
             });
         }
 
+        [HttpGet("GetStockQuoteInfo/{symbol}")]
+        public async Task<IActionResult> GetStockQuoteInfo(string symbol)
+        {
+            var quoteData = await _stockService.FetchStockInfo(symbol);
+
+            if (quoteData == null)
+            {
+                Console.WriteLine("No Data available");
+            }
+
+            return Ok(new {
+                quoteData
+            });
+        }
+
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)
@@ -75,7 +89,6 @@ namespace TradingSimulator_Backend.Controllers
                 return BadRequest("Symbol query is required.");
             }
 
-            // Search for stocks in the database where the symbol contains the search query (case-insensitive)
             var stocks = await _context.Stocks
                                         .Where(s => s.Symbol.Contains(symbol, System.StringComparison.OrdinalIgnoreCase))
                                         .ToListAsync();

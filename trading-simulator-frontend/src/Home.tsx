@@ -110,7 +110,7 @@ const Home: React.FC = () => {
             <div className='SearchResult'>
                 {stockPrice !== null && (
                   <>
-                    <p className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </p>
+                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </h3>
                     <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
                   </>
                 )}
@@ -128,7 +128,7 @@ const Home: React.FC = () => {
                 )}
               </div>
               <div className='SearchResult2'>
-                <h3>Useful data for {stockName} ({stockSymbol}):</h3>
+                <h3>{stockName} <span className='Symb'>{stockSymbol}</span></h3>
                   <p>Last Updated: <span style={{color: "#45a049"}}>{stockQuickData?.lastUpdated 
                     ? new Date(stockQuickData.lastUpdated).toLocaleDateString('en-GB', {
                         year: 'numeric',

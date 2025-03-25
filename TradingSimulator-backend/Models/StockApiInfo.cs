@@ -5,6 +5,7 @@ public class StockApiInfo
     public string Symbol { get; set; }
     public string Name { get; set; }
     public string Exchange { get; set; }
+    [JsonProperty("mic_code")]
     public string MicCode { get; set; }
     public string Currency { get; set; }
     public string Datetime { get; set; }
@@ -15,11 +16,12 @@ public class StockApiInfo
     public decimal Low { get; set; }
     public decimal Close { get; set; }
     public long Volume { get; set; }
-
+    [JsonProperty("previous_close")]
     public decimal PreviousClose { get; set; }
     public decimal Change { get; set; }
     [JsonProperty("percent_change")]
     public decimal PercentChange { get; set; }
+    [JsonProperty("average_volume")]
     public long AverageVolume { get; set; }
 
     public decimal Rolling1DChange { get; set; }

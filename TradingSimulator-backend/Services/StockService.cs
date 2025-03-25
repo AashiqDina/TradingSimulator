@@ -77,6 +77,7 @@ namespace TradingSimulator_Backend.Services
             Console.WriteLine($"After: {StockImage}");
 
             if (StockImage != null){
+                Console.WriteLine($"HERE:  {StockImage}");
                 _stockImageCache[symbol] = (StockImage, StockName);
             }
             Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
@@ -97,7 +98,10 @@ namespace TradingSimulator_Backend.Services
                 return symbol;
             }
 
-            _stockApiInfoCache[symbol] = result;
+            if(result != null){
+                Console.WriteLine("HERE2: " + result );
+                _stockApiInfoCache[symbol] = result;
+            }
 
             return result.Name;
         }
@@ -129,6 +133,33 @@ namespace TradingSimulator_Backend.Services
             return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
         }
 
+        public async Task<StockApiInfo?> FetchStockInfo(string symbol){
+            if (StockInfoDateTime == null)
+            {
+                StockInfoDateTime = DateTime.Now;
+            }
+
+            if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
+            {
+                var cachedData = _stockApiInfoCache[symbol];
+                Console.WriteLine(cachedData.FiftyTwoWeek);
+                return cachedData;
+            }
+
+            var result = await FetchStockInfoFromApi(symbol);
+
+            if (result == null){
+                Console.WriteLine("Unable To Find Info");
+                return null;
+            }
+
+            _stockApiInfoCache[symbol] = result;
+            StockInfoDateTime = DateTime.Now;
+
+            return result;
+
+        }
+
         private DateTime? TryParseDateTime(string datetime)
         {
             if (DateTime.TryParse(datetime, out var parsedDate))
@@ -150,7 +181,6 @@ namespace TradingSimulator_Backend.Services
             if (!response.IsSuccessStatusCode) return null;
 
             var json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Raw API Response: {json}");
 
             try
             {
@@ -175,7 +205,6 @@ namespace TradingSimulator_Backend.Services
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Raw API Response: {json}");
 
             try
             {
@@ -205,6 +234,8 @@ namespace TradingSimulator_Backend.Services
             }
 
             var json = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Raw API Response: {json}");
+
             
             try{
                 var stockInfo = JsonConvert.DeserializeObject<StockApiInfo>(json);

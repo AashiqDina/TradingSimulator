@@ -1,0 +1,41 @@
+.StockSymbol{
+    background-color: #3e9143;
+    border-radius: 2rem;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    font-size: 1.8rem;
+}
+
+
+.TitleLogo{
+    margin-right: 1rem;
+    border-radius: 5rem;
+    width: 3rem;
+}
+
+.TitleBox{
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.MainBody{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.StockDetails{
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.InteractiveGraph{
+    background-color: grey;
+    padding: 1rem;
+    border-radius: 1rem;
+}

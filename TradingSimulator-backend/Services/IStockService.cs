@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TradingSimulator_Backend.Models;
+
 
 public interface IStockService
 {
@@ -9,4 +11,5 @@ public interface IStockService
     Task<string?> GetStockImage(string symbol);
     Task<string?> ConvertSymbolToName(string symbol);
     Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol);
+    Task<StockApiInfo?> FetchStockInfo(string symbol);
 }

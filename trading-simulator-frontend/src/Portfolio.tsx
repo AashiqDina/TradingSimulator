@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Portfolio.css";
 import { useAuth } from "./AuthContext";
-import { red } from "@mui/material/colors";
-import { Padding } from "@mui/icons-material";
 
 interface AxiosErrorType {
   response?: { data: string; status: number; statusText: string };
@@ -88,7 +86,6 @@ const Portfolio = () => {
     }
   };
 
-  // Helper function for improved error handling
   const handleAxiosError = (error: unknown) => {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosErrorType;
@@ -119,8 +116,8 @@ const Portfolio = () => {
     if (user?.id && !Fetched.current) {
       Fetched.current = true;
       const updateAndFetch = async () => {
-        await UpdateAllStocksInPortfolio(); // Wait for update to finish
-        await fetchPortfolioData(); // Then fetch portfolio data
+        await UpdateAllStocksInPortfolio();
+        await fetchPortfolioData();
       };
 
       updateAndFetch();
