@@ -96,6 +96,10 @@ const Portfolio = () => {
     }
   };
 
+  function handleDelete(){
+    console.log("Delete");
+  }
+
   // Portfolio data checks
   let ProfitColour = "#45a049";
   let ProfitLossTitle = "Profit";
@@ -157,27 +161,35 @@ const Portfolio = () => {
             <table className="Table">
               <thead>
                 <tr>
-                  <th style={{padding: "1rem 0.8rem 1rem 1rem"}}></th>
+                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
                   <th style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th style={{padding: "1rem 0rem 1rem 0rem"}}>Quantity</th>
-                  <th>Bought Price</th>
-                  <th>Current Price</th>
-                  <th>Total Value</th>
-                  <th style={{padding: "1rem 0rem 1rem 1rem"}} className="PLTitle">Profit/Loss</th>
-                  <th style={{padding: "1rem 1rem 1rem 0.3rem"}}>%</th>
+                  <th style={{paddingRight: "1rem"}}>Quantity</th>
+                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
+                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
+                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
+                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}} className="PLTitle">Profit/Loss</th>
+                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
+                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+
                 </tr>
               </thead>
               <tbody>
                 {portfolio.stocks.map((stock: any, index: number) => (
                   <tr key={index}>
-                    <td style={{padding: "1rem 0.8rem 1rem 1rem"}}><img className="StockLogos" src={StockLogoArray[index]} alt="Stock Logo" /></td>
+                    <td><img className="StockLogos" src={StockLogoArray[index]} alt="Stock Logo" /></td>
                     <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{StockNameArray[index]}</td>
                     <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stock.quantity}</td>
-                    <td>{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
-                    <td>£{stock.currentPrice.toFixed(2)}</td>
-                    <td>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{stock.currentPrice.toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
                     <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
                     <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
+                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton">
+                      <div className="CrossContainer" onClick={handleDelete}>
+                        <div className="Cross1"></div>
+                        <div className="Cross2"></div>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

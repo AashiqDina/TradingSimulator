@@ -57,6 +57,9 @@ const StockDetail: React.FC = () => {
         </div>
         <section className='MainBody'>
             <div className='StockDetails'>
+              <div className='Selector'>
+                <button className='CompanyInformation'>Overview</button>
+              </div>
               <p>{BasicStockData?.exchange}</p>
             </div>
             <div className='InteractiveGraph'>

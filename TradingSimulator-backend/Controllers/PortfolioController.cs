@@ -82,7 +82,6 @@ public class PortfolioController : ControllerBase
             return NotFound("Portfolio not found.");
         }
 
-        // Fetch the stock price from the API
         var stockPrice = await _stockService.GetStockPriceAsync(request.Symbol);
 
         if (stockPrice == null)
@@ -90,13 +89,12 @@ public class PortfolioController : ControllerBase
             return BadRequest("Stock not found.");
         }
 
-        // Create the stock and add it to the portfolio
         var stock = new Stock
         {
             Symbol = request.Symbol,
-            PurchasePrice = stockPrice.Value,  // Ensure stockPrice is assigned as a decimal
+            PurchasePrice = stockPrice.Value,  /
             Quantity = request.Quantity,
-            CurrentPrice = stockPrice.Value   // Set the current price as well
+            CurrentPrice = stockPrice.Value 
         };
 
         portfolio.Stocks.Add(stock);  // Add the stock to the portfolio
