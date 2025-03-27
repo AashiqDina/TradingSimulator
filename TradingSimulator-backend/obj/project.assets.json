@@ -5868,19 +5868,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/Aashiq/.nuget/packages/": {}
+    "C:\\Users\\Aashi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Aashiq/Documents/GitHub/TradingSimulator/TradingSimulator-backend/TradingSimulatorBackend.csproj",
+      "projectUniqueName": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorBackend.csproj",
       "projectName": "TradingSimulatorBackend",
-      "projectPath": "/Users/Aashiq/Documents/GitHub/TradingSimulator/TradingSimulator-backend/TradingSimulatorBackend.csproj",
-      "packagesPath": "/Users/Aashiq/.nuget/packages/",
-      "outputPath": "/Users/Aashiq/Documents/GitHub/TradingSimulator/TradingSimulator-backend/obj/",
+      "projectPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\TradingSimulatorBackend.csproj",
+      "packagesPath": "C:\\Users\\Aashi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Aashi\\projects\\TradingSimulator\\TradingSimulator-backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/Aashiq/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Aashi\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5903,7 +5903,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -5959,6 +5960,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -5967,7 +5986,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -92,7 +92,7 @@ public class PortfolioController : ControllerBase
         var stock = new Stock
         {
             Symbol = request.Symbol,
-            PurchasePrice = stockPrice.Value,  /
+            PurchasePrice = stockPrice.Value,
             Quantity = request.Quantity,
             CurrentPrice = stockPrice.Value 
         };
