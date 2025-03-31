@@ -154,7 +154,7 @@ const Home: React.FC = () => {
           {isModalOpen && (
             <div className="Modal">
               <div className="ModalContent">
-                <h2>Buy {stockSymbol.toUpperCase()}</h2>
+                <h2>Buy {stockName}</h2>
                 <div className="ModalBody">
                   <label htmlFor="quantity">Quantity:</label>
                   <input 
