@@ -109,9 +109,8 @@ public class PortfolioController : ControllerBase
 [HttpPut("{userId}/stocks/update")]
 public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
 {
-    // Fetch the user's portfolio
     var portfolio = await _context.Portfolios
-                                  .Include(p => p.Stocks) // Include the stocks in the portfolio
+                                  .Include(p => p.Stocks)
                                   .FirstOrDefaultAsync(p => p.UserId == userId);
 
     if (portfolio == null)
@@ -119,13 +118,10 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
         return NotFound("Portfolio not found.");
     }
 
-    // Collect all stock symbols from the portfolio
     var stockSymbols = portfolio.Stocks.Select(s => s.Symbol).ToList();
 
-    // Fetch stock prices for all symbols in a single API call using GetMultipleStockPricesAsync
     var stockPrices = await _stockService.GetMultipleStockPricesAsync(stockSymbols);
 
-    // Loop through each stock and update its price
     foreach (var stock in portfolio.Stocks)
     {
         if (stockPrices.ContainsKey(stock.Symbol))
@@ -133,24 +129,16 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
             var stockPrice = stockPrices[stock.Symbol];
             if (stockPrice.HasValue)
             {
-                stock.CurrentPrice = stockPrice.Value; // Update the stock price
+                stock.CurrentPrice = stockPrice.Value;
             }
         }
     }
-
-    // Save the updated portfolio with new prices
     await _context.SaveChangesAsync();
 
-    return Ok(portfolio); // Return the updated portfolio
+    return Ok(portfolio);
 }
 
-
-
-
-
-
-    // Remove Stock from Portfolio (Updated)
-    [HttpDelete("{userId}/stocks/{stockId}")]
+    [HttpDelete("{userId}/stocks/delete/{stockId}")]
     public async Task<IActionResult> RemoveStockFromPortfolio(int userId, int stockId)
     {
         var portfolio = await _context.Portfolios
