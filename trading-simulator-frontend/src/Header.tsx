@@ -1,10 +1,11 @@
-import React, { useState } from "react"; // to use state variables
-import { Link, useNavigate } from "react-router-dom"; // link changes the url and updates the page
+import React, { useState } from "react"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import "./Header.css";
 import { useAuth } from "./AuthContext";
+import Logo from "./Logo"
 
 const Header: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false); // declare state variable for the state of the menu and set it to false
+  const [menuOpen, setMenuOpen] = useState(false); 
   const { user, logout } = useAuth();
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const MouseEnter = () => setMenuOpen(true)
@@ -12,8 +13,8 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // Call logout to clear user session
-    navigate("/login"); // Redirect to login page
+    logout(); 
+    navigate("/login");
     setMenuOpen(!menuOpen);
   };
 
@@ -29,15 +30,14 @@ const Header: React.FC = () => {
   return ( 
     <header className="Header">
 
-        <div className="Header-menu" onMouseEnter={MouseEnter} onClick={toggleMenu}>
-          <div className="Hamburger"></div>
-          <div className="Hamburger"></div>
-          <div className="Hamburger"></div>
+        <div className="Header-menu" onClick={toggleMenu}>
+          <div className="Hamburger1"></div>
+          <div className="Hamburger2"></div>
+          <div className="Hamburger3"></div>
         </div>
 
         <h1 className="Header-logo" onClick={() => handleLink("/")}>
-            <img className="Logo" src="/ProjectLogo.png" alt="Logo" />
-            TradeSim
+            <Logo/>
         </h1>
         {user ? (
           <p className="HeaderUsername" onClick={() => handleLink("/portfolio")}>{user.username}</p>
@@ -55,20 +55,25 @@ const Header: React.FC = () => {
                 Home
               </Link>
             </li>
+            <div className="LineBreakers"></div>
             <li>
               <Link to="/about" onClick={toggleMenu}>
                 About
               </Link>
             </li>
+            <div className="LineBreakers"></div>
             <li>
               <Link to="/portfolio" onClick={toggleMenu}>
               Portfolio
               </Link>
             </li>
             {user ? (
-              <li>
-                <button onClick={handleLogout}>Logout</button>
-              </li>
+              <>
+                <div className="LineBreakers"></div>
+                <li>
+                  <button onClick={handleLogout}>Logout</button>
+                </li>
+              </>
             ) : (
               <></>
             )}

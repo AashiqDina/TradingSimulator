@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Portfolio.css";
+import Loading from './Loading';
 import { useAuth } from "./AuthContext";
 
 interface AxiosErrorType {
@@ -52,7 +53,6 @@ const Portfolio = () => {
 
       if (response.data) {
         setPortfolio(response.data);
-        console.log(response.data);
 
         const stocks = response.data.stocks.map((stock: any) => ({
           symbol: stock.symbol
@@ -62,17 +62,16 @@ const Portfolio = () => {
         if(StockLogoArray.length == 0){
           for (const {symbol} of stocks){
             try{
-              console.log(i)
               const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
               console.log(response2.data.image)
               setSLA(preSLA => {
                 return [...preSLA, response2.data.image]
               });
               const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
+              console.log(response3.data)
               setSNA(prevSNA => {
                 return [...prevSNA, response3.data]
               })
-              console.log("set false")
             }
             catch (error){
               handleAxiosError(error)
@@ -246,8 +245,7 @@ const Portfolio = () => {
         </>
       ) : (
         <>
-          <img src="/Loading.gif" alt="Loading..." />
-          <h1>Loading...</h1>
+          <Loading/>
         </>
       )}
     </>

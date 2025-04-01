@@ -1,0 +1,94 @@
+.BarContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem;
+}
+
+.BarContainer > h2{
+    position: absolute;
+    font-size: 4rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Inter, sans-serif;;
+    font-weight: 500;
+    z-index: 1000;
+}
+
+.BarA{
+    background-color: #bb1515;
+    width: 7rem;
+    height: 20rem;
+    border-radius: 5rem;
+    animation-name: FunLogoAnimation2;
+    animation-duration: 1s;
+    animation-delay: 0s, 8s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.BarB{
+    background-color: #45a049;
+    width: 7rem;
+    height: 26rem;
+    border-radius: 5rem;
+    animation-name: FunLogoAnimation2;
+    animation-duration: 1s;
+    animation-delay: 0.3s, 8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.BarC{
+    background-color: #bb1515;
+    width: 7rem;
+    height: 28rem;
+    border-radius: 5rem;
+    margin-top: 10rem;
+    animation-name: FunLogoAnimation2;
+    animation-duration: 1s;
+    animation-delay: 0.6s, 8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.BarD{
+    background-color: #45a049;
+    width: 7rem;
+    height: 32rem;
+    border-radius: 5rem;
+    margin-bottom: 2rem;
+    animation-name: FunLogoAnimation2;
+    animation-duration: 1s;
+    animation-delay: 0.9s, 8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.BarE{
+    background-color: #45a049;
+    width: 7rem;
+    height: 28rem;
+    border-radius: 5rem;
+    margin-bottom: 10rem;
+    animation-name: FunLogoAnimation2;
+    animation-duration: 1s;
+    animation-delay: 1.2s, 8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes FunLogoAnimation2 {
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-2rem);
+    }
+    100%{
+        transform: translateY(0px);
+    }
+}

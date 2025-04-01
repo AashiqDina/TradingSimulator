@@ -3,7 +3,6 @@ import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import { green } from '@mui/material/colors';
 
 interface StockInfoResponse {
   lastUpdated: string | null;
@@ -146,6 +145,7 @@ const Home: React.FC = () => {
                   <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p>
               </div>
             </div>
+
         )}
        </div>
       {user ? (

@@ -52,7 +52,7 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    z-index: 1000; /* Make sure it's above other content */
+    z-index: 1000; 
   }
   
   .ModalContent {

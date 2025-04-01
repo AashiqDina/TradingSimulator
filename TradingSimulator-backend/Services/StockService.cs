@@ -11,7 +11,7 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "12345678910";
+        private readonly string _apiKey = "abcdefghijklmnopqrstuvwxyz";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
@@ -77,7 +77,6 @@ namespace TradingSimulator_Backend.Services
             Console.WriteLine($"After: {StockImage}");
 
             if (StockImage != null){
-                Console.WriteLine($"HERE:  {StockImage}");
                 _stockImageCache[symbol] = (StockImage, StockName);
             }
             Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
@@ -99,7 +98,6 @@ namespace TradingSimulator_Backend.Services
             }
 
             if(result != null){
-                Console.WriteLine("HERE2: " + result );
                 _stockApiInfoCache[symbol] = result;
             }
 

@@ -223,4 +223,23 @@ th{
 .DeleteButton:hover .Cross1,
 .DeleteButton:hover .Cross2 {
   background-color: #920c0c;
+  animation-name: DeleteButtonAnimation;
+  animation-duration: 3s;
+  animation-duration: infinite;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes DeleteButtonAnimation {
+  0%{
+    width: 20px;
+  }
+
+  50%{
+    width: 25px;
+  }
+
+  100%{
+    width: 20px;
+  }
 }

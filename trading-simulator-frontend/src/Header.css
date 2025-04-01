@@ -16,9 +16,13 @@
   }
   
   .Header-logo {
+    gap: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
     font-size: 2rem;
     font-weight: bold;
-    margin: 0;
     cursor: pointer;
     font-family: Inter, sans-serif;;
     font-weight: 500;
@@ -57,7 +61,7 @@
   }
 
   
-  .Hamburger {
+  .Hamburger1, .Hamburger2, .Hamburger3 {
     background-color: white;
     height: 4px;
     border-radius: 2px;
@@ -73,6 +77,10 @@
     border-radius: 0.6rem;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 100;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 1rem;
+    z-index: 1;
   }
   
   .DropdownMenu ul {
@@ -82,17 +90,17 @@
   }
   
   .DropdownMenu li {
-    padding: 0.7rem 1.7rem;
+    padding: 0.9rem 1.7rem;
   }
   
   .DropdownMenu li a {
     text-decoration: none;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: white;
   }
   
   .DropdownMenu li a:hover {
-    text-decoration: underline;
+    color: #45a049;
   }
 
   .HeaderUsername{
@@ -107,3 +115,9 @@
     color: #45a049;
   }
   
+  .LineBreakers{
+    width: 12vw;
+    height: 2px;
+    border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.009);
+  }

@@ -41,6 +41,7 @@ namespace TradingSimulator_Backend.Controllers
         public async Task<IActionResult> GetStockName(string symbol)
         {
             var name = await _stockService.ConvertSymbolToName(symbol);
+            Console.WriteLine(name);
             return Ok(name);
         }
 
