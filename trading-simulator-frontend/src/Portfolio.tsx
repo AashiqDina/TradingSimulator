@@ -16,7 +16,8 @@ const Portfolio = () => {
   const [ToDelete, setToDelete] = useState<number | null>(null);
   const [ToDeleteStock, setToDeleteStock] = useState<number | null>(null);
   const [ModalVisible, setModalVisibility] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [ToReload, setToReload] = useState(false);
+
   const Fetched = useRef(false)
 
   const UpdateAllStocksInPortfolio = async () => {
@@ -37,9 +38,6 @@ const Portfolio = () => {
   };
   
   const fetchPortfolioData = async () => {
-    setLoading(true);
-    setSLA([]);
-    setSNA([]);
     if (!user?.id) {
       console.error("User ID is not available for fetching portfolio");
       return;
@@ -74,14 +72,12 @@ const Portfolio = () => {
               setSNA(prevSNA => {
                 return [...prevSNA, response3.data]
               })
-              setLoading(false);
               console.log("set false")
             }
             catch (error){
               handleAxiosError(error)
             }
           };
-          setLoading(false);
         }
 
       } else {
@@ -116,10 +112,10 @@ const Portfolio = () => {
     try {
       const response = await axios.delete(`http://localhost:3000/api/portfolio/${user?.id}/stocks/delete/${ToDeleteStock}`)
       console.log("Successfully Deleted: ", response)
-      setToDelete(null)
-      setToDeleteStock(null)
+      setToReload(true)
       setModalVisibility(false)
-      fetchPortfolioData()
+      setToDeleteStock(null)
+      setToDelete(null)
     } catch (error) {
       handleAxiosError(error)
     }
@@ -141,7 +137,7 @@ const Portfolio = () => {
   }
 
   useEffect(() => {
-    if (user?.id && !Fetched.current) {
+    if ((user?.id && !Fetched.current)) {
       Fetched.current = true;
       const updateAndFetch = async () => {
         await UpdateAllStocksInPortfolio();
@@ -152,9 +148,19 @@ const Portfolio = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if(ToDelete == null && ToReload){
+      const FetchPortfolioData = async () => {
+        setToReload(false)
+        await fetchPortfolioData();
+      }
+      FetchPortfolioData();
+    }
+  }, [ToDelete])
+
   return (
     <>
-      {portfolio && !Loading ? (
+      {portfolio ? (
         <>
           <div className="QuickStats">
             <div className="Box1">

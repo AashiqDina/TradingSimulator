@@ -11,7 +11,7 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "NopeC";
+        private readonly string _apiKey = "12345678910";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();

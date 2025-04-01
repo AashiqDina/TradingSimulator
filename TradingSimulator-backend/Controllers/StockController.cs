@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using TradingSimulator_Backend.Data; // Ensure your Data context is imported
+using TradingSimulator_Backend.Data;
 using TradingSimulator_Backend.Services;
 
 namespace TradingSimulator_Backend.Controllers
