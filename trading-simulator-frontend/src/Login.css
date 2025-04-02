@@ -9,6 +9,12 @@
     border: 1px solid #45a049;
     border-radius: 2rem;
   }
+
+  .login-container.error {
+    animation-name: LoginError;
+    animation-duration: 0.2s;
+    animation-iteration-count: 3;
+  }
   
   h2 {
     text-align: center;
@@ -88,4 +94,24 @@
     margin-bottom: 1rem;
     font-family: Inter, sans-serif;
 
+  }
+
+  .ErrorType{
+    color: #bb1515;
+  }
+
+  @keyframes LoginError {
+    0%{
+      border: 1px solid #bb1515;
+      transform: translateX(-5px);
+      
+    }
+    50%{
+      border: 1px solid #bb1515;
+      transform: translateX(10px);
+    }
+    100%{
+      border: 1px solid #bb1515;
+      transform: translateX(-5px);
+    }
   }

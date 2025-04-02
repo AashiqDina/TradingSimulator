@@ -11,6 +11,12 @@
     border: 1px solid #45a049;
     border-radius: 2rem;
   }
+
+  .register-container.error {
+    animation-name: RegisterError;
+    animation-duration: 0.2s;
+    animation-iteration-count: 3;
+  }
   
   h2 {
     text-align: center;
@@ -62,7 +68,7 @@
   }
   
   
-  .error {
+  .RegisterError {
     color: red;
     font-size: 14px;
     text-align: center;
@@ -108,4 +114,20 @@
       margin-bottom: 1rem;
       font-family: Inter, sans-serif;
 
+  }
+
+  @keyframes RegisterError {
+    0%{
+      border: 1px solid #bb1515;
+      transform: translateX(-5px);
+      
+    }
+    50%{
+      border: 1px solid #bb1515;
+      transform: translateX(10px);
+    }
+    100%{
+      border: 1px solid #bb1515;
+      transform: translateX(-5px);
+    }
   }

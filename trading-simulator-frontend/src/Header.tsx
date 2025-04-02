@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { useAuth } from "./AuthContext";
 import Logo from "./Logo"
+import { MenuOpen } from "@mui/icons-material";
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false); 
@@ -31,9 +32,9 @@ const Header: React.FC = () => {
     <header className="Header">
 
         <div className="Header-menu" onClick={toggleMenu}>
-          <div className="Hamburger1"></div>
-          <div className="Hamburger2"></div>
-          <div className="Hamburger3"></div>
+          <div className={`Hamburger1 ${menuOpen ? "Open" : ""}`} ></div>
+          <div className={`Hamburger2 ${menuOpen ? "Open" : ""}`} ></div>
+          <div className={`Hamburger3 ${menuOpen ? "Open" : ""}`} ></div>
         </div>
 
         <h1 className="Header-logo" onClick={() => handleLink("/")}>

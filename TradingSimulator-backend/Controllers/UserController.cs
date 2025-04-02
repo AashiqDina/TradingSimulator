@@ -102,7 +102,6 @@ public async Task<IActionResult> RegisterUser([FromBody] User user)
             return Unauthorized(new { success = false, message = "Invalid username or password" });
         }
 
-        // Return user info as part of the response
         return Ok(new
         {
             success = true,

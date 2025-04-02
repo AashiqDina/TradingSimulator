@@ -66,7 +66,23 @@
     height: 4px;
     border-radius: 2px;
     width: 100%;
+    transition: all 0.3s ease-in-out;
   }
+
+  .Hamburger1.Open{
+    transform: translateY(10px) rotate(45deg);
+    width: 70%;
+  }
+
+  .Hamburger2.Open{
+    opacity: 0;
+  }
+  
+  .Hamburger3.Open{
+    transform: translateY(-10px) translateX(13px) rotate(-45deg);
+    width: 70%;
+  }
+  
   
   .DropdownMenu {
     position: absolute;
@@ -101,6 +117,7 @@
   
   .DropdownMenu li a:hover {
     color: #45a049;
+    font-size: 1.55rem;
   }
 
   .HeaderUsername{

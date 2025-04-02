@@ -19,6 +19,7 @@ const Login = () => {
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
+    setError("reset")
     e.preventDefault();
 
     try {
@@ -62,7 +63,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className={`login-container ${(error && (error != "reset")) ? "error" : ""}`}>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
@@ -89,7 +90,7 @@ const Login = () => {
         </div>
         <button className="SubmitButton" type="submit">Login</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="ErrorType">{error}</p>}
       <p>Don't have an account?</p>
       <a href="/register">Register</a>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
@@ -10,16 +10,15 @@ function Register() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+
+  }, [error]);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+    setError("reset");
   
     try {
-      // Check if the username already exists
       const checkResponse = await fetch("http://localhost:3000/api/User/checkUsername", {
         method: "POST",
         headers: {
@@ -27,13 +26,16 @@ function Register() {
         },
         body: JSON.stringify({ username }),
       });
+
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
   
-      // Log the response status and text
       console.log("Check Response Status:", checkResponse.status);
       const checkResponseText = await checkResponse.text();
       console.log("Check Response Text:", checkResponseText);
   
-      // Check if the response is successful
       if (!checkResponse.ok) {
         throw new Error("Error checking username availability");
       }
@@ -41,10 +43,9 @@ function Register() {
       const checkData = JSON.parse(checkResponseText);
       if (checkData.exists) {
         setError("Username already taken. Please choose another one.");
-        return; // Stop further execution if username is taken
+        return;
       }
   
-      // If username is available, proceed with registration
       const response = await fetch("http://localhost:3000/api/User", {
         method: "POST",
         headers: {
@@ -57,7 +58,7 @@ function Register() {
       });
   
       const responseText = await response.text();
-      console.log("Response Text:", responseText); // Log the response
+      console.log("Response Text:", responseText);
   
       let data;
       if (responseText) {
@@ -82,7 +83,7 @@ function Register() {
   
 
   return (
-    <div className="register-container">
+    <div className={`register-container ${(error && (error != "reset")) ? "error" : ""}`}>
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
         <div className="form-group">
@@ -119,7 +120,7 @@ function Register() {
           />
         </div>
 
-        {error && <p className="error">{error}</p>}
+        {error && <p className="RegisterError">{error}</p>}
 
         <button className="SubmitButton" type="submit">Register</button>
       </form>
