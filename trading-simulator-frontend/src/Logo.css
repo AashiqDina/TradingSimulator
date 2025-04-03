@@ -13,6 +13,18 @@
     cursor: pointer;
     font-family: Inter, sans-serif;;
     font-weight: 500;
+    font-size: 2rem;
+}
+
+.TheLogo > h2:hover{
+    background: linear-gradient(90deg, #ffffff 25%, #45a049 50%, #ffffff 75%);
+    background-size: 200% 100%;
+    animation-name: shimmer;
+    animation-iteration-count: 1;
+    animation-duration: 3s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .BarCollection{
@@ -107,3 +119,12 @@
         transform: translateY(0px);
     }
 }
+
+@keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }

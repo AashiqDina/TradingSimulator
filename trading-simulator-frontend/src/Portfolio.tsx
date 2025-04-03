@@ -19,6 +19,8 @@ const Portfolio = () => {
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
 
+  console.log(StockNameArray);
+
   const Fetched = useRef(false)
 
   const UpdateAllStocksInPortfolio = async () => {
@@ -58,7 +60,6 @@ const Portfolio = () => {
           symbol: stock.symbol
         }));
 
-        let i = 0;
         if(StockLogoArray.length == 0){
           for (const {symbol} of stocks){
             try{

@@ -5,6 +5,7 @@
     flex-direction: row;
     gap: 0.5rem;
     margin-bottom: 0.7rem;
+    height: 100vh;
 }
 
 .BarContainer > h2{
@@ -15,12 +16,20 @@
     font-family: Inter, sans-serif;;
     font-weight: 500;
     z-index: 1000;
+    background: linear-gradient(90deg, #ffffff 25%, #8e8e8e 50%, #ffffff 75%);
+    background-size: 200% 100%;
+    animation-name: shimmer;
+    animation-iteration-count: infinite;
+    animation-duration: 3s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .BarA{
     background-color: #bb1515;
-    width: 7rem;
-    height: 20rem;
+    width: 5rem;
+    height: 14rem;
     border-radius: 5rem;
     animation-name: FunLogoAnimation2;
     animation-duration: 1s;
@@ -28,24 +37,26 @@
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-timing-function: ease-in-out;
+    z-index: -1;
 }
 
 .BarB{
     background-color: #45a049;
-    width: 7rem;
-    height: 26rem;
+    width: 5rem;
+    height: 18rem;
     border-radius: 5rem;
     animation-name: FunLogoAnimation2;
     animation-duration: 1s;
     animation-delay: 0.3s, 8s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    z-index: -1;
 }
 
 .BarC{
     background-color: #bb1515;
-    width: 7rem;
-    height: 28rem;
+    width: 5rem;
+    height: 19rem;
     border-radius: 5rem;
     margin-top: 10rem;
     animation-name: FunLogoAnimation2;
@@ -53,12 +64,13 @@
     animation-delay: 0.6s, 8s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    z-index: -1;
 }
 
 .BarD{
     background-color: #45a049;
-    width: 7rem;
-    height: 32rem;
+    width: 5rem;
+    height: 23rem;
     border-radius: 5rem;
     margin-bottom: 2rem;
     animation-name: FunLogoAnimation2;
@@ -66,12 +78,13 @@
     animation-delay: 0.9s, 8s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    z-index: -1;
 }
 
 .BarE{
     background-color: #45a049;
-    width: 7rem;
-    height: 28rem;
+    width: 5rem;
+    height: 19rem;
     border-radius: 5rem;
     margin-bottom: 10rem;
     animation-name: FunLogoAnimation2;
@@ -79,6 +92,7 @@
     animation-delay: 1.2s, 8s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    z-index: -1;
 }
 
 @keyframes FunLogoAnimation2 {

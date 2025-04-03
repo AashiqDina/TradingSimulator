@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { useAuth } from "./AuthContext";
 import Logo from "./Logo"
-import { MenuOpen } from "@mui/icons-material";
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false); 
