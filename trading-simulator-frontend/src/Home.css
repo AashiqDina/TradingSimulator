@@ -26,7 +26,6 @@
 
 .StockSearchInput:focus{
     outline-color: #45a049;
-
 }
 
 .StockSearchButton{
@@ -57,9 +56,9 @@
   
   .ModalContent {
     animation-name: BodyBackground;
-        animation-duration: 15s;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
     padding: 2rem;
     border-radius: 4rem;
     width: 300px;
@@ -76,7 +75,7 @@
     padding: 5px;
     margin-top: 10px;
     border: 1px solid #ccc;
-    border-radius: 5rem; /* Rounded corners for the input */
+    border-radius: 5rem; 
   }
   
   .ModalFooter {
@@ -120,6 +119,14 @@
 
   .ViewButton{
     border-radius: 10rem
+  }
+
+  .StockNotFound{
+    margin-top: 1rem;
+  }
+
+  .StockNotFound > h2{
+    font-family: Inter, sans-serif;
   }
 
 

@@ -12,16 +12,24 @@ interface AxiosErrorType {
 const Portfolio = () => {
   const { user, logout } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
+  const [prevProtfolio, setPrevPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
+  const [prevStockLogoArray, setPrevSLA] = useState<any[]>([]);
   const [StockNameArray, setSNA] = useState<any[]>([]);
+  const [prevStockNameArray, setPrevSNA] = useState<any[]>([]);
   const [ToDelete, setToDelete] = useState<number | null>(null);
   const [ToDeleteStock, setToDeleteStock] = useState<number | null>(null);
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
-
-  console.log(StockNameArray);
+  const [FilterSearchInput, setFilterSearchInput] = useState("");
+  const [FilteredOption, setFilteredOption] = useState("");
+  const [Filtered, setFiltered] = useState(false);
 
   const Fetched = useRef(false)
+
+  console.log(portfolio)
+  console.log(StockLogoArray)
+  console.log(StockNameArray)
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -158,6 +166,65 @@ const Portfolio = () => {
     }
   }, [ToDelete])
 
+  function FilterSearch(){
+    console.log(FilterSearchInput);
+    console.log(FilteredOption);
+
+    if(FilterSearchInput == "" && FilteredOption == ""){
+      if(Filtered){
+        setPortfolio(prevProtfolio);
+        setSLA(prevStockLogoArray);
+        setSNA(prevStockNameArray);
+        setFiltered(false);
+        return
+      }
+      return
+    }
+    
+    if(Filtered){
+      setPortfolio(prevProtfolio);
+      setSLA(prevStockLogoArray);
+      setSNA(prevStockNameArray);
+    }
+    else{
+      setPrevPortfolio(portfolio);
+      setPrevSLA(StockLogoArray);
+      setPrevSNA(StockNameArray);
+    }
+      setFiltered(true)
+      let FilteredPortfolio = null;
+      let FilteredStocks = [];
+      let CurrentValue = 0
+      let ProfitLoss = 0
+      let TotalInvested = 0
+      let NewSLA = []
+      let NewSNA = []
+      let OrgPortfolio = Filtered ? prevProtfolio : portfolio;
+      let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
+      let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
+
+      if(FilterSearchInput != ""){
+        for(let i = 0; i<(OrgPortfolio.stocks.length); i++){
+          console.log(OrgPortfolio.stocks[i].symbol)
+          if(OrgPortfolio.stocks[i].symbol == FilterSearchInput.toUpperCase()){
+            FilteredStocks.push(OrgPortfolio.stocks[i]);
+            NewSLA.push(OrgSLA[i]);
+            NewSNA.push(OrgSNA[i]);
+            CurrentValue += OrgPortfolio.stocks[i].currentPrice;
+            ProfitLoss += OrgPortfolio.stocks[i].profitLoss;
+            TotalInvested += OrgPortfolio.stocks[i].totalValue;
+          }
+        }
+        FilteredPortfolio = {currentValue: CurrentValue, id: OrgPortfolio.id, profitLoss: ProfitLoss, stocks: FilteredStocks, totalInvested: TotalInvested, user: OrgPortfolio.user, userId: OrgPortfolio.userId}
+
+        setPortfolio(FilteredPortfolio);
+        setSLA(NewSLA);
+        setSNA(NewSNA);
+      }
+
+    
+  }
+
   return (
     <>
       {portfolio ? (
@@ -186,6 +253,20 @@ const Portfolio = () => {
           <div className="LineOne"></div>
           <h2>Stocks in Portfolio</h2>
           <div className="LineTwo"></div>
+
+          <section className="Filter">
+            <input type="text" onChange={(e) => setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
+            <select name="" id="" onChange={(e) => setFilteredOption(e.target.value)}>
+              <option value="">Sort by</option>
+              <option value="Oldest">Oldest</option>
+              <option value="Newest">Newest</option>
+              <option value="ProfitAsc">Profit (Asc)</option>
+              <option value="ProfitDesc">Profit (Desc)</option>
+              <option value="ValueAsc">Value (Asc)</option>
+              <option value="ValueDesc">Value (Desc)</option>
+            </select>
+            <button onClick={FilterSearch}>Submit</button>
+          </section>
 
           <div className="StocksTable">
             <table className="Table">

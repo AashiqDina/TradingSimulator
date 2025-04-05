@@ -36,6 +36,7 @@ const Home: React.FC = () => {
   const [stockLogo, setStockLogo] = useState<string>('');
   const [stockName, setStockName] = useState<string>('');
   const [stockQuickData, setStockQuickData] = useState<StockInfoResponse | null>(null)
+  const [stockFound, setFound] = useState(false)
   const [error, setError] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
@@ -43,6 +44,7 @@ const Home: React.FC = () => {
   const searchStock = async () => {
     try {
       setError('');
+      setFound(false)
       const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
       setStockPrice(response.data.price);
       const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
@@ -54,6 +56,7 @@ const Home: React.FC = () => {
 
     } catch (err) {
       setError('Stock not found');
+      setFound(true);
       setStockPrice(null);
     }
   };
@@ -104,7 +107,7 @@ const Home: React.FC = () => {
           onChange={(e) => setStockSymbol(e.target.value.toUpperCase())} 
           />
         <button className='StockSearchButton' onClick={searchStock}>Search</button>
-        {((stockPrice !== null) &&
+        {(!stockFound && (stockPrice !== null) &&
           <div className='CompleteSearchResult'>
             <div className='SearchResult'>
                 {stockPrice !== null && (
@@ -145,8 +148,15 @@ const Home: React.FC = () => {
                   <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p>
               </div>
             </div>
-
         )}
+        {(stockFound && 
+          <>
+            <div className='StockNotFound'>
+                <h2>Stock Not Found</h2>
+            </div>
+          </>
+        )}
+
        </div>
       {user ? (
         <>

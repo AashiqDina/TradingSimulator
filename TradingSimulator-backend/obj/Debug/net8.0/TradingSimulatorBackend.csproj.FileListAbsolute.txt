@@ -210,7 +210,6 @@ C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\TradingSimulatorBackend.pdb
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\appsettings.json
-C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\TradingSimulatorBackend.staticwebassets.endpoints.json
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\TradingSimulatorBackend.exe
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\TradingSimulatorBackend.deps.json
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\TradingSimulatorBackend.runtimeconfig.json
@@ -389,9 +388,7 @@ C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\scopedcss\bundle\TradingSimulatorBackend.styles.css
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.TradingSimulatorBackend.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.TradingSimulatorBackend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.build.TradingSimulatorBackend.props
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.TradingSimulatorBackend.props
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.TradingSimulatorBackend.props

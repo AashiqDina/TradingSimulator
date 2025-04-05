@@ -116,8 +116,14 @@
   }
   
   .DropdownMenu li a:hover {
-    color: #45a049;
-    font-size: 1.55rem;
+    background: linear-gradient(90deg, #e2e2e2 25%, #45a049 50%, #e2e2e2 75%);
+    background-size: 200% 100%;
+    animation-name: shimmer;
+    animation-iteration-count: infinite;
+    animation-duration: 10s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .HeaderUsername{
@@ -129,7 +135,14 @@
   }
 
   .HeaderUsername:hover{
-    color: #45a049;
+    background: linear-gradient(90deg, #e2e2e2 25%, #45a049 50%, #e2e2e2 75%);
+    background-size: 200% 100%;
+    animation-name: shimmer;
+    animation-iteration-count: infinite;
+    animation-duration: 10s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
   .LineBreakers{
@@ -138,3 +151,12 @@
     border-radius: 1rem;
     background-color: rgba(255, 255, 255, 0.009);
   }
+  
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
