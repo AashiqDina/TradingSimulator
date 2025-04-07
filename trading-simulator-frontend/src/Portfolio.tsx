@@ -24,6 +24,7 @@ const Portfolio = () => {
   const [FilterSearchInput, setFilterSearchInput] = useState("");
   const [FilteredOption, setFilteredOption] = useState("");
   const [Filtered, setFiltered] = useState(false);
+  const[OriginalOrder, setOriginalOrder] = useState<any>(null)
 
   const Fetched = useRef(false)
 
@@ -167,9 +168,6 @@ const Portfolio = () => {
   }, [ToDelete])
 
   function FilterSearch(){
-    console.log(FilterSearchInput);
-    console.log(FilteredOption);
-
     if(FilterSearchInput == "" && FilteredOption == ""){
       if(Filtered){
         setPortfolio(prevProtfolio);
@@ -181,47 +179,154 @@ const Portfolio = () => {
       return
     }
     
-    if(Filtered){
-      setPortfolio(prevProtfolio);
-      setSLA(prevStockLogoArray);
-      setSNA(prevStockNameArray);
-    }
-    else{
+    if(!Filtered){
       setPrevPortfolio(portfolio);
       setPrevSLA(StockLogoArray);
       setPrevSNA(StockNameArray);
     }
       setFiltered(true)
+
       let FilteredPortfolio = null;
       let FilteredStocks = [];
+      let NewSLA = []
+      let NewSNA = []
+      
       let CurrentValue = 0
       let ProfitLoss = 0
       let TotalInvested = 0
-      let NewSLA = []
-      let NewSNA = []
+
       let OrgPortfolio = Filtered ? prevProtfolio : portfolio;
       let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
       let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
 
       if(FilterSearchInput != ""){
         for(let i = 0; i<(OrgPortfolio.stocks.length); i++){
-          console.log(OrgPortfolio.stocks[i].symbol)
           if(OrgPortfolio.stocks[i].symbol == FilterSearchInput.toUpperCase()){
             FilteredStocks.push(OrgPortfolio.stocks[i]);
             NewSLA.push(OrgSLA[i]);
             NewSNA.push(OrgSNA[i]);
+            
             CurrentValue += OrgPortfolio.stocks[i].currentPrice;
             ProfitLoss += OrgPortfolio.stocks[i].profitLoss;
             TotalInvested += OrgPortfolio.stocks[i].totalValue;
           }
         }
         FilteredPortfolio = {currentValue: CurrentValue, id: OrgPortfolio.id, profitLoss: ProfitLoss, stocks: FilteredStocks, totalInvested: TotalInvested, user: OrgPortfolio.user, userId: OrgPortfolio.userId}
+      }
+      else {
+        FilteredPortfolio = OrgPortfolio;
+        NewSLA = OrgSLA;
+        NewSNA = OrgSNA;
+      }
+      
+      
 
-        setPortfolio(FilteredPortfolio);
-        setSLA(NewSLA);
-        setSNA(NewSNA);
+      let FurtherFilteredPorfolio = FilteredPortfolio;
+      let FurtherFilteredSLA = NewSLA;
+      let FurtherFilteredSNA = NewSNA;
+
+      if(FilteredPortfolio == null){
+        FurtherFilteredPorfolio = portfolio
+      }
+      if(NewSLA.length == 0){
+        FurtherFilteredSLA = StockLogoArray
+      }
+      if(NewSNA.length == 0){
+        FurtherFilteredSNA = StockNameArray
       }
 
+
+
+      if(FilteredOption != ""){
+        let combined = FurtherFilteredPorfolio.stocks.map((stock: any, index: number) => ({
+          stock: stock,
+          logo: FurtherFilteredSLA[index],
+          name: FurtherFilteredSNA[index]
+        }));
+
+        if(FilteredOption == "Oldest"){
+          if (FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => a.stock.id - b.stock.id);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+        if(FilteredOption == "Newest"){
+          if (FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => b.stock.id - a.stock.id);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+        if(FilteredOption == "ProfitAsc"){
+          if(FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => a.stock.profitLoss - b.stock.profitLoss);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+        if(FilteredOption == "ProfitDesc"){
+          if(FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+        if(FilteredOption == "ValueAsc"){
+          if(FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => a.stock.totalValue - b.stock.totalValue);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+        if(FilteredOption == "ValueDesc"){
+          if(FurtherFilteredPorfolio != null){
+            combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => b.stock.totalValue - a.stock.totalValue);
+
+            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+            let sortedNames = combined.map((item: { name: any; }) => item.name);
+
+            FurtherFilteredPorfolio.stocks = sortedStocks;
+            FurtherFilteredSLA = sortedLogos;
+            FurtherFilteredSNA = sortedNames;
+          }
+        }
+      }
+
+      setPortfolio(FurtherFilteredPorfolio);
+      setSLA(FurtherFilteredSLA);
+      setSNA(FurtherFilteredSNA);
     
   }
 
