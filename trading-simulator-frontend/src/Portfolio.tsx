@@ -24,7 +24,8 @@ const Portfolio = () => {
   const [FilterSearchInput, setFilterSearchInput] = useState("");
   const [FilteredOption, setFilteredOption] = useState("");
   const [Filtered, setFiltered] = useState(false);
-  const[OriginalOrder, setOriginalOrder] = useState<any>(null)
+  const [sorted, setSorted] = useState(false);
+
 
   const Fetched = useRef(false)
 
@@ -174,6 +175,7 @@ const Portfolio = () => {
         setSLA(prevStockLogoArray);
         setSNA(prevStockNameArray);
         setFiltered(false);
+        setSorted(false)
         return
       }
       return
@@ -199,6 +201,12 @@ const Portfolio = () => {
       let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
       let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
 
+      if(sorted && FilterSearchInput != ""){
+        OrgPortfolio = portfolio;
+        OrgSLA = StockLogoArray;
+        OrgSNA = StockNameArray;
+      }
+
       if(FilterSearchInput != ""){
         for(let i = 0; i<(OrgPortfolio.stocks.length); i++){
           if(OrgPortfolio.stocks[i].symbol == FilterSearchInput.toUpperCase()){
@@ -206,9 +214,9 @@ const Portfolio = () => {
             NewSLA.push(OrgSLA[i]);
             NewSNA.push(OrgSNA[i]);
             
-            CurrentValue += OrgPortfolio.stocks[i].currentPrice;
+            CurrentValue += OrgPortfolio.stocks[i].totalValue;
             ProfitLoss += OrgPortfolio.stocks[i].profitLoss;
-            TotalInvested += OrgPortfolio.stocks[i].totalValue;
+            TotalInvested += OrgPortfolio.stocks[i].purchasePrice * OrgPortfolio.stocks[i].quantity;
           }
         }
         FilteredPortfolio = {currentValue: CurrentValue, id: OrgPortfolio.id, profitLoss: ProfitLoss, stocks: FilteredStocks, totalInvested: TotalInvested, user: OrgPortfolio.user, userId: OrgPortfolio.userId}
@@ -219,8 +227,6 @@ const Portfolio = () => {
         NewSNA = OrgSNA;
       }
       
-      
-
       let FurtherFilteredPorfolio = FilteredPortfolio;
       let FurtherFilteredSLA = NewSLA;
       let FurtherFilteredSNA = NewSNA;
@@ -322,6 +328,7 @@ const Portfolio = () => {
             FurtherFilteredSNA = sortedNames;
           }
         }
+        setSorted(true)
       }
 
       setPortfolio(FurtherFilteredPorfolio);
@@ -330,6 +337,9 @@ const Portfolio = () => {
     
   }
 
+  //-------------------------------------------------------------------------------
+  // HTML SECTION BELOW
+  //-------------------------------------------------------------------------------
   return (
     <>
       {portfolio ? (
@@ -341,7 +351,7 @@ const Portfolio = () => {
                 <p>£{portfolio.totalInvested.toFixed(2)}</p>
               </div>
             </div>
-            <div className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
+            <div className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ValueColour}`}}>
               <h2>Current Value</h2>
               <div className="Values">
                 <p>£{portfolio.currentValue.toFixed(2)}</p>
