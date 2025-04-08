@@ -28,7 +28,7 @@ const Header: React.FC = () => {
 
 
   return ( 
-    <header className="Header">
+    <header id="Top" className="Header">
 
         <div className="Header-menu" onClick={toggleMenu}>
           <div className={`Hamburger1 ${menuOpen ? "Open" : ""}`} ></div>

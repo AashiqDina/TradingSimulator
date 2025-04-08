@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 .portfolio-page {
     min-height: 100vh;
     padding: 20px;
@@ -33,6 +37,12 @@
     gap: 5vw;
     padding: 0 1vw;
     flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.PageTitle{
+  font-size: 3rem;
+  margin-top: 3rem;
 }
 
 .LineOne{
@@ -44,7 +54,6 @@
   height: 4px;
   width: 90vw;
   margin: 0 auto;
-  margin-top: 5rem;
   border-radius: 10rem;
 }
 
@@ -76,24 +85,14 @@
     box-shadow: 0px 10px 10px green;
 }
 
-.Box1:hover{
-  width: 16rem;
-  font-size: 2.1rem;
-}
-
 .Box2{
-    width: 15rem;
+    width: 17rem;
     border-radius: 2rem;
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.2rem;
     padding: 1rem;
     flex-grow: 1;
     border: 2px solid white;
-}
-
-.Box2:hover{
-  width: 16rem;
-  font-size: 2.1rem;
 }
 
 .Box3{
@@ -104,11 +103,6 @@
     padding: 1rem;
     flex-grow: 1;
     border: 2px solid white;
-}
-
-.Box3:hover{
-  width: 16rem;
-  font-size: 2.1rem;
 }
 
 .StocksTable{
@@ -168,6 +162,33 @@
   font-family: Inter, sans-serif;
 }
 
+.BestTable {
+  display: block;
+  margin: 0 auto;
+  min-width: 1000px; 
+  max-width: 90%;
+  border-collapse: collapse;
+  border-spacing: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  font-family: Inter, sans-serif;
+  background: linear-gradient(90deg, #e2e2e2 25%, #45a049 50%, #e2e2e2 75%);
+  background-size: 200% 100%;
+  animation-name: shimmer;
+  animation-iteration-count: infinite;
+  animation-duration: 7s;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.MostProfitableTable{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 tr:nth-child(even){background-color: #28312972}
 
 td{
@@ -183,6 +204,23 @@ th{
   padding: 1.5rem;
   font-size: 1.5rem;
   font-family: Inter, sans-serif;
+}
+
+.BestTableHeader{
+  background-color: #45a04921;
+}
+
+.BestTable thead tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+.BestTable thead tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+.BestTable tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.BestTable tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
 }
 
 .Table thead tr:first-child th:first-child {
@@ -205,7 +243,31 @@ th{
   border-radius: 0.5rem;
 }
 
+.ViewMore{
+  position: fixed;
+  right: 1rem;
+  background-color: #75ee7b44;
+  width: 10rem;
+  border-radius: 10rem;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  color: white;
+  z-index: 4;
+}
 
+.ViewMore:hover{
+  background-color: #75ee7b60;
+  width: 10rem;
+  border-radius: 10rem;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  color: white;
+}
+
+#ToJump{
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+}
 
 .CrossContainer {
   position: relative;
@@ -251,6 +313,7 @@ th{
   flex-direction: row;
   gap: 1rem;
   margin-bottom: 3.5rem;
+  margin-top: 2rem;
 }
 
 .Filter > input{

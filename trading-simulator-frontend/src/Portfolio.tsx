@@ -10,7 +10,7 @@ interface AxiosErrorType {
 }
 
 const Portfolio = () => {
-  const { user, logout } = useAuth();
+  const { user} = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [prevProtfolio, setPrevPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
@@ -25,6 +25,9 @@ const Portfolio = () => {
   const [FilteredOption, setFilteredOption] = useState("");
   const [Filtered, setFiltered] = useState(false);
   const [sorted, setSorted] = useState(false);
+  const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
+  const [JumpTo, setJumpTo] = useState("#ToJump");
+
 
 
   const Fetched = useRef(false)
@@ -32,6 +35,7 @@ const Portfolio = () => {
   console.log(portfolio)
   console.log(StockLogoArray)
   console.log(StockNameArray)
+  console.log(CurrentBestStocks)
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -83,10 +87,12 @@ const Portfolio = () => {
               setSNA(prevSNA => {
                 return [...prevSNA, response3.data]
               })
+
             }
             catch (error){
               handleAxiosError(error)
             }
+            setCurrentBestStocks(response, )
           };
         }
 
@@ -157,6 +163,25 @@ const Portfolio = () => {
       updateAndFetch();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (Fetched.current && portfolio && StockLogoArray.length > 0 && StockNameArray.length > 0) {
+      let combined = portfolio.stocks.map((stock: any, index: number) => {
+        const logo = StockLogoArray[index] || 'defaultLogo.png';
+        const name = StockNameArray[index] || 'Unknown';
+  
+        return {
+          stock: stock,
+          logo: logo,
+          name: name
+        };
+      });
+  
+      combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
+      
+      setCurrentBestStocks(combined);
+    }
+  }, [portfolio, StockLogoArray, StockNameArray]);
 
   useEffect(() => {
     if(ToDelete == null && ToReload){
@@ -240,8 +265,6 @@ const Portfolio = () => {
       if(NewSNA.length == 0){
         FurtherFilteredSNA = StockNameArray
       }
-
-
 
       if(FilteredOption != ""){
         let combined = FurtherFilteredPorfolio.stocks.map((stock: any, index: number) => ({
@@ -344,6 +367,8 @@ const Portfolio = () => {
     <>
       {portfolio ? (
         <>
+            <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
+          <div className="LineOne"></div>
           <div className="QuickStats">
             <div className="Box1">
               <h2>Invested</h2>
@@ -365,9 +390,72 @@ const Portfolio = () => {
             </div>
           </div>
 
-          <div className="LineOne"></div>
-          <h2>Stocks in Portfolio</h2>
-          <div className="LineTwo"></div>
+          {CurrentBestStocks && CurrentBestStocks.length > 0 ? <div className="MostProfitableTable">
+            <table className="BestTable">
+              <h2 className="ProftibleTitle">Most Profitable Stock</h2>
+                <thead>
+                  <tr>
+                    <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
+                    <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
+                    <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
+                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
+                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
+                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
+                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
+                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
+                    <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt="Stock Logo" /></td>
+                    <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{CurrentBestStocks[0].name}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>{CurrentBestStocks[0].stock.quantity}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(CurrentBestStocks[0].stock.purchasePrice * CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{CurrentBestStocks[0].stock.currentPrice.toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(CurrentBestStocks[0].stock.quantity * CurrentBestStocks[0].stock.currentPrice).toFixed(2)}</td>
+                    <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(CurrentBestStocks[0].stock.profitLoss).toFixed(2)} </td>
+                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
+                  </tr>
+                </tbody>
+            </table>
+          </div> : 
+          <div className="MostProfitableTable">
+          <table className="BestTable">
+            <h2 className="ProftibleTitle">Most Profitable Stock</h2>
+              <thead>
+                <tr>
+                  <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
+                  <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
+                  <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
+                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
+                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
+                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
+                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
+                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
+                  <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><img className="StockLogos" alt="Stock Logo" /></td>
+                  <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">Unknown</td>
+                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
+                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
+                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
+                  <td style={{padding: "1rem 0rem 1rem 1rem"}}>Data could not be loaded.</td>
+                  <td style={{padding: "1rem 1rem 1rem 0.3rem"}}>Data could not be loaded.</td>
+                </tr>
+              </tbody>
+          </table>
+        </div>}
+
+
+          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">{JumpTo == "#ToJump" ? "Return Up" : "All Stocks"}</button></a>
+
+          <div id="ToJump"></div>
 
           <section className="Filter">
             <input type="text" onChange={(e) => setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
