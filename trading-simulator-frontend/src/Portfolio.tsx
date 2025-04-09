@@ -12,7 +12,7 @@ interface AxiosErrorType {
 const Portfolio = () => {
   const { user} = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
-  const [prevProtfolio, setPrevPortfolio] = useState<any>(null);
+  const [prevPortfolio, setPrevPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
   const [prevStockLogoArray, setPrevSLA] = useState<any[]>([]);
   const [StockNameArray, setSNA] = useState<any[]>([]);
@@ -26,16 +26,12 @@ const Portfolio = () => {
   const [Filtered, setFiltered] = useState(false);
   const [sorted, setSorted] = useState(false);
   const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
-  const [JumpTo, setJumpTo] = useState("#ToJump");
+  const [JumpTo, setJumpTo] = useState("Top");
 
 
 
   const Fetched = useRef(false)
 
-  console.log(portfolio)
-  console.log(StockLogoArray)
-  console.log(StockNameArray)
-  console.log(CurrentBestStocks)
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -114,9 +110,10 @@ const Portfolio = () => {
     }
   };
 
-  function handleDelete(index: number, stock: number){
+  function handleDelete(index: number, stock: any){
     setToDelete(index);
-    setToDeleteStock(stock);
+    console.log("THIS HERE: " + stock)
+    setToDeleteStock(stock.id);
     setModalVisibility(true);
   }
 
@@ -132,6 +129,7 @@ const Portfolio = () => {
       setModalVisibility(false)
       setToDeleteStock(null)
       setToDelete(null)
+      FilterSearch()
     } catch (error) {
       handleAxiosError(error)
     }
@@ -191,12 +189,48 @@ const Portfolio = () => {
       }
       FetchPortfolioData();
     }
-  }, [ToDelete])
+  }, [ToDelete, ToReload])
+
+  useEffect(() => {
+    if (FilteredOption !== "") {
+      let combined = portfolio.stocks.map((stock: any, index: number) => ({
+        stock: stock,
+        logo: StockLogoArray[index],
+        name: StockNameArray[index]
+      }));
+
+      if (FilteredOption === "Oldest") {
+        combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => a.stock.id - b.stock.id);
+      } else if (FilteredOption === "Newest") {
+        combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => b.stock.id - a.stock.id);
+      } else if (FilteredOption === "ProfitAsc") {
+        combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => a.stock.profitLoss - b.stock.profitLoss);
+      } else if (FilteredOption === "ProfitDesc") {
+        combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
+      } else if (FilteredOption === "ValueAsc") {
+        combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => a.stock.totalValue - b.stock.totalValue);
+      } else if (FilteredOption === "ValueDesc") {
+        combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => b.stock.totalValue - a.stock.totalValue);
+      }
+  
+      const sortedStocks = combined.map((item: { stock: any; }) => item.stock);
+      const sortedLogos = combined.map((item: { logo: any; }) => item.logo);
+      const sortedNames = combined.map((item: { name: any; }) => item.name);
+  
+      setPortfolio((prevPortfolio: any) => ({
+        ...prevPortfolio,
+        stocks: sortedStocks
+      }));
+      setSLA(sortedLogos);
+      setSNA(sortedNames);
+    }
+  }, [FilteredOption]);
+  
 
   function FilterSearch(){
     if(FilterSearchInput == "" && FilteredOption == ""){
       if(Filtered){
-        setPortfolio(prevProtfolio);
+        setPortfolio(prevPortfolio);
         setSLA(prevStockLogoArray);
         setSNA(prevStockNameArray);
         setFiltered(false);
@@ -206,10 +240,14 @@ const Portfolio = () => {
       return
     }
     
+    let SetOriginalPortfolio = portfolio;
+    let SetOriginalStockLogoArray = StockLogoArray;
+    let SetOriginalStockNameArray = StockNameArray;
+    
     if(!Filtered){
-      setPrevPortfolio(portfolio);
-      setPrevSLA(StockLogoArray);
-      setPrevSNA(StockNameArray);
+      setPrevPortfolio(SetOriginalPortfolio);
+      setPrevSLA(SetOriginalStockLogoArray);
+      setPrevSNA(SetOriginalStockNameArray);
     }
       setFiltered(true)
 
@@ -222,9 +260,12 @@ const Portfolio = () => {
       let ProfitLoss = 0
       let TotalInvested = 0
 
-      let OrgPortfolio = Filtered ? prevProtfolio : portfolio;
+      let OrgPortfolio = Filtered ? prevPortfolio : portfolio;
       let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
       let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
+      console.log("THISTHISTHSITHISHTIS:" , prevPortfolio)
+      console.log("THISTHISTHSITHISHTIS:" , prevStockNameArray)
+
 
       if(sorted && FilterSearchInput != ""){
         OrgPortfolio = portfolio;
@@ -266,97 +307,11 @@ const Portfolio = () => {
         FurtherFilteredSNA = StockNameArray
       }
 
-      if(FilteredOption != ""){
-        let combined = FurtherFilteredPorfolio.stocks.map((stock: any, index: number) => ({
-          stock: stock,
-          logo: FurtherFilteredSLA[index],
-          name: FurtherFilteredSNA[index]
-        }));
-
-        if(FilteredOption == "Oldest"){
-          if (FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => a.stock.id - b.stock.id);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
-        if(FilteredOption == "Newest"){
-          if (FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { id: number; }; }, b: { stock: { id: number; }; }) => b.stock.id - a.stock.id);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
-        if(FilteredOption == "ProfitAsc"){
-          if(FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => a.stock.profitLoss - b.stock.profitLoss);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
-        if(FilteredOption == "ProfitDesc"){
-          if(FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
-        if(FilteredOption == "ValueAsc"){
-          if(FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => a.stock.totalValue - b.stock.totalValue);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
-        if(FilteredOption == "ValueDesc"){
-          if(FurtherFilteredPorfolio != null){
-            combined.sort((a: { stock: { totalValue: number; }; }, b: { stock: { totalValue: number; }; }) => b.stock.totalValue - a.stock.totalValue);
-
-            let sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-            let sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-            let sortedNames = combined.map((item: { name: any; }) => item.name);
-
-            FurtherFilteredPorfolio.stocks = sortedStocks;
-            FurtherFilteredSLA = sortedLogos;
-            FurtherFilteredSNA = sortedNames;
-          }
-        }
+        setPortfolio(FurtherFilteredPorfolio);
+        setSLA(FurtherFilteredSLA);
+        setSNA(FurtherFilteredSNA);
         setSorted(true)
-      }
-
-      setPortfolio(FurtherFilteredPorfolio);
-      setSLA(FurtherFilteredSLA);
-      setSNA(FurtherFilteredSNA);
+       
     
   }
 
@@ -453,8 +408,12 @@ const Portfolio = () => {
         </div>}
 
 
-          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">{JumpTo == "#ToJump" ? "Return Up" : "All Stocks"}</button></a>
+          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">          
+            <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
+            <div className={`ArrowTwo ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div></button>
+          </a>
 
+          <div id="Space"></div>
           <div id="ToJump"></div>
 
           <section className="Filter">
@@ -500,7 +459,7 @@ const Portfolio = () => {
                     <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
                     <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton">
                       <div className="CrossContainer" onClick={() => {
-                        handleDelete(index, stock.id)
+                        handleDelete(index, stock)
                       }}>
                         <div className="Cross1"></div>
                         <div className="Cross2"></div>
