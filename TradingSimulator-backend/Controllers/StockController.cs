@@ -81,7 +81,6 @@ namespace TradingSimulator_Backend.Controllers
             });
         }
 
-
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)
         {
@@ -100,6 +99,21 @@ namespace TradingSimulator_Backend.Controllers
             }
 
             return Ok(stocks);
+        }
+
+        [HttpGet("GetCompanyDetails/{symbol}")]
+        public async Task<IActionResult> GetCompanyProfile(string symbol){
+            
+            if (string.IsNullOrEmpty(symbol)) 
+            {
+                return BadRequest("Symbol query is required.");
+            }
+
+            var Profile = _stockService.GetStockCompanyProfile(symbol);
+
+            return Ok(new {
+                Profile
+            });
         }
     }
 }

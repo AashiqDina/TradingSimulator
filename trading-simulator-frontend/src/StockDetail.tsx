@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import './StockDetail.css';
-import { StockApiInfo } from "./interfaces";
+import { StockApiInfo, CompanyProfile } from "./interfaces";
 
 interface AxiosErrorType {
     response?: { data: string; status: number; statusText: string };
@@ -14,7 +14,9 @@ const StockDetail: React.FC = () => {
     const [StockName, setStockName] = useState("Unknown")
     const [stockLogo, setStockLogo] = useState<string>('');
     const [BasicStockData, setStockBasicData] = useState<StockApiInfo | null>(null);
+    const [StockCompanyDetails, setCompanyDetails] = useState<CompanyProfile | null>(null);
 
+    console.log(StockCompanyDetails)
 
     useEffect(() => {
         GetData()
@@ -29,6 +31,10 @@ const StockDetail: React.FC = () => {
             const response3 = await axios.get<{quoteData: StockApiInfo}>(`http://localhost:3000/api/stocks/GetStockQuoteInfo/${symbol}`);
             console.log(response3.data.quoteData);
             setStockBasicData(response3.data.quoteData);
+            const response4 = await axios.get<{profile: CompanyProfile}>(`http://localhost:3000/api/stocks/GetCompanyDetails/${symbol}`);
+            console.log(response4.data.profile)
+            setCompanyDetails(response4.data.profile)
+
 
 
         }
@@ -56,6 +62,10 @@ const StockDetail: React.FC = () => {
             <span className='StockSymbol'>{symbol}</span>
         </div>
         <section className='MainBody'>
+          <div className='Details'>
+            <h2>Details</h2>
+
+          </div>
             <div className='StockDetails'>
               <div className='Selector'>
                 <button className='CompanyInformation'>Overview</button>

@@ -11,11 +11,12 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "dx52---wait-a-minute---NOPE";
+        private readonly string _apiKey = "yeKipa_";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
         private static Dictionary<string, StockApiInfo?> _stockApiInfoCache = new Dictionary<string, StockApiInfo?>();
+        private static Dictionary<string, CompanyProfile?> _CompanyDetailsCache = new Dictionary<string, CompanyProfile?>();
         private static DateTime? StockInfoDateTime = null;
 
 
@@ -131,6 +132,23 @@ namespace TradingSimulator_Backend.Services
             return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
         }
 
+        public async Task<CompanyProfile> GetStockCompanyProfile(string symbol){
+            if(_CompanyDetailsCache.ContainsKey(symbol)){
+                var cachedData = _CompanyDetailsCache[symbol];
+                Console.WriteLine("Company Cache" , cachedData);
+                return cachedData;
+            }
+
+            var result = await FetchCompanyProfile(symbol);
+
+            if(result == null){
+                Console.WriteLine("Unable to find Company Profile");
+            }
+
+            _CompanyDetailsCache[symbol] = result;
+            return result;
+        }
+
         public async Task<StockApiInfo?> FetchStockInfo(string symbol){
             if (StockInfoDateTime == null)
             {
@@ -140,7 +158,6 @@ namespace TradingSimulator_Backend.Services
             if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
             {
                 var cachedData = _stockApiInfoCache[symbol];
-                Console.WriteLine(cachedData.FiftyTwoWeek);
                 return cachedData;
             }
 
@@ -243,6 +260,28 @@ namespace TradingSimulator_Backend.Services
             catch{
                 return null;
             }
+        }
+
+        private async Task<CompanyProfile> FetchCompanyProfile(string symbol){
+            var url = $"https://api.twelvedata.com/profile?symbol={symbol}&apikey={_apiKey}";
+            var  response = await _httpClient.GetAsync(url);
+
+            if(!response.IsSuccessStatusCode){
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Raw Company Profile API Response: {json}");
+
+            try{
+                var CompanyProfile = JsonConvert.DeserializeObject<CompanyProfile>(json);
+                return null;
+            }
+            catch{
+                return null;
+            }
+            
         }
 
     }

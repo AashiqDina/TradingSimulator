@@ -37,3 +37,24 @@ export interface FiftyTwoWeek {
     extendedTimestamp: number;
   }
   
+  export interface CompanyProfile {
+    symbol: string;
+    name: string;
+    exchange: string;
+    micCode: string;
+    sector: string;
+    industry: string;
+    employees: number;
+    website: string;
+    description: string;
+    type: string;
+    CEO: string;
+    address: string;
+    address2: string;
+    city: string;
+    zip: string;
+    state: string;
+    country: string;
+    phone: string;
+  }
+  
