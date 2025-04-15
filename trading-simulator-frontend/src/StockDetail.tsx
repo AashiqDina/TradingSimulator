@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from "axios";
 import './StockDetail.css';
 import { StockApiInfo, CompanyProfile } from "./interfaces";
+import { useAuth } from "./AuthContext";
+
 
 interface AxiosErrorType {
     response?: { data: string; status: number; statusText: string };
@@ -10,11 +12,13 @@ interface AxiosErrorType {
   }
 
 const StockDetail: React.FC = () => {
+    const { user } = useAuth();
     const { symbol } = useParams();
     const [StockName, setStockName] = useState("Unknown")
     const [stockLogo, setStockLogo] = useState<string>('');
     const [BasicStockData, setStockBasicData] = useState<StockApiInfo | null>(null);
     const [StockCompanyDetails, setCompanyDetails] = useState<CompanyProfile | null>(null);
+    const [DisplayedData, setDisplayedData] = useState<any | null>(null)
 
     console.log(StockCompanyDetails)
 
@@ -54,6 +58,23 @@ const StockDetail: React.FC = () => {
         }
       };
 
+      function SwitchSection(Section: string){
+        switch(Section){
+          case "CompanyInformation":
+            setDisplayedData("CompanyInformation")
+          case "StockOverview":
+            setDisplayedData("StockData")
+          case "OwnedStocks":
+            setDisplayedData("OwnedStocks")
+          case "News":
+            setDisplayedData("News")
+          case "AIAssistant":
+            setDisplayedData("AIAssistant")
+          default:
+            setDisplayedData("CompanyInformation")
+        }
+      }
+
   return (
     <>
         <div className='TitleBox'>
@@ -62,17 +83,18 @@ const StockDetail: React.FC = () => {
             <span className='StockSymbol'>{symbol}</span>
         </div>
         <section className='MainBody'>
-          <div className='Details'>
-            <h2>Details</h2>
-
-          </div>
             <div className='StockDetails'>
               <div className='Selector'>
-                <button className='CompanyInformation'>Overview</button>
+                <button onClick={() => SwitchSection("CompanyInformation")} className='CompanyInformation'>Overview</button>
+                <button onClick={() => SwitchSection("StockData")} className='StockData'>Stock Data</button>
+                <button onClick={() => SwitchSection("OwnedStocks")} className='OwnedStocks'>Owned Stocks</button>
+                <button onClick={() => SwitchSection("News")} className='News'>News</button>
+                <button onClick={() => SwitchSection("AIAssistant")} className='AIAssistant'>AI Assistant</button>
               </div>
               <p>{BasicStockData?.exchange}</p>
             </div>
             <div className='InteractiveGraph'>
+              <h2>{StockName} Graph</h2>
             </div>
         </section>
     </>
