@@ -36,9 +36,14 @@ html{
 }
 
 .StockDetails{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     padding: 1.5rem 1rem 1rem 1rem;
-    background-color: white;
+    border: 1px white solid;
     border-radius: 1rem;
+    width: 40%;
 }
 
 .InteractiveGraph{
@@ -50,6 +55,54 @@ html{
 
 .Selector{
     display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 90%;
+}
+
+.CompanyInformationSelected, .StockDataSelected, .OwnedStocksSelected, .NewsSelected, .AIAssistantSelected{
+    background-color: white;
+    color: #3e9143;
+}
+
+.CompanyInformationSelected:hover, .StockDataSelected:hover, .OwnedStocksSelected:hover, .NewsSelected:hover, .AIAssistantSelected:hover{
+    background-color: white;
+    color: #3e9143;
+}
+
+.CompanyInfoDisplayed{
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Description{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Description > p{
+    max-height: 8rem;
+    overflow-y: auto;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    width: 90%;
+}
+
+.StockDetailsTableData{
+    font-size: 1rem;
+}
+
+.StockDetailsAddress{
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: row;
     gap: 0.5rem;
 }

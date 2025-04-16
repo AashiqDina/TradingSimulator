@@ -109,7 +109,7 @@ namespace TradingSimulator_Backend.Controllers
                 return BadRequest("Symbol query is required.");
             }
 
-            var Profile = _stockService.GetStockCompanyProfile(symbol);
+            var Profile = await _stockService.GetStockCompanyProfile(symbol);
 
             return Ok(new {
                 Profile

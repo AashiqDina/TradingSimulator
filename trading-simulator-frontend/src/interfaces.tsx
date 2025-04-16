@@ -48,7 +48,7 @@ export interface FiftyTwoWeek {
     website: string;
     description: string;
     type: string;
-    CEO: string;
+    ceo: string;
     address: string;
     address2: string;
     city: string;
