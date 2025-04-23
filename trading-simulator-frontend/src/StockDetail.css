@@ -3,6 +3,10 @@ html{
     scroll-behavior: smooth;
   }
 
+a{
+    color: white;
+}
+
 .StockSymbol{
     background-color: #3e9143;
     border-radius: 2rem;
@@ -39,11 +43,13 @@ html{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     flex-direction: column;
     padding: 1.5rem 1rem 1rem 1rem;
     border: 1px white solid;
     border-radius: 1rem;
-    width: 40%;
+    width: 35%;
+    overflow: auto;
 }
 
 .InteractiveGraph{
@@ -55,9 +61,16 @@ html{
 
 .Selector{
     display: flex;
+    justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 0.5rem;
-    width: 90%;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.Selector > button{
+    width: 4.5rem;
 }
 
 .CompanyInformationSelected, .StockDataSelected, .OwnedStocksSelected, .NewsSelected, .AIAssistantSelected{
@@ -74,9 +87,87 @@ html{
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    overflow: auto;
+
+}
+
+.StockDataDisplayed{
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: auto;
+
+}
+
+.ChatDisplayed{
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto;
+
+}
+
+.Chat{
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 23rem;
+    min-height: 23rem;
+    width: 100%;
+}
+
+.UserMessageDisplayed{
+    display: inline-flex;
+    background-color: rgba(210, 210, 210, 0.116);
+    border-radius: 2rem;
+    padding: 0.7rem 1rem 0.7rem 1rem;
+}
+
+.UserMessageDisplayed > h2{
+    display: inline;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.ChatQueryBar{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    overflow-y: auto;
+    max-height: 20rem;
+    width: 100%;
+}
+
+.ChatQueryBar > input{
+    margin: 0;
+    border-radius: 10rem 0rem 0rem 10rem;
+    height: 2.2rem;
+    width: 80%;
+}
+
+.ChatQueryBar > input:focus{
+    outline: none;
+}
+
+.ChatQueryBar > button{
+    border-radius: 0rem 10rem 10rem 0rem;
+    height: 2.2rem;
+    width: 20%;
 }
 
 .Description{
@@ -105,4 +196,20 @@ html{
     align-items: center;
     flex-direction: row;
     gap: 0.5rem;
+}
+
+.StockDataDisplayed{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.AiMessageDisplayed{
+ margin: 0rem 0.5rem 0rem 0.5rem;
+}
+
+.AiMessageDisplayed > h2{
+    font-size: 1.2rem;
 }

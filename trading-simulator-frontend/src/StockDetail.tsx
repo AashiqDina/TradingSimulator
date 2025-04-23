@@ -4,6 +4,8 @@ import axios from "axios";
 import './StockDetail.css';
 import { StockApiInfo, CompanyProfile } from "./interfaces";
 import { useAuth } from "./AuthContext";
+import { StocksAI } from './StocksAI';
+import AiLoading from './AiLoading';
 
 
 interface AxiosErrorType {
@@ -19,9 +21,13 @@ const StockDetail: React.FC = () => {
     const [BasicStockData, setStockBasicData] = useState<StockApiInfo | null>(null);
     const [StockCompanyDetails, setCompanyDetails] = useState<CompanyProfile | null>(null);
     const [DisplayedData, setDisplayedData] = useState<any | null>("CompanyInformation")
+    const [UserPrompts, setUserPrompts] = useState<string[]>([""])
+    const [AiResponses, setAiResponses] = useState<string[]>([""])
+    const [AIAssistantSearchInput,setSearchInput] = useState<string>("")
 
-    console.log(StockCompanyDetails)
     console.log(BasicStockData)
+    console.log(StockCompanyDetails)
+
 
     useEffect(() => {
         GetData()
@@ -56,6 +62,44 @@ const StockDetail: React.FC = () => {
         }
       };
 
+    const HandleAiResponse = async() => {
+      try{
+        if(AIAssistantSearchInput == ""){
+          // Todo handle blank submit
+          return
+        }
+        if(UserPrompts[0] == ""){
+          setUserPrompts([AIAssistantSearchInput])
+        }
+        else{
+          setUserPrompts(prevValues => [
+            ...prevValues,
+            AIAssistantSearchInput
+          ])
+        }
+
+
+        const AllStockData = [BasicStockData, StockCompanyDetails]
+        const AiResponse = await StocksAI(AIAssistantSearchInput, AllStockData)
+        console.log(AiResponse)
+        if(AiResponses[0] == ""){
+          AiResponse != null ? setAiResponses([AiResponse]) : setAiResponses(["Could no get AI Data"])
+        }
+        else{
+          AiResponse != null ? setAiResponses(prevValues => [
+            ...prevValues,
+            AiResponse
+          ]) : setAiResponses(prevValues => [
+            ...prevValues,
+            "Could not get AI Data"
+          ])
+        }
+        setSearchInput("")
+      }
+      catch{
+      }
+    }
+
       function SwitchSection(Section: string){
         switch(Section){
           case "CompanyInformation":
@@ -77,6 +121,11 @@ const StockDetail: React.FC = () => {
             setDisplayedData("CompanyInformation")
             break
         }
+      }
+
+      const container = document.getElementById('Chat');
+      if (container) {
+        container.scrollTop = 0;
       }
 
   return (
@@ -114,8 +163,8 @@ const StockDetail: React.FC = () => {
                             <td className='StockDetailsTableData'>Industry: {StockCompanyDetails?.industry != null ? StockCompanyDetails?.industry : "Unavailable"}</td>
                           </tr>
                           <tr>
-                            <td className='StockDetailsTableData'>Exchange: {StockCompanyDetails?.exchange != null ? StockCompanyDetails?.exchange : "Unavailable"}</td>
-                            <td className='StockDetailsTableData'>Industry: {StockCompanyDetails?.industry != null ? StockCompanyDetails?.industry : "Unavailable"}</td>
+                            <td className='StockDetailsTableData'>Mic Code: {StockCompanyDetails?.micCode != null ? StockCompanyDetails?.micCode : "Unavailable"}</td>
+                            <td className='StockDetailsTableData'>Type: {StockCompanyDetails?.type != null ? StockCompanyDetails?.type : "Unavailable"}</td>
                           </tr>
                           <tr>
                             <td className='StockDetailsTableData'>Employees: {StockCompanyDetails?.employees != null ? StockCompanyDetails?.employees : "Unavailable"}</td>
@@ -127,13 +176,12 @@ const StockDetail: React.FC = () => {
                                   {StockCompanyDetails?.city} <br /> 
                                   {StockCompanyDetails?.zip + " " + StockCompanyDetails?.state} <br /> 
                                   {StockCompanyDetails?.country}
-
                                 </>
                               : "Unavailable"}
                             </td>
                           </tr>
                           <tr>
-                            <td className='StockDetailsTableData'> Website: <a href={StockCompanyDetails?.website}></a>{StockCompanyDetails?.website != null ? StockCompanyDetails?.sector : "Unavailable"}</td>
+                            <td className='StockDetailsTableData'> Website: <a href={StockCompanyDetails?.website}>{StockCompanyDetails?.website != null ? StockCompanyDetails?.website : "Unavailable"}</a></td>
                             <td className='StockDetailsTableData'> Phone: {StockCompanyDetails?.phone != null ? StockCompanyDetails?.phone : "Unavailable"}</td>
                           </tr>
                         </tbody>
@@ -142,10 +190,22 @@ const StockDetail: React.FC = () => {
                   </div>
               }
               {
-                // Already have Data Ready
                   (DisplayedData == "StockData") && 
-                  <div>
-                    <p>{StockCompanyDetails != null ? JSON.stringify(StockCompanyDetails) : "Could not "}</p>
+                  <div className='StockDataDisplayed'>
+                    <div className='ColumnOne'>
+                      <div className='FiftyWeek'>
+                        <h3>Last 52 Weeks:</h3>
+                        <p>High: {BasicStockData?.fiftyTwoWeek.high.toFixed(2)}</p>
+                        <p>High Change: {BasicStockData?.fiftyTwoWeek.highChange.toFixed(2)}  <span style={BasicStockData?.fiftyTwoWeek.highChangePercent != null && BasicStockData?.fiftyTwoWeek.highChangePercent > 0 ? {color: "#3e9143"} : {color: "red"}}> {BasicStockData?.fiftyTwoWeek.highChangePercent.toFixed(2)}%</span></p>
+                        <p>Low: {BasicStockData?.fiftyTwoWeek.low.toFixed(2)}</p>
+                        <p>Low Change: {BasicStockData?.fiftyTwoWeek.lowChange.toFixed(2)}  <span style={BasicStockData?.fiftyTwoWeek.lowChangePercent != null && BasicStockData?.fiftyTwoWeek.lowChangePercent > 0 ? {color: "#3e9143"} : {color: "red"}}> {BasicStockData?.fiftyTwoWeek.lowChangePercent.toFixed(2)}%</span></p>
+
+
+                      </div>
+                    </div>
+                    <div className='ColumnTwo'>
+                      <h3>Column 2</h3>
+                    </div>
                   </div>
               }      
               {
@@ -163,7 +223,24 @@ const StockDetail: React.FC = () => {
               {
                 // Try the same one used in another project
                   (DisplayedData == "AIAssistant") && 
-                  <div>
+                  <div className='ChatDisplayed'>
+                    <div id='Chat' className='Chat'>
+                      { UserPrompts.map((UserPrompts, index) => (
+                        <>
+                          {UserPrompts != "" && <div className='UserMessageDisplayed'>
+                            <h2>{UserPrompts}</h2>
+                          </div>}
+                          <div className='AiMessageDisplayed'>
+                            {AiResponses[0] != "" && <h2>{AiResponses[index] || <AiLoading/>}</h2>}
+                          </div>
+                        </>
+                      ))
+                      }
+                    </div>
+                    <div className='ChatQueryBar'>
+                      <input value={AIAssistantSearchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" />
+                      <button onClick={() => HandleAiResponse()}>Submit</button>
+                    </div>
                   </div>
               }         
             </div>

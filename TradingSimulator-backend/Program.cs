@@ -32,8 +32,6 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-
-// Register IStockService and StockService
 builder.Services.AddScoped<IStockService, StockService>();
 
 builder.Services.AddHttpClient<StockService>(); // Register StockService with HttpClient
