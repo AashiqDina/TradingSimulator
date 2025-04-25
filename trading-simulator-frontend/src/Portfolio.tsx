@@ -322,59 +322,60 @@ const Portfolio = () => {
     <>
       {portfolio ? (
         <>
-            <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
+          <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
           <div className="LineOne"></div>
-          <div className="QuickStats">
-            <div className="Box1">
+          <section className="QuickStats">
+            <article className="Box1">
               <h2>Invested</h2>
               <div className="Values">
                 <p>£{portfolio.totalInvested.toFixed(2)}</p>
               </div>
-            </div>
-            <div className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ValueColour}`}}>
+            </article>
+            <article className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ValueColour}`}}>
               <h2>Current Value</h2>
               <div className="Values">
                 <p>£{portfolio.currentValue.toFixed(2)}</p>
               </div>
-            </div>
-            <div className="Box3" style={{ color: ProfitColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
+            </article>
+            <article className="Box3" style={{ color: ProfitColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
               <h2>{ProfitLossTitle}</h2>
               <div className="Values">
                 <p>£{portfolio.profitLoss.toFixed(2)}</p>
               </div>
-            </div>
-          </div>
-
+            </article>
+          </section>
+          {CurrentBestStocks && CurrentBestStocks.length > 0 ? <h2 className="ProftibleTitle">Most Profitable Stock</h2> : null}
           {CurrentBestStocks && CurrentBestStocks.length > 0 ? <div className="MostProfitableTable">
-            <table className="BestTable">
-              <h2 className="ProftibleTitle">Most Profitable Stock</h2>
-                <thead>
-                  <tr>
-                    <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                    <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                    <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
-                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
-                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
-                    <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                    <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
-                  </tr>
-                </thead>
+            <section>
+              <table className="BestTable">
+                  <thead>
+                    <tr>
+                      <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
+                      <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
+                      <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
+                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
+                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
+                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
+                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
+                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
+                      <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  <tr>
-                    <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt="Stock Logo" /></td>
-                    <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{CurrentBestStocks[0].name}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>{CurrentBestStocks[0].stock.quantity}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(CurrentBestStocks[0].stock.purchasePrice * CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{CurrentBestStocks[0].stock.currentPrice.toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(CurrentBestStocks[0].stock.quantity * CurrentBestStocks[0].stock.currentPrice).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(CurrentBestStocks[0].stock.profitLoss).toFixed(2)} </td>
-                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                  </tr>
-                </tbody>
-            </table>
+                  <tbody>
+                    <tr>
+                      <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt="Stock Logo" /></td>
+                      <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{CurrentBestStocks[0].name}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>{CurrentBestStocks[0].stock.quantity}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(CurrentBestStocks[0].stock.purchasePrice * CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{CurrentBestStocks[0].stock.currentPrice.toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(CurrentBestStocks[0].stock.quantity * CurrentBestStocks[0].stock.currentPrice).toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(CurrentBestStocks[0].stock.profitLoss).toFixed(2)} </td>
+                      <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
+                    </tr>
+                  </tbody>
+              </table>
+            </section>
           </div> : 
           <div className="MostProfitableTable">
           <table className="BestTable">

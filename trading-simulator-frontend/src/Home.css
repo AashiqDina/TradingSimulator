@@ -13,10 +13,18 @@
   font-family: Inter, sans-serif;
 }
 
+.SearchSection{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
 .StockSearchInput{
     border-radius: 10rem;
-    min-width: 30rem;
-    max-width: 50rem;
+    min-width: 20%;
+    max-width: 80%;
     height: 2.7rem;
     font-size: 1rem;
     font-family: Inter, sans-serif;;
@@ -30,22 +38,24 @@
 
 .StockSearchButton{
     border-radius: 10rem;
-    min-width: 20rem;
-    max-width: 30rem;
+    min-width: 10%;
+    max-width: 50%;
     height: 3rem;
     font-size: 1.5rem;
     font-family: Inter, sans-serif;;
     font-weight: 600;
     text-align: center;
     box-shadow: 0px 5px 10px 1px #3e91444c;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.Modal {
+.ToBuyModal {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.623);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,9 +70,9 @@
     animation-iteration-count: infinite;
     animation-direction: alternate;
     padding: 2rem;
+    border: 1px green solid;
     border-radius: 4rem;
     width: 300px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
   }
   
@@ -114,10 +124,14 @@
   }
 
   .BuyButton{
+    min-width: 2rem;
+    max-width: 7rem;
     border-radius: 10rem;
   }
 
   .ViewButton{
+    min-width: 2rem;
+    max-width: 7rem;
     border-radius: 10rem
   }
 
@@ -149,7 +163,8 @@
   }
 
   .SearchResult{
-    margin-top: 2.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -187,24 +202,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20vw;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 30vw;
     gap: 1vw;
   }
 
   .CompleteSearchResult{
+    margin-top: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
   }
 
   .SearchResult2{
-    margin-top: 2.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
     display: flex;
     justify-content: center;
     align-items:baseline;
     flex-direction: column;
+    flex-wrap: wrap;
     border: 1px solid #45a049;
     border-radius: 3rem;
     padding-top: 1rem;
@@ -217,9 +238,14 @@
 
   .SearchResult2 > p{
     margin: 0.25rem;
+    text-align: left;
   }
 
-  .SearchResult2 > h3{
+  .SR2Head{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     font-size: 1.5rem;
   }
   

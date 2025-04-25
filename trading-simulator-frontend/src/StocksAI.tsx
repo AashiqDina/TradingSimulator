@@ -1,6 +1,6 @@
 import { HfInference } from '@huggingface/inference'
 
-const hf = new HfInference("")
+const hf = new HfInference("APIKEY")
 
 export async function StocksAI(_Prompt: String, _StockData: any){
     try {

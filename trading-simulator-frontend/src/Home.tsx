@@ -98,18 +98,20 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className='StockSearch'>
-        <input 
-          type="text" 
-          placeholder="Enter stock symbol (e.g, AAPL)" 
-          className='StockSearchInput'
-          value={stockSymbol} 
-          onChange={(e) => setStockSymbol(e.target.value.toUpperCase())} 
-          />
-        <button className='StockSearchButton' onClick={searchStock}>Search</button>
+      <section className='StockSearch'>
+        <section className='SearchSection'>
+          <input 
+            type="text" 
+            placeholder="Enter stock symbol (e.g, AAPL)" 
+            className='StockSearchInput'
+            value={stockSymbol} 
+            onChange={(e) => setStockSymbol(e.target.value.toUpperCase())} 
+            />
+          <button className='StockSearchButton' onClick={searchStock}>Search</button>
+        </section>
         {(!stockFound && (stockPrice !== null) &&
-          <div className='CompleteSearchResult'>
-            <div className='SearchResult'>
+          <section className='CompleteSearchResult'>
+            <article className='SearchResult'>
                 {stockPrice !== null && (
                   <>
                     <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </h3>
@@ -128,9 +130,12 @@ const Home: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
-              <div className='SearchResult2'>
-                <h3>{stockName} <span className='Symb'>{stockSymbol}</span></h3>
+              </article>
+              <article className='SearchResult2'>
+                <div className='SR2Head'>
+                  <h3>{stockName} </h3>
+                  <span className='Symb'>{stockSymbol}</span>
+                </div>
                   <p>Last Updated: <span style={{color: "#45a049"}}>{stockQuickData?.lastUpdated 
                     ? new Date(stockQuickData.lastUpdated).toLocaleDateString('en-GB', {
                         year: 'numeric',
@@ -146,8 +151,8 @@ const Home: React.FC = () => {
                           .join(' - ')
                       : 'N/A'} </span></p>
                   <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p>
-              </div>
-            </div>
+              </article>
+            </section>
         )}
         {(stockFound && 
           <>
@@ -157,12 +162,12 @@ const Home: React.FC = () => {
           </>
         )}
 
-       </div>
+       </section>
       {user ? (
         <>
       
           {isModalOpen && (
-            <div className="Modal">
+            <div className="ToBuyModal">
               <div className="ModalContent">
                 <h2>Buy {stockName}</h2>
                 <div className="ModalBody">
