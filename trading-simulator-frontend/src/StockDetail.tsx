@@ -151,26 +151,24 @@ const StockDetail: React.FC = () => {
                         <h3>Description</h3> 
                         <p>{StockCompanyDetails?.description != null ? StockCompanyDetails?.description : "Limited API Plan doesnt allow me to get the data"}</p>
                     </div>
-                    <div>
-                    <table>
-                        <tbody>
-                          <tr>
-                            <td className='StockDetailsTableData'>CEO: {StockCompanyDetails?.ceo  != null ? StockCompanyDetails?.ceo : "Unavailable"}</td>
-                            <td className='StockDetailsTableData'>Sector: {StockCompanyDetails?.sector != null ? StockCompanyDetails?.sector : "Unavailable"}</td>
-                          </tr>
-                          <tr>
-                            <td className='StockDetailsTableData'>Exchange: {StockCompanyDetails?.exchange != null ? StockCompanyDetails?.exchange : "Unavailable"}</td>
-                            <td className='StockDetailsTableData'>Industry: {StockCompanyDetails?.industry != null ? StockCompanyDetails?.industry : "Unavailable"}</td>
-                          </tr>
-                          <tr>
-                            <td className='StockDetailsTableData'>Mic Code: {StockCompanyDetails?.micCode != null ? StockCompanyDetails?.micCode : "Unavailable"}</td>
-                            <td className='StockDetailsTableData'>Type: {StockCompanyDetails?.type != null ? StockCompanyDetails?.type : "Unavailable"}</td>
-                          </tr>
-                          <tr>
-                            <td className='StockDetailsTableData'>Employees: {StockCompanyDetails?.employees != null ? StockCompanyDetails?.employees : "Unavailable"}</td>
-                            <td className='StockDetailsAddress'><p>Address: </p>
+                    <div className='StockDetailsContainer'>
+                      <div className='StockDetailsColumnOne'>
+                      <p className='StockDetailsTableData'>CEO: <p>{StockCompanyDetails?.ceo  != null ? StockCompanyDetails?.ceo : "Unavailable"}</p></p>
+                      <p className='StockDetailsTableData'>Sector: <p>{StockCompanyDetails?.sector != null ? StockCompanyDetails?.sector : "Unavailable"}</p></p>
+                      </div>
+                      <div className='StockDetailsColumnTwo'>
+                      <p className='StockDetailsTableData'>Exchange: <p>{StockCompanyDetails?.exchange != null ? StockCompanyDetails?.exchange : "Unavailable"}</p></p>
+                      <p className='StockDetailsTableData'>Industry: <p>{StockCompanyDetails?.industry != null ? StockCompanyDetails?.industry : "Unavailable"}</p></p>
+                      </div>
+                      <div className='StockDetailsColumnThree'>
+                        <p className='StockDetailsTableData'>Mic Code: <p>{StockCompanyDetails?.micCode != null ? StockCompanyDetails?.micCode : "Unavailable"}</p></p>
+                        <p className='StockDetailsTableData'>Type: <p>{StockCompanyDetails?.type != null ? StockCompanyDetails?.type : "Unavailable"}</p></p>
+                      </div>
+                      <div className='StockDetailsColumnFour'>
+                      <p className='StockDetailsTableData'>Employees: <p>{StockCompanyDetails?.employees != null ? StockCompanyDetails?.employees : "Unavailable"}</p></p>
+                            <p className='StockDetailsAddress'><p>Address: </p>
                             {StockCompanyDetails?.address != null ? 
-                                <> <br />
+                                <>
                                   {StockCompanyDetails?.address} <br />
                                   {StockCompanyDetails?.address2} {StockCompanyDetails?.address2 == null ? <br /> : ""} 
                                   {StockCompanyDetails?.city} <br /> 
@@ -178,14 +176,13 @@ const StockDetail: React.FC = () => {
                                   {StockCompanyDetails?.country}
                                 </>
                               : "Unavailable"}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className='StockDetailsTableData'> Website: <a href={StockCompanyDetails?.website}>{StockCompanyDetails?.website != null ? StockCompanyDetails?.website : "Unavailable"}</a></td>
-                            <td className='StockDetailsTableData'> Phone: {StockCompanyDetails?.phone != null ? StockCompanyDetails?.phone : "Unavailable"}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                            </p>
+                              
+                      </div>
+                      <div className='StockDetailsColumnFive'>
+                      <p className='StockDetailsTableData'> Website: <a href={StockCompanyDetails?.website}>{StockCompanyDetails?.website != null ? StockCompanyDetails?.website : "Unavailable"}</a></p>
+                      <p className='StockDetailsTableData'> Phone: <p>{StockCompanyDetails?.phone != null ? StockCompanyDetails?.phone : "Unavailable"}</p></p>
+                      </div>
                     </div>
                   </div>
               }

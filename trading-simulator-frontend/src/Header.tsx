@@ -30,38 +30,36 @@ const Header: React.FC = () => {
   return ( 
     <header id="Top" className="Header">
 
-        <div className="Header-menu" onClick={toggleMenu}>
+        <div  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleMenu(); }} aria-label="Click to open Menu" aria-expanded={menuOpen ? "true" : "false"} className="Header-menu" onClick={toggleMenu}>
           <div className={`Hamburger1 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger2 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger3 ${menuOpen ? "Open" : ""}`} ></div>
         </div>
 
-        <h1 className="Header-logo" onClick={() => handleLink("/")}>
+        <h1 role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/")}} className="Header-logo" onClick={() => handleLink("/")}>
             <Logo/>
         </h1>
         {user ? (
-          <p className="HeaderUsername" onClick={() => handleLink("/portfolio")}>{user.username}</p>
+          <p role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/portfolio")}} aria-label="Click here to visit your portfolio" className="HeaderUsername" onClick={() => handleLink("/portfolio")}>{user.username}</p>
         ) : (
-            <img src="/UserIcon.png" alt="User" className="UserIcon" onClick={() => handleLink("/login")} />
+            <img role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/login")}} src="/UserIcon.png" alt="Icon for a user that is not logged in" className="UserIcon" onClick={() => handleLink("/login")} />
         )}
 
 
       
       {menuOpen && (
-        <nav className="DropdownMenu" onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+        <nav aria-label="Menu" className="DropdownMenu" onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
           <ul>
             <li>
               <Link to="/" onClick={toggleMenu}>
                 Home
               </Link>
             </li>
-            <div className="LineBreakers"></div>
             <li>
               <Link to="/about" onClick={toggleMenu}>
                 About
               </Link>
             </li>
-            <div className="LineBreakers"></div>
             <li>
               <Link to="/portfolio" onClick={toggleMenu}>
               Portfolio
@@ -69,7 +67,6 @@ const Header: React.FC = () => {
             </li>
             {user ? (
               <>
-                <div className="LineBreakers"></div>
                 <li>
                   <button onClick={handleLogout}>Logout</button>
                 </li>

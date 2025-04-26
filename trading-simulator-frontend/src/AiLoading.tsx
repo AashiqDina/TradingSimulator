@@ -4,7 +4,7 @@ import './AiLoading.css'
 export default function AiLoading(){
 
     return (
-        <div className='BarContainer'>
+        <div role="status" aria-live="polite" className='BarContainer'>
             <div className='BarA'></div>
             <div className='BarB'></div>
             <div className='BarC'></div>

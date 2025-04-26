@@ -101,6 +101,7 @@ const Home: React.FC = () => {
       <section className='StockSearch'>
         <section className='SearchSection'>
           <input 
+            aria-label="Enter stock symbol (e.g, AAPL)"
             type="text" 
             placeholder="Enter stock symbol (e.g, AAPL)" 
             className='StockSearchInput'
@@ -114,19 +115,19 @@ const Home: React.FC = () => {
             <article className='SearchResult'>
                 {stockPrice !== null && (
                   <>
-                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt="Stock Logo" /> {stockName} </h3>
+                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt={`${stockName}, " Logo"`} /> {stockName} </h3>
                     <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
                   </>
                 )}
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p aria-live="assertive" style={{ color: 'red' }}>{error}</p>}
                 {(stockPrice !== null) && !user && (
                   <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
                 )}
                 {(stockPrice !== null) && user && (
                   <div className="BuyViewButtonsContainer">
                     <div className='BuyViewButtons'>
-                      <button className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
-                      <button className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                      <button aria-label='Buy Stock' className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
+                      <button aria-label="View Stock DetailsS" className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
                     </div>
                   </div>
                 )}
@@ -167,12 +168,13 @@ const Home: React.FC = () => {
         <>
       
           {isModalOpen && (
-            <div className="ToBuyModal">
+            <div className="ToBuyModal" aria-labelledby="Buy Stock Modal">
               <div className="ModalContent">
                 <h2>Buy {stockName}</h2>
                 <div className="ModalBody">
                   <label htmlFor="quantity">Quantity:</label>
                   <input 
+                    aria-label="Enter the quantity here."
                     id="quantity"
                     type="number"
                     value={quantity}
