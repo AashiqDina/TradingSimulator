@@ -67,6 +67,7 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
+        <label htmlFor="username" className="SrOnly">Username</label>
           <input
             type="text"
             id="username"
@@ -74,10 +75,12 @@ const Login = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="UsernameInput"
+            aria-required="true"
             required
           />
         </div>
         <div className="form-group">
+        <label htmlFor="password" className="SrOnly">Password</label>
           <input
             type="password"
             id="password"
@@ -85,14 +88,16 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="PasswordInput"
+            aria-invalid={error ? "true" : "false"}
+            aria-required="true"
             required
           />
         </div>
-        <button className="SubmitButton" type="submit">Login</button>
+        <button aria-label="Submit Login Form" className="SubmitButton" type="submit">Login</button>
       </form>
-      {error && <p className="ErrorType">{error}</p>}
+      {error && <p role="alert" className="ErrorType">{error}</p>}
       <p>Don't have an account?</p>
-      <a href="/register">Register</a>
+      <a aria-label="Go to registration page" href="/register">Register</a>
     </div>
   );
 };

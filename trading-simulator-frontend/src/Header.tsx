@@ -51,17 +51,17 @@ const Header: React.FC = () => {
         <nav aria-label="Menu" className="DropdownMenu" onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
           <ul>
             <li>
-              <Link to="/" onClick={toggleMenu}>
+              <Link role="button" to="/" onClick={toggleMenu}>
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/about" onClick={toggleMenu}>
+              <Link role="button" to="/about" onClick={toggleMenu}>
                 About
               </Link>
             </li>
             <li>
-              <Link to="/portfolio" onClick={toggleMenu}>
+              <Link role="button" to="/portfolio" onClick={toggleMenu}>
               Portfolio
               </Link>
             </li>

@@ -83,9 +83,10 @@ function Register() {
   
 
   return (
-    <div className={`register-container ${(error && (error != "reset")) ? "error" : ""}`}>
+    <section className={`register-container ${(error && (error != "reset")) ? "error" : ""}`}>
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
+      <label htmlFor="username" className="SrOnly">Username</label>
         <div className="form-group">
           <input
             type="text"
@@ -98,6 +99,7 @@ function Register() {
           />
         </div>
         <div className="form-group">
+        <label htmlFor="password" className="SrOnly">Password</label>
           <input
             type="password"
             id="password"
@@ -109,6 +111,7 @@ function Register() {
           />
         </div>
         <div className="form-group">
+        <label htmlFor="confirmPassword" className="SrOnly">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
@@ -120,14 +123,14 @@ function Register() {
           />
         </div>
 
-        {error && <p className="RegisterError">{error}</p>}
+        {error && <p role="alert" className="RegisterError">{error}</p>}
 
         <button className="SubmitButton" type="submit">Register</button>
       </form>
       <p>
-        Already have an account? <a href="/login">Login here</a>
+        Already have an account? <a aria-label="Go to login page" href="/login">Login here</a>
       </p>
-    </div>
+    </section>
   );
 }
 

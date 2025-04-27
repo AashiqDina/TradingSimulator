@@ -3,6 +3,8 @@ import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import Confetti from 'react-confetti'
+import { FocusTrap } from 'focus-trap-react';
 
 interface StockInfoResponse {
   lastUpdated: string | null;
@@ -40,6 +42,7 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const searchStock = async () => {
     try {
@@ -83,6 +86,8 @@ const Home: React.FC = () => {
         stockPurchaseRequest
       );
       alert('Stock purchased successfully');
+      setShowConfetti(true)
+      setTimeout(() => {setShowConfetti(false)}, 100000)
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error purchasing stock:', error);
@@ -98,6 +103,11 @@ const Home: React.FC = () => {
 
   return (
     <>
+      {showConfetti && 
+      <Confetti
+        numberOfPieces={(quantity * 20) > 1000 ? 999 : (quantity * 20)}
+        recycle={false}
+      />}
       <section className='StockSearch'>
         <section className='SearchSection'>
           <input 
@@ -119,7 +129,7 @@ const Home: React.FC = () => {
                     <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
                   </>
                 )}
-                {error && <p aria-live="assertive" style={{ color: 'red' }}>{error}</p>}
+                {error && <p  role="alert" aria-live="assertive" style={{ color: 'red' }}>{error}</p>}
                 {(stockPrice !== null) && !user && (
                   <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
                 )}
@@ -127,7 +137,7 @@ const Home: React.FC = () => {
                   <div className="BuyViewButtonsContainer">
                     <div className='BuyViewButtons'>
                       <button aria-label='Buy Stock' className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
-                      <button aria-label="View Stock DetailsS" className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                      <button aria-label="View Stock Details" className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
                     </div>
                   </div>
                 )}
@@ -168,30 +178,38 @@ const Home: React.FC = () => {
         <>
       
           {isModalOpen && (
-            <div className="ToBuyModal" aria-labelledby="Buy Stock Modal">
-              <div className="ModalContent">
-                <h2>Buy {stockName}</h2>
-                <div className="ModalBody">
-                  <label htmlFor="quantity">Quantity:</label>
-                  <input 
-                    aria-label="Enter the quantity here."
-                    id="quantity"
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="QuantityInput"
-                    min="1"
-                  />
-                  <p>
-                    Total Cost: £{stockPrice !== null ? (stockPrice * quantity).toFixed(2) : 'N/A'}
-                  </p>
-                </div>
-                <div className="ModalFooter">
-                  <button className="CancelButton" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                  <button className="ConfirmButton" onClick={handleBuyStock}>Confirm Purchase</button>
+            <FocusTrap>
+              <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
+                <div className="ModalContent">
+                  <header>
+                    <h2 id='BuyStockTitle'>Buy {stockName}</h2>
+                  </header>
+                  <div className="ModalBody">
+                    <main>
+                      <label htmlFor="quantity">Quantity:</label>
+                      <input 
+                        aria-label="Enter the quantity here."
+                        id="quantity"
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                        className="QuantityInput"
+                        min="1"
+                      />
+                      <p>
+                        Total Cost: £{stockPrice !== null ? (stockPrice * quantity).toFixed(2) : 'N/A'}
+                      </p>
+                    </main>
+                  </div>
+                  <div className="ModalFooter">
+                    <footer>
+                      <button className="CancelButton" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                      <button className="ConfirmButton" onClick={handleBuyStock}>Confirm Purchase</button>
+                    </footer>
+                  </div>
                 </div>
               </div>
-            </div>
+            </FocusTrap>
           )}
         </>
       ) : (

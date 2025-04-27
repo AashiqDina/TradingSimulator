@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Portfolio.css";
 import Loading from './Loading';
 import { useAuth } from "./AuthContext";
+import { FocusTrap } from 'focus-trap-react';
 
 interface AxiosErrorType {
   response?: { data: string; status: number; statusText: string };
@@ -326,19 +327,19 @@ const Portfolio = () => {
           <div className="LineOne"></div>
           <section className="QuickStats">
             <article className="Box1">
-              <h2>Invested</h2>
+              <h3>Invested</h3>
               <div className="Values">
                 <p>£{portfolio.totalInvested.toFixed(2)}</p>
               </div>
             </article>
             <article className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ValueColour}`}}>
-              <h2>Current Value</h2>
+              <h3>Current Value</h3>
               <div className="Values">
                 <p>£{portfolio.currentValue.toFixed(2)}</p>
               </div>
             </article>
             <article className="Box3" style={{ color: ProfitColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
-              <h2>{ProfitLossTitle}</h2>
+              <h3>{ProfitLossTitle}</h3>
               <div className="Values">
                 <p>£{portfolio.profitLoss.toFixed(2)}</p>
               </div>
@@ -364,7 +365,7 @@ const Portfolio = () => {
 
                   <tbody>
                     <tr>
-                      <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt="Stock Logo" /></td>
+                      <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt={`Stock Logo for ${CurrentBestStocks[0].name}`} /></td>
                       <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{CurrentBestStocks[0].name}</td>
                       <td style={{padding: "1rem 0rem 1rem 0rem"}}>{CurrentBestStocks[0].stock.quantity}</td>
                       <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(CurrentBestStocks[0].stock.purchasePrice * CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
@@ -409,7 +410,8 @@ const Portfolio = () => {
         </div>}
 
 
-          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">          
+          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button
+             aria-label={JumpTo === "#ToJump" ? "Jump to top" : "Jump to portfolio section"} className="ViewMore">          
             <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
             <div className={`ArrowTwo ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div></button>
           </a>
@@ -418,7 +420,7 @@ const Portfolio = () => {
           <div id="ToJump"></div>
 
           <section className="Filter">
-            <input type="text" onChange={(e) => setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
+            <input aria-label="Filter Stocks by Name" type="text" onChange={(e) => setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
             <select name="" id="" onChange={(e) => setFilteredOption(e.target.value)}>
               <option value="">Sort by</option>
               <option value="Oldest">Oldest</option>
@@ -428,29 +430,29 @@ const Portfolio = () => {
               <option value="ValueAsc">Value (Asc)</option>
               <option value="ValueDesc">Value (Desc)</option>
             </select>
-            <button onClick={FilterSearch}>Submit</button>
+            <button aria-label="Submit Filters" onClick={FilterSearch}>Submit</button>
           </section>
 
           <div className="StocksTable">
             <table className="Table">
               <thead>
                 <tr>
-                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                  <th style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th style={{paddingRight: "1rem"}}>Quantity</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}} className="PLTitle">Profit/Loss</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+                  <th scope="col" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
+                  <th scope="col" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
+                  <th scope="col" style={{paddingRight: "1rem"}}>Quantity</th>
+                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
+                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
+                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
+                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}} className="PLTitle">Profit/Loss</th>
+                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
+                  <th scope="col" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
 
                 </tr>
               </thead>
               <tbody>
                 {portfolio.stocks.map((stock: any, index: number) => (
-                  <tr key={index} style={{opacity: (ToDelete != null) ? ((ToDelete == index ) ? 1 : 0.5) : 1}}>
-                    <td><img className="StockLogos" src={StockLogoArray[index]} alt="Stock Logo" /></td>
+                  <tr key={index} style={{opacity: (ToDelete != null) ? ((ToDelete == index ) ? 1 : 0.25) : 1}}>
+                    <td><img className="StockLogos" src={StockLogoArray[index]} alt={`Stock Logo for ${StockNameArray[index]}`} /></td>
                     <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{StockNameArray[index]}</td>
                     <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stock.quantity}</td>
                     <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
@@ -462,8 +464,10 @@ const Portfolio = () => {
                       <div className="CrossContainer" onClick={() => {
                         handleDelete(index, stock)
                       }}>
-                        <div className="Cross1"></div>
-                        <div className="Cross2"></div>
+                        <button aria-label={`Click to delete ${StockNameArray[index]}`} style={{backgroundColor: "#00000000" }}>
+                          <div className="Cross1"></div>
+                          <div className="Cross2"></div>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -472,20 +476,27 @@ const Portfolio = () => {
             </table>
           </div>
           {ModalVisible && (
-            <div className="Modal">
-              <div className="ModalContent">
-                <h2>
-                    Delete <img className="DeleteLogo" src={ToDelete !== null ? StockLogoArray[ToDelete] : null} alt="" />{ToDelete !== null ? StockNameArray[ToDelete] : "this stock"} from your portfolio?
-                </h2>
-                <div className="ModalFooter">
-                  <button className="" onClick={() => {
-                    setModalVisibility(false);
-                    setToDelete(null);
-                  }}>Cancel</button>
-                  <button className="" onClick={handleTrueDelete}>Delete</button>
+            <FocusTrap>
+              <div className="Modal">
+                <div   role="dialog" 
+                  aria-labelledby="modalTitle" 
+                  aria-describedby="modalInputs"
+                  aria-hidden={!ModalVisible} 
+                  className="ModalContent">
+                  <h3 id="modalTitle">
+                      Delete <img className="DeleteLogo" src={ToDelete !== null ? StockLogoArray[ToDelete] : null} alt={ToDelete !== null ? `Stock Logo for ${StockNameArray[ToDelete]}` : "unknown stock"} />{ToDelete !== null ? StockNameArray[ToDelete] : "this stock"} from your portfolio?
+                  </h3>
+                  <div id="modalInputs" className="ModalFooter">
+                    <button aria-label="Cancel Delete" className="" onClick={() => {
+                      setModalVisibility(false);
+                      setToDelete(null);
+                    }}>Cancel</button>
+                    <button aria-label="Confirm Delete" className="" onClick={handleTrueDelete}>Delete</button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </FocusTrap>
+
           )}
         </>
       ) : (

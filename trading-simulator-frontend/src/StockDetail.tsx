@@ -130,23 +130,23 @@ const StockDetail: React.FC = () => {
 
   return (
     <>
-        <div className='TitleBox'>
-            <img className='TitleLogo' src={stockLogo} alt="Stock Logo" />
+        <header className='TitleBox'>
+            <img className='TitleLogo' src={stockLogo} alt={`Stock Logo for ${StockName}`} />
             <h1 className='Title'>{StockName}</h1>
             <span className='StockSymbol'>{symbol}</span>
-        </div>
+        </header>
         <section className='MainBody'>
             <div className='StockDetails'>
-              <div className='Selector'>
-                <button onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>Overview</button>
-                <button onClick={() => SwitchSection("StockData")} className={"StockData" + (DisplayedData == "StockData" ? "Selected" : "")}>Stock Data</button>
-                <button onClick={() => SwitchSection("OwnedStocks")} className={"OwnedStocks" + (DisplayedData == "OwnedStocks" ? "Selected" : "")}>Owned Stocks</button>
-                <button onClick={() => SwitchSection("News")} className={"News" + (DisplayedData == "News" ? "Selected" : "")}>News</button>
-                <button onClick={() => SwitchSection("AIAssistant")} className={"AIAssistant" + (DisplayedData == "AIAssistant" ? "Selected" : "")}>AI Assistant</button>
-              </div>
+              <article className='Selector'>
+                <button aria-pressed={DisplayedData === "CompanyInformation"} aria-label="View company information" onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>Overview</button>
+                <button aria-pressed={DisplayedData === "StockData"} aria-label="View stock data" onClick={() => SwitchSection("StockData")} className={"StockData" + (DisplayedData == "StockData" ? "Selected" : "")}>Stock Data</button>
+                <button aria-pressed={DisplayedData === "OwnedStocks"} aria-label="View owned stocks" onClick={() => SwitchSection("OwnedStocks")} className={"OwnedStocks" + (DisplayedData == "OwnedStocks" ? "Selected" : "")}>Owned Stocks</button>
+                <button aria-pressed={DisplayedData === "News"} aria-label="View stock related news" onClick={() => SwitchSection("News")} className={"News" + (DisplayedData == "News" ? "Selected" : "")}>News</button>
+                <button aria-pressed={DisplayedData === "AIAssistant"} aria-label="View AI assistant" onClick={() => SwitchSection("AIAssistant")} className={"AIAssistant" + (DisplayedData == "AIAssistant" ? "Selected" : "")}>AI Assistant</button>
+              </article>
               {
                   (DisplayedData == "CompanyInformation") && 
-                  <div className='CompanyInfoDisplayed'>
+                  <article className='CompanyInfoDisplayed'>
                       <div className='Description'>
                         <h3>Description</h3> 
                         <p>{StockCompanyDetails?.description != null ? StockCompanyDetails?.description : "Limited API Plan doesnt allow me to get the data"}</p>
@@ -184,11 +184,11 @@ const StockDetail: React.FC = () => {
                       <p className='StockDetailsTableData'> Phone: <p>{StockCompanyDetails?.phone != null ? StockCompanyDetails?.phone : "Unavailable"}</p></p>
                       </div>
                     </div>
-                  </div>
+                  </article>
               }
               {
                   (DisplayedData == "StockData") && 
-                  <div className='StockDataDisplayed'>
+                  <article className='StockDataDisplayed'>
                     <div className='ColumnOne'>
                       <div className='FiftyWeek'>
                         <h3>Last 52 Weeks:</h3>
@@ -203,7 +203,7 @@ const StockDetail: React.FC = () => {
                     <div className='ColumnTwo'>
                       <h3>Column 2</h3>
                     </div>
-                  </div>
+                  </article>
               }      
               {
                 // Need to do
@@ -220,14 +220,14 @@ const StockDetail: React.FC = () => {
               {
                 // Try the same one used in another project
                   (DisplayedData == "AIAssistant") && 
-                  <div className='ChatDisplayed'>
+                  <article className='ChatDisplayed'>
                     <div id='Chat' className='Chat'>
                       { UserPrompts.map((UserPrompts, index) => (
                         <>
                           {UserPrompts != "" && <div className='UserMessageDisplayed'>
                             <h2>{UserPrompts}</h2>
                           </div>}
-                          <div className='AiMessageDisplayed'>
+                          <div role="status" aria-live="polite" className='AiMessageDisplayed'>
                             {AiResponses[0] != "" && <h2>{AiResponses[index] || <AiLoading/>}</h2>}
                           </div>
                         </>
@@ -235,15 +235,15 @@ const StockDetail: React.FC = () => {
                       }
                     </div>
                     <div className='ChatQueryBar'>
-                      <input value={AIAssistantSearchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" />
-                      <button onClick={() => HandleAiResponse()}>Submit</button>
+                      <input aria-label="Ask a question about the stock"  value={AIAssistantSearchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" />
+                      <button aria-label="Submit query to AI" onClick={() => HandleAiResponse()}>Submit</button>
                     </div>
-                  </div>
+                  </article>
               }         
             </div>
-            <div className='InteractiveGraph'>
+            <article  aria-live="polite" aria-label={`Stock graph for ${StockName}`} className='InteractiveGraph'>
               <h2>{StockName} Graph</h2>
-            </div>
+            </article>
         </section>
     </>
   );
