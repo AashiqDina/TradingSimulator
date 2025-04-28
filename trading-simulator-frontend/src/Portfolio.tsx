@@ -3,13 +3,17 @@ import axios from "axios";
 import "./Portfolio.css";
 import Loading from './Loading';
 import { useAuth } from "./AuthContext";
-import { FocusTrap } from 'focus-trap-react';
+import CurrentBestStockTable from './PorfolioSections/CurrentBestStockTable'
+import QuickStats from "./PorfolioSections/QuickStats";
+import StocksTable from "./PorfolioSections/StocksTable";
 
 interface AxiosErrorType {
   response?: { data: string; status: number; statusText: string };
   message: string;
 }
 
+// Learnt how important it is to make my application modular from the beginning
+// and will be keeping this im mind while working on the ewst of this project
 const Portfolio = () => {
   const { user} = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
@@ -28,11 +32,7 @@ const Portfolio = () => {
   const [sorted, setSorted] = useState(false);
   const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
   const [JumpTo, setJumpTo] = useState("Top");
-
-
-
   const Fetched = useRef(false)
-
 
   const UpdateAllStocksInPortfolio = async () => {
     if (!user?.id) {
@@ -133,21 +133,6 @@ const Portfolio = () => {
       FilterSearch()
     } catch (error) {
       handleAxiosError(error)
-    }
-  }
-
-  let ProfitColour = "#45a049";
-  let ProfitLossTitle = "Profit";
-  let ValueColour = "#45a049";
-
-  if (portfolio) {
-    if (portfolio.profitLoss < 0) {
-      ProfitColour = "#bb1515";
-      ProfitLossTitle = "Loss";
-    }
-
-    if (portfolio.currentValue < portfolio.totalInvested) {
-      ValueColour = "#bb1515";
     }
   }
 
@@ -264,8 +249,6 @@ const Portfolio = () => {
       let OrgPortfolio = Filtered ? prevPortfolio : portfolio;
       let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
       let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
-      console.log("THISTHISTHSITHISHTIS:" , prevPortfolio)
-      console.log("THISTHISTHSITHISHTIS:" , prevStockNameArray)
 
 
       if(sorted && FilterSearchInput != ""){
@@ -312,8 +295,6 @@ const Portfolio = () => {
         setSLA(FurtherFilteredSLA);
         setSNA(FurtherFilteredSNA);
         setSorted(true)
-       
-    
   }
 
   //-------------------------------------------------------------------------------
@@ -325,93 +306,12 @@ const Portfolio = () => {
         <>
           <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
           <div className="LineOne"></div>
-          <section className="QuickStats">
-            <article className="Box1">
-              <h3>Invested</h3>
-              <div className="Values">
-                <p>£{portfolio.totalInvested.toFixed(2)}</p>
-              </div>
-            </article>
-            <article className="Box2" style={{ color: ValueColour, boxShadow: `0px 10px 10px ${ValueColour}`}}>
-              <h3>Current Value</h3>
-              <div className="Values">
-                <p>£{portfolio.currentValue.toFixed(2)}</p>
-              </div>
-            </article>
-            <article className="Box3" style={{ color: ProfitColour, boxShadow: `0px 10px 10px ${ProfitColour}`}}>
-              <h3>{ProfitLossTitle}</h3>
-              <div className="Values">
-                <p>£{portfolio.profitLoss.toFixed(2)}</p>
-              </div>
-            </article>
-          </section>
-          {CurrentBestStocks && CurrentBestStocks.length > 0 ? <h2 className="ProftibleTitle">Most Profitable Stock</h2> : null}
-          {CurrentBestStocks && CurrentBestStocks.length > 0 ? <div className="MostProfitableTable">
-            <section>
-              <table className="BestTable">
-                  <thead>
-                    <tr>
-                      <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                      <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                      <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
-                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
-                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
-                      <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                      <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
-                    </tr>
-                  </thead>
 
-                  <tbody>
-                    <tr>
-                      <td><img className="StockLogos" src={CurrentBestStocks[0].logo} alt={`Stock Logo for ${CurrentBestStocks[0].name}`} /></td>
-                      <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{CurrentBestStocks[0].name}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>{CurrentBestStocks[0].stock.quantity}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(CurrentBestStocks[0].stock.purchasePrice * CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{CurrentBestStocks[0].stock.currentPrice.toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(CurrentBestStocks[0].stock.quantity * CurrentBestStocks[0].stock.currentPrice).toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(CurrentBestStocks[0].stock.profitLoss).toFixed(2)} </td>
-                      <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((CurrentBestStocks[0].stock.currentPrice/CurrentBestStocks[0].stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                    </tr>
-                  </tbody>
-              </table>
-            </section>
-          </div> : 
-          <div className="MostProfitableTable">
-          <table className="BestTable">
-            <h2 className="ProftibleTitle">Most Profitable Stock</h2>
-              <thead>
-                <tr>
-                  <th className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                  <th  className="BestTableHeader" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th  className="BestTableHeader" style={{paddingRight: "1rem"}}>Quantity</th>
-                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
-                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}} >Profit/Loss</th>
-                  <th  className="BestTableHeader" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                  <th  className="BestTableHeader" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
-                </tr>
-              </thead>
+          <QuickStats portfolio={portfolio}/>
 
-              <tbody>
-                <tr>
-                  <td><img className="StockLogos" alt="Stock Logo" /></td>
-                  <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">Unknown</td>
-                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
-                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
-                  <td style={{padding: "1rem 0rem 1rem 0rem"}}>Data could not be loaded.</td>
-                  <td style={{padding: "1rem 0rem 1rem 1rem"}}>Data could not be loaded.</td>
-                  <td style={{padding: "1rem 1rem 1rem 0.3rem"}}>Data could not be loaded.</td>
-                </tr>
-              </tbody>
-          </table>
-        </div>}
+          <CurrentBestStockTable CurrentBestStocks={CurrentBestStocks}/>
 
-
-          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button
-             aria-label={JumpTo === "#ToJump" ? "Jump to top" : "Jump to portfolio section"} className="ViewMore">          
+          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">          
             <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
             <div className={`ArrowTwo ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div></button>
           </a>
@@ -419,85 +319,18 @@ const Portfolio = () => {
           <div id="Space"></div>
           <div id="ToJump"></div>
 
-          <section className="Filter">
-            <input aria-label="Filter Stocks by Name" type="text" onChange={(e) => setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
-            <select name="" id="" onChange={(e) => setFilteredOption(e.target.value)}>
-              <option value="">Sort by</option>
-              <option value="Oldest">Oldest</option>
-              <option value="Newest">Newest</option>
-              <option value="ProfitAsc">Profit (Asc)</option>
-              <option value="ProfitDesc">Profit (Desc)</option>
-              <option value="ValueAsc">Value (Asc)</option>
-              <option value="ValueDesc">Value (Desc)</option>
-            </select>
-            <button aria-label="Submit Filters" onClick={FilterSearch}>Submit</button>
-          </section>
-
-          <div className="StocksTable">
-            <table className="Table">
-              <thead>
-                <tr>
-                  <th scope="col" style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                  <th scope="col" style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th scope="col" style={{paddingRight: "1rem"}}>Quantity</th>
-                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Total Value</th>
-                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}} className="PLTitle">Profit/Loss</th>
-                  <th scope="col" style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                  <th scope="col" style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
-
-                </tr>
-              </thead>
-              <tbody>
-                {portfolio.stocks.map((stock: any, index: number) => (
-                  <tr key={index} style={{opacity: (ToDelete != null) ? ((ToDelete == index ) ? 1 : 0.25) : 1}}>
-                    <td><img className="StockLogos" src={StockLogoArray[index]} alt={`Stock Logo for ${StockNameArray[index]}`} /></td>
-                    <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{StockNameArray[index]}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stock.quantity}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{stock.currentPrice.toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
-                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton">
-                      <div className="CrossContainer" onClick={() => {
-                        handleDelete(index, stock)
-                      }}>
-                        <button aria-label={`Click to delete ${StockNameArray[index]}`} style={{backgroundColor: "#00000000" }}>
-                          <div className="Cross1"></div>
-                          <div className="Cross2"></div>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {ModalVisible && (
-            <FocusTrap>
-              <div className="Modal">
-                <div   role="dialog" 
-                  aria-labelledby="modalTitle" 
-                  aria-describedby="modalInputs"
-                  aria-hidden={!ModalVisible} 
-                  className="ModalContent">
-                  <h3 id="modalTitle">
-                      Delete <img className="DeleteLogo" src={ToDelete !== null ? StockLogoArray[ToDelete] : null} alt={ToDelete !== null ? `Stock Logo for ${StockNameArray[ToDelete]}` : "unknown stock"} />{ToDelete !== null ? StockNameArray[ToDelete] : "this stock"} from your portfolio?
-                  </h3>
-                  <div id="modalInputs" className="ModalFooter">
-                    <button aria-label="Cancel Delete" className="" onClick={() => {
-                      setModalVisibility(false);
-                      setToDelete(null);
-                    }}>Cancel</button>
-                    <button aria-label="Confirm Delete" className="" onClick={handleTrueDelete}>Delete</button>
-                  </div>
-                </div>
-              </div>
-            </FocusTrap>
-
-          )}
+          <StocksTable 
+            setFilterSearchInput={setFilterSearchInput}
+            setFilteredOption={setFilteredOption} 
+            FilterSearch={FilterSearch} portfolio={portfolio} 
+            ToDelete={ToDelete} 
+            StockLogoArray={StockLogoArray} 
+            StockNameArray={StockNameArray} 
+            ModalVisible={ModalVisible} 
+            handleDelete={handleDelete} 
+            setModalVisibility={setModalVisibility} 
+            setToDelete={setToDelete} 
+            handleTrueDelete={handleTrueDelete}/>
         </>
       ) : (
         <>

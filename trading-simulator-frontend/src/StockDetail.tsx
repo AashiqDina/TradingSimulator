@@ -6,6 +6,8 @@ import { StockApiInfo, CompanyProfile } from "./interfaces";
 import { useAuth } from "./AuthContext";
 import { StocksAI } from './StocksAI';
 import AiLoading from './AiLoading';
+import CompanyInformation from './StockDetailsSections/StockDetailsCompanyInformation'
+import StockDetails from './StockDetailsSections/StockDetailsStockData'
 
 
 interface AxiosErrorType {
@@ -145,65 +147,11 @@ const StockDetail: React.FC = () => {
                 <button aria-pressed={DisplayedData === "AIAssistant"} aria-label="View AI assistant" onClick={() => SwitchSection("AIAssistant")} className={"AIAssistant" + (DisplayedData == "AIAssistant" ? "Selected" : "")}>AI Assistant</button>
               </article>
               {
-                  (DisplayedData == "CompanyInformation") && 
-                  <article className='CompanyInfoDisplayed'>
-                      <div className='Description'>
-                        <h3>Description</h3> 
-                        <p>{StockCompanyDetails?.description != null ? StockCompanyDetails?.description : "Limited API Plan doesnt allow me to get the data"}</p>
-                    </div>
-                    <div className='StockDetailsContainer'>
-                      <div className='StockDetailsColumnOne'>
-                      <p className='StockDetailsTableData'>CEO: <p>{StockCompanyDetails?.ceo  != null ? StockCompanyDetails?.ceo : "Unavailable"}</p></p>
-                      <p className='StockDetailsTableData'>Sector: <p>{StockCompanyDetails?.sector != null ? StockCompanyDetails?.sector : "Unavailable"}</p></p>
-                      </div>
-                      <div className='StockDetailsColumnTwo'>
-                      <p className='StockDetailsTableData'>Exchange: <p>{StockCompanyDetails?.exchange != null ? StockCompanyDetails?.exchange : "Unavailable"}</p></p>
-                      <p className='StockDetailsTableData'>Industry: <p>{StockCompanyDetails?.industry != null ? StockCompanyDetails?.industry : "Unavailable"}</p></p>
-                      </div>
-                      <div className='StockDetailsColumnThree'>
-                        <p className='StockDetailsTableData'>Mic Code: <p>{StockCompanyDetails?.micCode != null ? StockCompanyDetails?.micCode : "Unavailable"}</p></p>
-                        <p className='StockDetailsTableData'>Type: <p>{StockCompanyDetails?.type != null ? StockCompanyDetails?.type : "Unavailable"}</p></p>
-                      </div>
-                      <div className='StockDetailsColumnFour'>
-                      <p className='StockDetailsTableData'>Employees: <p>{StockCompanyDetails?.employees != null ? StockCompanyDetails?.employees : "Unavailable"}</p></p>
-                            <p className='StockDetailsAddress'><p>Address: </p>
-                            {StockCompanyDetails?.address != null ? 
-                                <>
-                                  {StockCompanyDetails?.address} <br />
-                                  {StockCompanyDetails?.address2} {StockCompanyDetails?.address2 == null ? <br /> : ""} 
-                                  {StockCompanyDetails?.city} <br /> 
-                                  {StockCompanyDetails?.zip + " " + StockCompanyDetails?.state} <br /> 
-                                  {StockCompanyDetails?.country}
-                                </>
-                              : "Unavailable"}
-                            </p>
-                              
-                      </div>
-                      <div className='StockDetailsColumnFive'>
-                      <p className='StockDetailsTableData'> Website: <a href={StockCompanyDetails?.website}>{StockCompanyDetails?.website != null ? StockCompanyDetails?.website : "Unavailable"}</a></p>
-                      <p className='StockDetailsTableData'> Phone: <p>{StockCompanyDetails?.phone != null ? StockCompanyDetails?.phone : "Unavailable"}</p></p>
-                      </div>
-                    </div>
-                  </article>
+                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails}/>
               }
               {
-                  (DisplayedData == "StockData") && 
-                  <article className='StockDataDisplayed'>
-                    <div className='ColumnOne'>
-                      <div className='FiftyWeek'>
-                        <h3>Last 52 Weeks:</h3>
-                        <p>High: {BasicStockData?.fiftyTwoWeek.high.toFixed(2)}</p>
-                        <p>High Change: {BasicStockData?.fiftyTwoWeek.highChange.toFixed(2)}  <span style={BasicStockData?.fiftyTwoWeek.highChangePercent != null && BasicStockData?.fiftyTwoWeek.highChangePercent > 0 ? {color: "#3e9143"} : {color: "red"}}> {BasicStockData?.fiftyTwoWeek.highChangePercent.toFixed(2)}%</span></p>
-                        <p>Low: {BasicStockData?.fiftyTwoWeek.low.toFixed(2)}</p>
-                        <p>Low Change: {BasicStockData?.fiftyTwoWeek.lowChange.toFixed(2)}  <span style={BasicStockData?.fiftyTwoWeek.lowChangePercent != null && BasicStockData?.fiftyTwoWeek.lowChangePercent > 0 ? {color: "#3e9143"} : {color: "red"}}> {BasicStockData?.fiftyTwoWeek.lowChangePercent.toFixed(2)}%</span></p>
+                  (DisplayedData == "StockData") && <StockDetails BasicStockData={BasicStockData} />
 
-
-                      </div>
-                    </div>
-                    <div className='ColumnTwo'>
-                      <h3>Column 2</h3>
-                    </div>
-                  </article>
               }      
               {
                 // Need to do
