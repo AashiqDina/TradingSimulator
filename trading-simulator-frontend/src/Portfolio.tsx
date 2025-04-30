@@ -320,6 +320,7 @@ const Portfolio = () => {
           <div id="ToJump"></div>
 
           <StocksTable 
+            FilterSearchInput={FilterSearchInput}
             setFilterSearchInput={setFilterSearchInput}
             setFilteredOption={setFilteredOption} 
             FilterSearch={FilterSearch} portfolio={portfolio} 

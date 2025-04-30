@@ -2,7 +2,7 @@ export default function StocksTable(props: any){
     return (
         <>
         <section className="Filter">
-            <input type="text" onChange={(e) => props.setFilterSearchInput(e.target.value)} placeholder="Enter stock symbol (e.g, AAPL)"/>
+            <input type="text" value={props.FilterSearchInput} onChange={(e) => props.setFilterSearchInput(e.target.value.toUpperCase())} placeholder="Enter stock symbol (e.g, AAPL)"/>
             <select name="" id="" onChange={(e) => props.setFilteredOption(e.target.value)}>
               <option value="">Sort by</option>
               <option value="Oldest">Oldest</option>

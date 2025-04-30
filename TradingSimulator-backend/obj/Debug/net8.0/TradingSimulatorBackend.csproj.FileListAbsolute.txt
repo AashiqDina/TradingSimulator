@@ -396,3 +396,6 @@ C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\TradingS.0D647A80.Up2Date
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\TradingSimulatorBackend.genruntimeconfig.cache
 C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\ref\TradingSimulatorBackend.dll
+C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\bin\Debug\net8.0\TradingSimulatorBackend.staticwebassets.endpoints.json
+C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\Aashi\projects\TradingSimulator\TradingSimulator-backend\obj\Debug\net8.0\staticwebassets\msbuild.TradingSimulatorBackend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props

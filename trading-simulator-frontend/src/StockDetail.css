@@ -108,6 +108,14 @@ a{
 
 }
 
+.RowOne{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 3rem;
+}
+
 .ChatDisplayed{
     margin-top: 1rem;
     margin-bottom: 0.5rem;
