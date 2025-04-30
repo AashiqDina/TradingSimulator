@@ -6,16 +6,14 @@ import { useAuth } from "./AuthContext";
 import CurrentBestStockTable from './PorfolioSections/CurrentBestStockTable'
 import QuickStats from "./PorfolioSections/QuickStats";
 import StocksTable from "./PorfolioSections/StocksTable";
-
-interface AxiosErrorType {
-  response?: { data: string; status: number; statusText: string };
-  message: string;
-}
+import getPortfolio from "./Functions/GetPortfolio";
+import handleAxiosError from "./Functions/handleAxiosError";
+import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
 const Portfolio = () => {
-  const { user} = useAuth();
+  const { user } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [prevPortfolio, setPrevPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
@@ -33,83 +31,6 @@ const Portfolio = () => {
   const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
   const [JumpTo, setJumpTo] = useState("Top");
   const Fetched = useRef(false)
-
-  const UpdateAllStocksInPortfolio = async () => {
-    if (!user?.id) {
-      console.error("User ID is not available");
-      return;
-    }
-  
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/api/portfolio/${user?.id}/stocks/update`
-      );
-  
-      console.log("Stocks updated:", response.data);
-    } catch (error) {
-      handleAxiosError(error);
-    }
-  };
-  
-  const fetchPortfolioData = async () => {
-    if (!user?.id) {
-      console.error("User ID is not available for fetching portfolio");
-      return;
-    }
-
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/portfolio/${user?.id}`
-      );
-      console.log("Fetched portfolio data:", response.data); 
-
-
-      if (response.data) {
-        setPortfolio(response.data);
-
-        const stocks = response.data.stocks.map((stock: any) => ({
-          symbol: stock.symbol
-        }));
-
-        if(StockLogoArray.length == 0){
-          for (const {symbol} of stocks){
-            try{
-              const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
-              console.log(response2.data.image)
-              setSLA(preSLA => {
-                return [...preSLA, response2.data.image]
-              });
-              const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
-              console.log(response3.data)
-              setSNA(prevSNA => {
-                return [...prevSNA, response3.data]
-              })
-
-            }
-            catch (error){
-              handleAxiosError(error)
-            }
-            setCurrentBestStocks(response, )
-          };
-        }
-
-      } else {
-        console.error("No portfolio data found");
-      }
-    } catch (error) {
-      handleAxiosError(error);
-    }
-  };
-
-  const handleAxiosError = (error: unknown) => {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosErrorType;
-      const message = axiosError.response ? axiosError.response.data : axiosError.message;
-      console.error("Error:", message);
-    } else {
-      console.error("Unknown error:", error);
-    }
-  };
 
   function handleDelete(index: number, stock: any){
     setToDelete(index);
@@ -140,8 +61,12 @@ const Portfolio = () => {
     if ((user?.id && !Fetched.current)) {
       Fetched.current = true;
       const updateAndFetch = async () => {
-        await UpdateAllStocksInPortfolio();
-        await fetchPortfolioData();
+        await updateAllStocksInPortfolio({ user });
+        const result = await getPortfolio({ user });
+        setPortfolio(result.portfolio);
+        setCurrentBestStocks(result.CurrentBestStocks);
+        setSLA(result.StockLogoArray);
+        setSNA(result.StockNameArray);
       };
 
       updateAndFetch();
@@ -171,7 +96,11 @@ const Portfolio = () => {
     if(ToDelete == null && ToReload){
       const FetchPortfolioData = async () => {
         setToReload(false)
-        await fetchPortfolioData();
+        const result = await getPortfolio({ user });
+        setPortfolio(result.portfolio);
+        setCurrentBestStocks(result.CurrentBestStocks);
+        setSLA(result.StockLogoArray);
+        setSNA(result.StockNameArray);
       }
       FetchPortfolioData();
     }

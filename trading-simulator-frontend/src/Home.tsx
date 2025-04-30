@@ -201,12 +201,10 @@ const Home: React.FC = () => {
                       </p>
                     </main>
                   </div>
-                  <div className="ModalFooter">
-                    <footer>
+                  <footer className="ModalFooter">
                       <button className="CancelButton" onClick={() => setIsModalOpen(false)}>Cancel</button>
                       <button className="ConfirmButton" onClick={handleBuyStock}>Confirm Purchase</button>
-                    </footer>
-                  </div>
+                  </footer>
                 </div>
               </div>
             </FocusTrap>

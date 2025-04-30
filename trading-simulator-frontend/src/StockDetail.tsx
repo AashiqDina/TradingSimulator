@@ -8,6 +8,7 @@ import { StocksAI } from './StocksAI';
 import AiLoading from './AiLoading';
 import CompanyInformation from './StockDetailsSections/StockDetailsCompanyInformation'
 import StockDetails from './StockDetailsSections/StockDetailsStockData'
+import StockDetailsOwnedStocks from './StockDetailsSections/StockDetailsOwnedStocks';
 
 
 interface AxiosErrorType {
@@ -155,9 +156,7 @@ const StockDetail: React.FC = () => {
               }      
               {
                 // Need to do
-                  (DisplayedData == "OwnedStocks") && 
-                  <div>
-                  </div>
+                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} Symbol={symbol}/>
               } 
               {
                 // Try AlphaVantage API
