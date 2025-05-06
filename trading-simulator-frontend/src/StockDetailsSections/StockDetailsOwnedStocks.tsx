@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getPortfolio from "../Functions/GetPortfolio";
 
 type Stock = {
@@ -10,7 +10,7 @@ type Stock = {
     profitLoss: number;
   };
   
-  type Portfolio = {
+type Portfolio = {
     id: string;
     userId: string;
     user: any;
@@ -42,7 +42,7 @@ export default function StockDetailsOwnedStocks(props: any){
         setSLA(result.StockLogoArray)
         setSNA(result.StockNameArray)
     
-        if(Portfolio && StockLogoArray && StockNameArray){
+        if(result.portfolio && result.StockLogoArray && result.StockNameArray){
             for(let i = 0; i<(Portfolio.stocks.length); i++){
                 if(Portfolio.stocks[i].symbol == props.symbol){
                 FilteredStocks.push(Portfolio.stocks[i]);
@@ -58,7 +58,9 @@ export default function StockDetailsOwnedStocks(props: any){
         }
     }
 
-    GetData()
+    useEffect(() => {
+      GetData();
+    },[])
 
     return(
         <>
