@@ -156,7 +156,7 @@ const StockDetail: React.FC = () => {
               }      
               {
                 // Need to do
-                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} Symbol={symbol}/>
+                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={symbol}/>
               } 
               {
                 // Try AlphaVantage API

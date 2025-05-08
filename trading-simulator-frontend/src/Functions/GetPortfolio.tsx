@@ -31,10 +31,8 @@ export default async function getPortfolio(props: any){
                     for (const {symbol} of stocks){
                       try{
                         const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
-                        console.log(response2.data.image)
                         StockLogoArray.push(response2.data.image);
                         const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
-                        console.log(response3.data)
                         StockNameArray.push(response3.data);
           
                       }
