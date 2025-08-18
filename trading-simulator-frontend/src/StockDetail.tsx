@@ -9,6 +9,7 @@ import AiLoading from './AiLoading';
 import CompanyInformation from './StockDetailsSections/StockDetailsCompanyInformation'
 import StockDetails from './StockDetailsSections/StockDetailsStockData'
 import StockDetailsOwnedStocks from './StockDetailsSections/StockDetailsOwnedStocks';
+import StockDetailsNews from './StockDetailsSections/StockDetailsNews';
 
 
 interface AxiosErrorType {
@@ -155,14 +156,11 @@ const StockDetail: React.FC = () => {
 
               }      
               {
-                // Need to do
                   (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={symbol}/>
               } 
               {
                 // Try AlphaVantage API
-                  (DisplayedData == "News") && 
-                  <div>
-                  </div>
+                  (DisplayedData == "News") && <StockDetailsNews Symbol={symbol}/>
               } 
               {
                 // Try the same one used in another project

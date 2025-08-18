@@ -34,7 +34,6 @@ export default async function getPortfolio(props: any){
                         StockLogoArray.push(response2.data.image);
                         const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
                         StockNameArray.push(response3.data);
-          
                       }
                       catch (error){
                         handleAxiosError(error)

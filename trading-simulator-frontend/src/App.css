@@ -1,9 +1,9 @@
 
 body {
   animation-name: BodyBackground;
-    animation-duration: 15s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+  animation-duration: 15s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
   color: white;
   font-family: Arial, sans-serif;
 }
@@ -14,9 +14,9 @@ body {
 
 @keyframes BodyBackground{
   from{
-    background-color: rgb(11, 16, 18);
+    background-color: rgb(5, 15, 19);
   }
   to{
-    background-color: rgb(14, 19, 23);
+    background-color: rgb(7, 17, 20);
   }
 }

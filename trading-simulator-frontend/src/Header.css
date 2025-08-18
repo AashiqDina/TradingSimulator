@@ -5,11 +5,10 @@
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
-    background-color: rgb(13, 15, 17);
+    background-color: rgba(28, 26, 48, 0);
     color: white;
     padding: 0.5rem 1rem;
     position: relative;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     height: 100%;
   }
 
@@ -68,7 +67,7 @@
     height: 4px;
     border-radius: 2px;
     width: 100%;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.5s ease-in-out;
   }
 
   .Hamburger1.Open{
@@ -90,15 +89,21 @@
     position: absolute;
     top: 3.5rem;
     left: 0rem;
-    background-color: rgb(13, 15, 17);
+    background-color: rgba(4, 9, 11, 0.86);
     color: white;
-    border-radius: 0.6rem;
+    border-radius: 0rem 1rem 1rem 0rem;
+    border-color: #ffffffa8;
+    border-style: solid;
+    border-width: 1px 1px 1px 0px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 100;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     margin-top: 1rem;
     z-index: 1;
+    transition: all 0.5s ease-in-out;
   }
   
   .DropdownMenu ul {
@@ -118,14 +123,8 @@
   }
   
   .DropdownMenu li a:hover {
-    background: linear-gradient(90deg, #e2e2e2 25%, #45a049 50%, #e2e2e2 75%);
-    background-size: 200% 100%;
-    animation-name: shimmer;
-    animation-iteration-count: infinite;
-    animation-duration: 10s;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #45d44ca9;
+
   }
 
   .HeaderUsername{
@@ -152,6 +151,33 @@
     height: 2px;
     border-radius: 1rem;
     background-color: rgba(255, 255, 255, 0.009);
+  }
+
+  .LogoutButton{
+    border-radius: 10rem;
+    padding: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-size: 1.1rem;
+    background-color: #e2e2e2;
+    color: #45a049;
+    font-weight: 900;
+    border-width: 1px;
+    border-color: #45a04973;
+    border-style: solid;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .LogoutButton:hover{
+    background-color: #45a049;
+    color:  white;
+    border-color: white;
+  }
+
+  .LogoutButton:focus{
+    background-color: #45a049;
+    color:  white;
+    border-color: white;
   }
   
 @keyframes shimmer {

@@ -8,7 +8,6 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false); 
   const { user, logout } = useAuth();
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const MouseEnter = () => setMenuOpen(true)
   const MouseLeave = () => setMenuOpen(false)
   const navigate = useNavigate();
 
@@ -47,8 +46,7 @@ const Header: React.FC = () => {
 
 
       
-      {menuOpen && (
-        <nav aria-label="Menu" className="DropdownMenu" onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+        <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -1000, opacity: 0}: {zIndex: 1000, opacity: 1}}>
           <ul>
             <li>
               <Link role="button" to="/" onClick={toggleMenu}>
@@ -68,7 +66,7 @@ const Header: React.FC = () => {
             {user ? (
               <>
                 <li>
-                  <button onClick={handleLogout}>Logout</button>
+                  <button className="LogoutButton" onClick={handleLogout}>Logout</button>
                 </li>
               </>
             ) : (
@@ -76,7 +74,6 @@ const Header: React.FC = () => {
             )}
           </ul>
         </nav>
-      )}
     </header>
   );
 };

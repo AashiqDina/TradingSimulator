@@ -22,6 +22,8 @@
 }
 
 .StockSearchInput{
+  outline: none;
+    border: none;
     border-radius: 10rem;
     min-width: 20%;
     max-width: 80%;
@@ -30,11 +32,14 @@
     font-family: Inter, sans-serif;;
     font-weight: 600;
     box-shadow: 0px 5px 10px 1px #3747384c;
+    transition: all 0.4s ease-in-out;
 }
 
 .StockSearchInput:focus{
-    outline-color: #45a049;
+    outline: 1px #45a04979 solid;
+    box-shadow: 0 0 4rem 0.4rem #45a049cb;
 }
+
 
 .StockSearchButton{
     border-radius: 10rem;
@@ -147,14 +152,6 @@
 
   
 
-  @keyframes BodyBackground{
-    from{
-      background-color: rgb(11, 16, 18);
-    }
-    to{
-      background-color: rgb(14, 19, 23);
-    }
-  }
 
   .StockLogo{
     margin-right: 0.5rem;

@@ -17,7 +17,7 @@
 }
 
 .TheLogo > h2:hover{
-    background: linear-gradient(90deg, #ffffff 25%, #45a049 50%, #ffffff 75%);
+    background: linear-gradient(90deg, #ffffff 25%, #45a04974 50%, #ffffff 75%);
     background-size: 200% 100%;
     animation-name: shimmer;
     animation-iteration-count: 1;

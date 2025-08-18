@@ -88,6 +88,7 @@ const Portfolio = () => {
   
       combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
       
+      console.log("Final Recieved", combined)
       setCurrentBestStocks(combined);
     }
   }, [portfolio, StockLogoArray, StockNameArray]);

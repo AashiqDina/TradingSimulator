@@ -93,12 +93,13 @@ namespace TradingSimulator_Backend.Services
 
             var result = await FetchStockInfoFromApi(symbol);
 
-            if(result == null){
+            if(result == null || string.IsNullOrWhiteSpace(result.Name)){
                 Console.WriteLine("Unable to find name, returning symbol");
                 return symbol;
             }
 
             if(result != null){
+                Console.WriteLine($"Fetched {symbol} → Name: '{result.Name}'");
                 _stockApiInfoCache[symbol] = result;
             }
 
@@ -197,6 +198,14 @@ namespace TradingSimulator_Backend.Services
 
             var json = await response.Content.ReadAsStringAsync();
 
+            var data = JObject.Parse(json);
+
+            if (data["status"]?.ToString() == "error")
+            {
+                Console.WriteLine($"API error for {symbol}: {json}");
+                return null;
+            }
+
             try
             {
                 var stockData = JsonConvert.DeserializeObject<StockResponse>(json);
@@ -220,6 +229,14 @@ namespace TradingSimulator_Backend.Services
             }
 
             var json = await response.Content.ReadAsStringAsync();
+
+            var data = JObject.Parse(json);
+
+            if (data["status"]?.ToString() == "error")
+            {
+                Console.WriteLine($"API error for {symbol}: {json}");
+                return (null, null);
+            }
 
             try
             {
@@ -251,7 +268,14 @@ namespace TradingSimulator_Backend.Services
             var json = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"Raw API Response: {json}");
 
-            
+            var data = JObject.Parse(json);
+
+            if (data["status"]?.ToString() == "error")
+            {
+                Console.WriteLine($"API error for {symbol}: {json}");
+                return null;
+            }
+
             try{
                 var stockInfo = JsonConvert.DeserializeObject<StockApiInfo>(json);
 
@@ -273,6 +297,14 @@ namespace TradingSimulator_Backend.Services
 
             var json = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"Raw Company Profile API Response: {json}");
+
+            var data = JObject.Parse(json);
+
+            if (data["status"]?.ToString() == "error")
+            {
+                Console.WriteLine($"API error for {symbol}: {json}");
+                return null;
+            }
 
             try{
                 var CompanyProfile = JsonConvert.DeserializeObject<CompanyProfile>(json);

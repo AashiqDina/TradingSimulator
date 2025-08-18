@@ -12,6 +12,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.3",
     "react-scripts": "^5.0.1",
+    "realtime-newsapi": "^1.1.2",
     "recharts": "^2.15.1",
     "web-vitals": "^2.1.4",
     "yahoo-finance2": "^2.13.3"
@@ -47,6 +48,7 @@
     "@types/jest": "^29.5.14",
     "@types/react-dom": "^19.0.3",
     "@types/recharts": "^1.8.29",
+    "@types/socket.io-client": "^1.4.36",
     "@types/testing-library__react": "^10.0.1",
     "jest": "^27.5.1"
   }

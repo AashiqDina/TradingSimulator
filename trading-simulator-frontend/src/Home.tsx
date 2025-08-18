@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   const [stockLogo, setStockLogo] = useState<string>('');
   const [stockName, setStockName] = useState<string>('');
   const [stockQuickData, setStockQuickData] = useState<StockInfoResponse | null>(null)
-  const [stockFound, setFound] = useState(false)
+  const [stockFound, setFound] = useState<boolean | null>(null)
   const [error, setError] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
@@ -47,21 +47,36 @@ const Home: React.FC = () => {
   const searchStock = async () => {
     try {
       setError('');
-      setFound(false)
+      setFound(true)
       const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
       setStockPrice(response.data.price);
-      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
-      setStockLogo(response2.data.image);
-      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
-      setStockName(response3.data);
-      const response4 = await axios.get<StockInfoResponse>(`http://localhost:3000/api/stocks/GetStockInfo/${stockSymbol}`);
-      setStockQuickData(response4.data);
-
     } catch (err) {
-      setError('Stock not found');
-      setFound(true);
+      setError('Stock Price not found');
+      setFound(false);
       setStockPrice(null);
     }
+    try{
+      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
+      setStockLogo(response2.data.image);
+    } catch (err){
+      setError(error + ' | Stock Logo not found');
+      setFound(false);
+    }
+    try{
+      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
+      setStockName(response3.data);
+    } catch (err){
+      setError(error + ' | Stock Name not found');
+      setFound(false);
+    }
+    try{
+      const response4 = await axios.get<StockInfoResponse>(`http://localhost:3000/api/stocks/GetStockInfo/${stockSymbol}`);
+      setStockQuickData(response4.data);
+    } catch (err) {
+      setError(error + ' | Stock Data not found');
+      setFound(false);
+    }
+    console.log(error)
   };
 
   const handleBuyStock = async () => {
@@ -120,7 +135,7 @@ const Home: React.FC = () => {
             />
           <button className='StockSearchButton' onClick={searchStock}>Search</button>
         </section>
-        {(!stockFound && (stockPrice !== null) &&
+        {(stockFound && (stockPrice !== null) &&
           <section className='CompleteSearchResult'>
             <article className='SearchResult'>
                 {stockPrice !== null && (
@@ -165,7 +180,7 @@ const Home: React.FC = () => {
               </article>
             </section>
         )}
-        {(stockFound && 
+        {(stockFound != null && !stockFound && 
           <>
             <div className='StockNotFound'>
                 <h2>Stock Not Found</h2>
