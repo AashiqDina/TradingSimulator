@@ -51,7 +51,6 @@ const Portfolio = () => {
       setModalVisibility(false)
       setToDeleteStock(null)
       setToDelete(null)
-      FilterSearch()
     } catch (error) {
       handleAxiosError(error)
     }
@@ -142,91 +141,6 @@ const Portfolio = () => {
     }
   }, [FilteredOption]);
   
-
-  function FilterSearch(){
-    if(FilterSearchInput == "" && FilteredOption == ""){
-      if(Filtered){
-        setPortfolio(prevPortfolio);
-        setSLA(prevStockLogoArray);
-        setSNA(prevStockNameArray);
-        setFiltered(false);
-        setSorted(false)
-        return
-      }
-      return
-    }
-    
-    let SetOriginalPortfolio = portfolio;
-    let SetOriginalStockLogoArray = StockLogoArray;
-    let SetOriginalStockNameArray = StockNameArray;
-    
-    if(!Filtered){
-      setPrevPortfolio(SetOriginalPortfolio);
-      setPrevSLA(SetOriginalStockLogoArray);
-      setPrevSNA(SetOriginalStockNameArray);
-    }
-      setFiltered(true)
-
-      let FilteredPortfolio = null;
-      let FilteredStocks = [];
-      let NewSLA = []
-      let NewSNA = []
-      
-      let CurrentValue = 0
-      let ProfitLoss = 0
-      let TotalInvested = 0
-
-      let OrgPortfolio = Filtered ? prevPortfolio : portfolio;
-      let OrgSLA = Filtered ? prevStockLogoArray : StockLogoArray;
-      let OrgSNA = Filtered ? prevStockNameArray : StockNameArray;
-
-
-      if(sorted && FilterSearchInput != ""){
-        OrgPortfolio = portfolio;
-        OrgSLA = StockLogoArray;
-        OrgSNA = StockNameArray;
-      }
-
-      if(FilterSearchInput != ""){
-        for(let i = 0; i<(OrgPortfolio.stocks.length); i++){
-          if(OrgPortfolio.stocks[i].symbol == FilterSearchInput.toUpperCase()){
-            FilteredStocks.push(OrgPortfolio.stocks[i]);
-            NewSLA.push(OrgSLA[i]);
-            NewSNA.push(OrgSNA[i]);
-            
-            CurrentValue += OrgPortfolio.stocks[i].totalValue;
-            ProfitLoss += OrgPortfolio.stocks[i].profitLoss;
-            TotalInvested += OrgPortfolio.stocks[i].purchasePrice * OrgPortfolio.stocks[i].quantity;
-          }
-        }
-        FilteredPortfolio = {currentValue: CurrentValue, id: OrgPortfolio.id, profitLoss: ProfitLoss, stocks: FilteredStocks, totalInvested: TotalInvested, user: OrgPortfolio.user, userId: OrgPortfolio.userId}
-      }
-      else {
-        FilteredPortfolio = OrgPortfolio;
-        NewSLA = OrgSLA;
-        NewSNA = OrgSNA;
-      }
-      
-      let FurtherFilteredPorfolio = FilteredPortfolio;
-      let FurtherFilteredSLA = NewSLA;
-      let FurtherFilteredSNA = NewSNA;
-
-      if(FilteredPortfolio == null){
-        FurtherFilteredPorfolio = portfolio
-      }
-      if(NewSLA.length == 0){
-        FurtherFilteredSLA = StockLogoArray
-      }
-      if(NewSNA.length == 0){
-        FurtherFilteredSNA = StockNameArray
-      }
-
-        setPortfolio(FurtherFilteredPorfolio);
-        setSLA(FurtherFilteredSLA);
-        setSNA(FurtherFilteredSNA);
-        setSorted(true)
-  }
-
   //-------------------------------------------------------------------------------
   // HTML SECTION BELOW
   //-------------------------------------------------------------------------------
@@ -253,7 +167,7 @@ const Portfolio = () => {
             FilterSearchInput={FilterSearchInput}
             setFilterSearchInput={setFilterSearchInput}
             setFilteredOption={setFilteredOption} 
-            FilterSearch={FilterSearch} portfolio={portfolio} 
+            portfolio={portfolio} 
             ToDelete={ToDelete} 
             StockLogoArray={StockLogoArray} 
             StockNameArray={StockNameArray} 

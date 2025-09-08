@@ -59,8 +59,7 @@ const Home: React.FC = () => {
       const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
       setStockLogo(response2.data.image);
     } catch (err){
-      setError(error + ' | Stock Logo not found');
-      setFound(false);
+      setError(error + ' | Stock Logo not found |');
     }
     try{
       const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
@@ -140,7 +139,7 @@ const Home: React.FC = () => {
             <article className='SearchResult'>
                 {stockPrice !== null && (
                   <>
-                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt={`${stockName}, " Logo"`} /> {stockName} </h3>
+                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt={`${stockName},  Logo"`} /> {stockName} </h3>
                     <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
                   </>
                 )}

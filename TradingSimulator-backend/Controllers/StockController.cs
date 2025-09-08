@@ -20,7 +20,7 @@ namespace TradingSimulator_Backend.Controllers
             _context = context; 
         }
 
-        [HttpGet("{symbol}")]
+        [HttpGet("{*symbol}")]
         public async Task<IActionResult> GetStockPrice(string symbol)
         {
             var price = await _stockService.GetStockPriceAsync(symbol);
@@ -29,7 +29,7 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(new { Symbol = symbol, Price = price });
         }
 
-        [HttpGet("StockImage/{symbol}")]
+        [HttpGet("StockImage/{*symbol}")]
         public async Task<IActionResult> GetStockImage(string symbol)
         {
             var img = await _stockService.GetStockImage(symbol);
@@ -37,7 +37,7 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(new { Symbol = symbol, Image = img });
         }
 
-        [HttpGet("GetStockName/{symbol}")]
+        [HttpGet("GetStockName/{*symbol}")]
         public async Task<IActionResult> GetStockName(string symbol)
         {
             var name = await _stockService.ConvertSymbolToName(symbol);
@@ -45,7 +45,7 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(name);
         }
 
-        [HttpGet("GetStockInfo/{symbol}")]
+        [HttpGet("GetStockInfo/{*symbol}")]
         public async Task<IActionResult> GetStockInfo(string symbol)
         {
             var stockData = await _stockService.GetQuickData(symbol);
@@ -66,7 +66,7 @@ namespace TradingSimulator_Backend.Controllers
             });
         }
 
-        [HttpGet("GetStockQuoteInfo/{symbol}")]
+        [HttpGet("GetStockQuoteInfo/{*symbol}")]
         public async Task<IActionResult> GetStockQuoteInfo(string symbol)
         {
             var quoteData = await _stockService.FetchStockInfo(symbol);
@@ -101,7 +101,7 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(stocks);
         }
 
-        [HttpGet("GetCompanyDetails/{symbol}")]
+        [HttpGet("GetCompanyDetails/{*symbol}")]
         public async Task<IActionResult> GetCompanyProfile(string symbol){
             
             if (string.IsNullOrEmpty(symbol)) 

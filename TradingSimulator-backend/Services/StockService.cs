@@ -11,7 +11,7 @@ namespace TradingSimulator_Backend.Services
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "apikey";
+        private readonly string _apiKey = "apiKey";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
@@ -219,6 +219,7 @@ namespace TradingSimulator_Backend.Services
 
         private async Task<(string, string)> FetchLogoAndNameFromApi(string symbol)
         {
+            var encodedSymbol = Uri.EscapeDataString(symbol);
             var url = $"https://api.twelvedata.com/logo?symbol={symbol}&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
@@ -238,22 +239,15 @@ namespace TradingSimulator_Backend.Services
                 return (null, null);
             }
 
-            try
-            {
-                var stockData = JsonConvert.DeserializeObject<StockResponseNameLogo>(json);
+            string logo = data["logo_base"]?.ToString()
+                        ?? data["url"]?.ToString()
+                        ?? data["logo_quote"]?.ToString();
 
-                if (stockData?.Meta?.name == null)
-                {
-                    return (stockData?.url, "Unknown Company");
-                }
+            string name = data["meta"]?["name"]?.ToString()
+                        ?? data["meta"]?["symbol"]?.ToString()
+                        ?? "Unknown";
 
-                return (stockData.url, stockData.Meta.name);
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"Error deserializing response for symbol {symbol}: {ex.Message}");
-                return (null, null);
-            }
+            return (logo, name);
         }
 
         private async Task<StockApiInfo> FetchStockInfoFromApi(string symbol){
