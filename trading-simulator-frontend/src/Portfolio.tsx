@@ -20,7 +20,8 @@ const Portfolio = () => {
   const [prevStockLogoArray, setPrevSLA] = useState<any[]>([]);
   const [StockNameArray, setSNA] = useState<any[]>([]);
   const [prevStockNameArray, setPrevSNA] = useState<any[]>([]);
-  const [ToDelete, setToDelete] = useState<number | null>(null);
+  const [ToDeleteLogo, setToDeleteLogo] = useState<string | null>(null);
+  const [ToDeleteName, setToDeleteName] = useState<string | null>(null);
   const [ToDeleteStock, setToDeleteStock] = useState<number | null>(null);
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
@@ -32,15 +33,16 @@ const Portfolio = () => {
   const [JumpTo, setJumpTo] = useState("Top");
   const Fetched = useRef(false)
 
-  function handleDelete(index: number, stock: any){
-    setToDelete(index);
+  function handleDelete(index: number, stock: any, name: string, logo: string){
+    setToDeleteLogo(logo);
+    setToDeleteName(name);
     console.log("THIS HERE: " + stock)
     setToDeleteStock(stock.id);
     setModalVisibility(true);
   }
 
   const handleTrueDelete = async () => {
-    if(ToDelete == null){
+    if(ToDeleteName == null || ToDeleteLogo == null){
       return
     }
 
@@ -50,7 +52,8 @@ const Portfolio = () => {
       setToReload(true)
       setModalVisibility(false)
       setToDeleteStock(null)
-      setToDelete(null)
+      setToDeleteName(null)
+      setToDeleteLogo(null)
     } catch (error) {
       handleAxiosError(error)
     }
@@ -93,7 +96,7 @@ const Portfolio = () => {
   }, [portfolio, StockLogoArray, StockNameArray]);
 
   useEffect(() => {
-    if(ToDelete == null && ToReload){
+    if(ToDeleteName == null && ToReload && ToDeleteLogo == null){
       const FetchPortfolioData = async () => {
         setToReload(false)
         const result = await getPortfolio({ user });
@@ -104,7 +107,7 @@ const Portfolio = () => {
       }
       FetchPortfolioData();
     }
-  }, [ToDelete, ToReload])
+  }, [ToDeleteName, ToDeleteLogo, ToReload])
 
   useEffect(() => {
     if (FilteredOption !== "") {
@@ -164,17 +167,17 @@ const Portfolio = () => {
           <div id="ToJump"></div>
 
           <StocksTable 
-            FilterSearchInput={FilterSearchInput}
-            setFilterSearchInput={setFilterSearchInput}
             setFilteredOption={setFilteredOption} 
             portfolio={portfolio} 
-            ToDelete={ToDelete} 
             StockLogoArray={StockLogoArray} 
             StockNameArray={StockNameArray} 
             ModalVisible={ModalVisible} 
             handleDelete={handleDelete} 
             setModalVisibility={setModalVisibility} 
-            setToDelete={setToDelete} 
+            setToDeleteName={setToDeleteName}
+            ToDeleteLogo={ToDeleteLogo}
+            ToDeleteName={ToDeleteName}
+            setToDeleteLogo={setToDeleteLogo} 
             handleTrueDelete={handleTrueDelete}/>
         </>
       ) : (

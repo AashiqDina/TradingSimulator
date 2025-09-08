@@ -41,6 +41,8 @@ export default function StocksTable(props: any){
     setFilteredSearch(Portfolio)
   }, [props.portfolio.stocks, props.StockNameArray, props.StockLogoArray])
 
+  console.log(Portfolio)
+
   function inputFilter(input: string){
     if(input == ""){
       setFilteredSearch(Portfolio)
@@ -74,7 +76,7 @@ export default function StocksTable(props: any){
           </section>
 
           <div className="StocksTable">
-            <table className="Table">
+            <table className="Table" style={{transition: "all 0.6s ease-in-out"}}>
               <thead>
                 <tr>
                   <th style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
@@ -91,7 +93,7 @@ export default function StocksTable(props: any){
                 <tbody style={{transition: "all 0.6s ease-in-out"}}>
                   {FilteredSearch.map((stockAvg: any, index: number) => (
                     <>                    
-                    <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} key={index} style={{cursor: "pointer"}}>
+                    <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} key={index} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
                       <td><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
                       <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{stockAvg.name}</td>
                       <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stockAvg.totalShares}</td>
@@ -109,7 +111,14 @@ export default function StocksTable(props: any){
                         <td style={{padding: "1rem 0rem 1rem 3rem"}}>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
                         <td style={{padding: "1rem 0rem 1rem 3rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
                         <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                        <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton"></td>
+                        <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton">
+                          <div className="CrossContainer" onClick={() => {
+                            props.handleDelete(index, stock, stockAvg.name, stockAvg.logo)
+                          }}>
+                            <div className="Cross1"></div>
+                            <div className="Cross2"></div>
+                          </div>
+                        </td>
 
                       </tr>
                     ))}
@@ -145,12 +154,13 @@ export default function StocksTable(props: any){
             <div className="Modal">
               <div className="ModalContent">
                 <h2>
-                    Delete <img className="DeleteLogo" src={props.ToDelete !== null ? props.StockLogoArray[props.ToDelete] : null} alt="" />{props.ToDelete !== null ? props.StockNameArray[props.ToDelete] : "this stock"} from your portfolio?
+                    Delete <img className="DeleteLogo" src={props.ToDeleteLogo !== null ? props.ToDeleteLogo : null} alt="" />{props.ToDeleteName !== null ? props.ToDeleteName : "this stock"} from your portfolio?
                 </h2>
                 <div className="ModalFooter">
                   <button className="" onClick={() => {
                     props.setModalVisibility(false);
-                    props.setToDelete(null);
+                    props.setToDeleteName(null);
+                    props.setToDeleteLogo(null);
                   }}>Cancel</button>
                   <button className="" onClick={props.handleTrueDelete}>Delete</button>
                 </div>
