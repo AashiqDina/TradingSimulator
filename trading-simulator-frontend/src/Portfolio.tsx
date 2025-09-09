@@ -15,45 +15,36 @@ import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
 const Portfolio = () => {
   const { user } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
-  const [prevPortfolio, setPrevPortfolio] = useState<any>(null);
   const [StockLogoArray, setSLA] = useState<any[]>([]);
-  const [prevStockLogoArray, setPrevSLA] = useState<any[]>([]);
   const [StockNameArray, setSNA] = useState<any[]>([]);
-  const [prevStockNameArray, setPrevSNA] = useState<any[]>([]);
   const [ToDeleteLogo, setToDeleteLogo] = useState<string | null>(null);
   const [ToDeleteName, setToDeleteName] = useState<string | null>(null);
   const [ToDeleteStock, setToDeleteStock] = useState<number | null>(null);
+  const [ToDelete, setToDelete] = useState<{stock: number | null, name: string | null, logo: string | null}>({stock: null, name: null, logo: null});
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
-  const [FilterSearchInput, setFilterSearchInput] = useState("");
   const [FilteredOption, setFilteredOption] = useState("");
-  const [Filtered, setFiltered] = useState(false);
-  const [sorted, setSorted] = useState(false);
   const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
   const [JumpTo, setJumpTo] = useState("Top");
   const Fetched = useRef(false)
 
   function handleDelete(index: number, stock: any, name: string, logo: string){
-    setToDeleteLogo(logo);
-    setToDeleteName(name);
-    console.log("THIS HERE: " + stock)
-    setToDeleteStock(stock.id);
+    setToDelete({stock: stock.id, name: name, logo: logo})
+    console.log("Deleting Stock: " + stock)
     setModalVisibility(true);
   }
 
   const handleTrueDelete = async () => {
-    if(ToDeleteName == null || ToDeleteLogo == null){
+    if(ToDelete.name == null || ToDelete.logo == null){
       return
     }
 
     try {
-      const response = await axios.delete(`http://localhost:3000/api/portfolio/${user?.id}/stocks/delete/${ToDeleteStock}`)
+      const response = await axios.delete(`http://localhost:3000/api/portfolio/${user?.id}/stocks/delete/${ToDelete.stock}`)
       console.log("Successfully Deleted: ", response)
       setToReload(true)
+      setToDelete({stock: null, name: null, logo: null})
       setModalVisibility(false)
-      setToDeleteStock(null)
-      setToDeleteName(null)
-      setToDeleteLogo(null)
     } catch (error) {
       handleAxiosError(error)
     }
@@ -96,7 +87,7 @@ const Portfolio = () => {
   }, [portfolio, StockLogoArray, StockNameArray]);
 
   useEffect(() => {
-    if(ToDeleteName == null && ToReload && ToDeleteLogo == null){
+    if(ToDelete.name == null && ToReload && ToDelete.logo == null){
       const FetchPortfolioData = async () => {
         setToReload(false)
         const result = await getPortfolio({ user });
@@ -107,7 +98,7 @@ const Portfolio = () => {
       }
       FetchPortfolioData();
     }
-  }, [ToDeleteName, ToDeleteLogo, ToReload])
+  }, [ToDelete, ToReload])
 
   useEffect(() => {
     if (FilteredOption !== "") {
@@ -174,10 +165,8 @@ const Portfolio = () => {
             ModalVisible={ModalVisible} 
             handleDelete={handleDelete} 
             setModalVisibility={setModalVisibility} 
-            setToDeleteName={setToDeleteName}
-            ToDeleteLogo={ToDeleteLogo}
-            ToDeleteName={ToDeleteName}
-            setToDeleteLogo={setToDeleteLogo} 
+            setToDelete={setToDelete}
+            ToDelete={ToDelete}
             handleTrueDelete={handleTrueDelete}/>
         </>
       ) : (
