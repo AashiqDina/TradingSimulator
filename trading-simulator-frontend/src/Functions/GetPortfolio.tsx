@@ -1,76 +1,53 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-export default async function getPortfolio(props: any){
-    const user = props.user
-    let portfolio = null 
-    let StockLogoArray: any[] = []
-    let StockNameArray: any[] = []
-    let CurrentBestStocks = null
-    
-        async function fetchPortfolio() {
-            if (!user?.id) {
-                console.error("User ID is not available for fetching portfolio");
-                return;
-              }
-          
-              try {
-                const response = await axios.get(
-                  `http://localhost:3000/api/portfolio/${user?.id}`
-                );
-                console.log("Fetched portfolio data:", response.data); 
-          
-          
-                if (response.data) {
-                    portfolio = response.data
-          
-                  const stocks = response.data.stocks.map((stock: any) => ({
-                    symbol: stock.symbol
-                  }));
-          
-                  if(StockLogoArray.length == 0){
-                    for (const {symbol} of stocks){
-                      try{
-                        const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
-                        StockLogoArray.push(response2.data.image);
-                        const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
-                        StockNameArray.push(response3.data);
-                      }
-                      catch (error){
-                        handleAxiosError(error)
-                      }
-                      CurrentBestStocks = response
-                    };
-                  }
-          
-                } else {
-                  console.error("No portfolio data found");
-                }
-              } catch (error) {
-                handleAxiosError(error);
-              }
-            };
+export default async function getPortfolio(props: any) {
+  const user = props.user;
+  if (!user?.id) {
+    console.error("User ID is not available for fetching portfolio");
+    return null;
+  }
 
-    const handleAxiosError = (error: unknown) => {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosErrorType;
-          const message = axiosError.response ? axiosError.response.data : axiosError.message;
-          console.error("Error:", message);
-        } else {
-          console.error("Unknown error:", error);
+  try {
+    const response = await axios.get(`http://localhost:3000/api/portfolio/${user.id}`);
+    const portfolioData = response.data;
+
+    if (!portfolioData) {
+      console.error("No portfolio data found");
+      return null;
+    }
+
+    const stocks = await Promise.all(
+      portfolioData.stocks.map(async (stock: any) => {
+        try {
+          const imageRes = await axios.get<{ symbol: string; image: string }>(
+            `http://localhost:3000/api/stocks/StockImage/${stock.symbol}`
+          );
+          const nameRes = await axios.get<string>(
+            `http://localhost:3000/api/stocks/GetStockName/${stock.symbol}`
+          );
+
+          return {
+            ...stock,
+            logo: imageRes.data.image || "defaultLogo.png",
+            name: nameRes.data || "Unknown",
+          };
+        } catch (error) {
+          console.error("Error fetching stock info:", error);
+          return { ...stock, logo: "defaultLogo.png", name: "Unknown" };
         }
-      };
+      })
+    );
 
-      interface AxiosErrorType {
-        response?: { data: string; status: number; statusText: string };
-        message: string;
-      }
-
-      await fetchPortfolio()
-
-      return {
-        portfolio: portfolio,
-        StockLogoArray: StockLogoArray,
-        StockNameArray: StockNameArray,
-        CurrentBestStocks: CurrentBestStocks
-      }
+    return {
+      ...portfolioData,
+      stocks,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error:", error.response?.data || error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
+    return null;
+  }
 }

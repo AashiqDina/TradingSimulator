@@ -23,8 +23,8 @@ export default function StocksTable(props: any){
       } else {
         map.set(OriginaList[i].symbol, {
           symbol: OriginaList[i].symbol,
-          name: props.StockNameArray[i],
-          logo: props.StockLogoArray[i],
+          name: OriginaList[i].name,
+          logo: OriginaList[i].logo,
           totalShares: OriginaList[i].quantity,
           totalCost: OriginaList[i].quantity * OriginaList[i].purchasePrice,
           currentWorth: OriginaList[i].currentPrice * OriginaList[i].quantity,

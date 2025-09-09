@@ -24,12 +24,12 @@ export default function CurrentBestStocks(props: any){
                     <tr>
                       <td><img className="StockLogos" src={props.CurrentBestStocks[0].logo} alt="Stock Logo" /></td>
                       <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{props.CurrentBestStocks[0].name}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>{props.CurrentBestStocks[0].stock.quantity}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(props.CurrentBestStocks[0].stock.purchasePrice * props.CurrentBestStocks[0].stock.quantity).toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{props.CurrentBestStocks[0].stock.currentPrice.toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(props.CurrentBestStocks[0].stock.quantity * props.CurrentBestStocks[0].stock.currentPrice).toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(props.CurrentBestStocks[0].stock.profitLoss).toFixed(2)} </td>
-                      <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((props.CurrentBestStocks[0].stock.currentPrice/props.CurrentBestStocks[0].stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((props.CurrentBestStocks[0].stock.currentPrice/props.CurrentBestStocks[0].stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((props.CurrentBestStocks[0].stock.currentPrice/props.CurrentBestStocks[0].stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>{props.CurrentBestStocks[0].quantity}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(props.CurrentBestStocks[0].purchasePrice * props.CurrentBestStocks[0].quantity).toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{props.CurrentBestStocks[0].currentPrice.toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(props.CurrentBestStocks[0].quantity * props.CurrentBestStocks[0].currentPrice).toFixed(2)}</td>
+                      <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(props.CurrentBestStocks[0].profitLoss).toFixed(2)} </td>
+                      <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((props.CurrentBestStocks[0].currentPrice/props.CurrentBestStocks[0].purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((props.CurrentBestStocks[0].currentPrice/props.CurrentBestStocks[0].purchasePrice)*100)-100) > 0) ? "+" : null}{(((props.CurrentBestStocks[0].currentPrice/props.CurrentBestStocks[0].purchasePrice)*100)-100).toFixed(1)}%</span></td>
                     </tr>
                   </tbody>
               </table>

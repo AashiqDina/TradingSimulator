@@ -15,11 +15,6 @@ import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
 const Portfolio = () => {
   const { user } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
-  const [StockLogoArray, setSLA] = useState<any[]>([]);
-  const [StockNameArray, setSNA] = useState<any[]>([]);
-  const [ToDeleteLogo, setToDeleteLogo] = useState<string | null>(null);
-  const [ToDeleteName, setToDeleteName] = useState<string | null>(null);
-  const [ToDeleteStock, setToDeleteStock] = useState<number | null>(null);
   const [ToDelete, setToDelete] = useState<{stock: number | null, name: string | null, logo: string | null}>({stock: null, name: null, logo: null});
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
@@ -50,62 +45,40 @@ const Portfolio = () => {
     }
   }
 
-  useEffect(() => {
+  useEffect(() => { // Fetch the data
     if ((user?.id && !Fetched.current)) {
       Fetched.current = true;
       const updateAndFetch = async () => {
         await updateAllStocksInPortfolio({ user });
         const result = await getPortfolio({ user });
-        setPortfolio(result.portfolio);
-        setCurrentBestStocks(result.CurrentBestStocks);
-        setSLA(result.StockLogoArray);
-        setSNA(result.StockNameArray);
+        setPortfolio(result);
+        console.log("Result: ", result)
+
+        const BestStocks = [...result.stocks].sort((a, b) => b.profitLoss - a.profitLoss);
+        setCurrentBestStocks(BestStocks);
       };
 
       updateAndFetch();
     }
   }, [user]);
 
-  useEffect(() => {
-    if (Fetched.current && portfolio && StockLogoArray.length > 0 && StockNameArray.length > 0) {
-      let combined = portfolio.stocks.map((stock: any, index: number) => {
-        const logo = StockLogoArray[index] || 'defaultLogo.png';
-        const name = StockNameArray[index] || 'Unknown';
-  
-        return {
-          stock: stock,
-          logo: logo,
-          name: name
-        };
-      });
-  
-      combined.sort((a: { stock: { profitLoss: number; }; }, b: { stock: { profitLoss: number; }; }) => b.stock.profitLoss - a.stock.profitLoss);
-      
-      console.log("Final Recieved", combined)
-      setCurrentBestStocks(combined);
-    }
-  }, [portfolio, StockLogoArray, StockNameArray]);
 
-  useEffect(() => {
+  useEffect(() => { // Reset after delete
     if(ToDelete.name == null && ToReload && ToDelete.logo == null){
       const FetchPortfolioData = async () => {
         setToReload(false)
         const result = await getPortfolio({ user });
         setPortfolio(result.portfolio);
         setCurrentBestStocks(result.CurrentBestStocks);
-        setSLA(result.StockLogoArray);
-        setSNA(result.StockNameArray);
       }
       FetchPortfolioData();
     }
   }, [ToDelete, ToReload])
 
-  useEffect(() => {
+  useEffect(() => { // Filter for Portfolio Table
     if (FilteredOption !== "") {
       let combined = portfolio.stocks.map((stock: any, index: number) => ({
         stock: stock,
-        logo: StockLogoArray[index],
-        name: StockNameArray[index]
       }));
 
       if (FilteredOption === "Oldest") {
@@ -123,15 +96,11 @@ const Portfolio = () => {
       }
   
       const sortedStocks = combined.map((item: { stock: any; }) => item.stock);
-      const sortedLogos = combined.map((item: { logo: any; }) => item.logo);
-      const sortedNames = combined.map((item: { name: any; }) => item.name);
   
       setPortfolio((prevPortfolio: any) => ({
         ...prevPortfolio,
         stocks: sortedStocks
       }));
-      setSLA(sortedLogos);
-      setSNA(sortedNames);
     }
   }, [FilteredOption]);
   
@@ -160,8 +129,6 @@ const Portfolio = () => {
           <StocksTable 
             setFilteredOption={setFilteredOption} 
             portfolio={portfolio} 
-            StockLogoArray={StockLogoArray} 
-            StockNameArray={StockNameArray} 
             ModalVisible={ModalVisible} 
             handleDelete={handleDelete} 
             setModalVisibility={setModalVisibility} 
