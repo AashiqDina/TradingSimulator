@@ -7,11 +7,13 @@ namespace TradingSimulator_Backend.Services
     using Newtonsoft.Json.Linq;
     using System;
     using TradingSimulator_Backend.Models;
+    using TradingSimulator_Backend.Data;
 
     public class StockService : IStockService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "apikey";
+        private readonly AppDbContext _context;
+        private readonly string _apiKey = "";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
@@ -21,9 +23,10 @@ namespace TradingSimulator_Backend.Services
 
 
         
-        public StockService(HttpClient httpClient)
+        public StockService(HttpClient httpClient, AppDbContext appDbContext)
         {
             _httpClient = httpClient;
+            _context = appDbContext;
         }
 
         public async Task<decimal?> GetStockPriceAsync(string symbol)
@@ -70,17 +73,39 @@ namespace TradingSimulator_Backend.Services
                 return _stockImageCache[symbol].Logo;
             }
 
+            var dbStock = await _context.StockLogoName.FindAsync(symbol);
+
+            if (dbStock != null && !string.IsNullOrWhiteSpace(dbStock.Logo))
+            {
+                Console.WriteLine($"Found {symbol} name in DB");
+                return dbStock.Logo;
+            }
+
             var (StockImage, StockName) = await FetchLogoAndNameFromApi(symbol);
             
-            if (StockImage == null){
+            if (StockImage == null || string.IsNullOrWhiteSpace(StockImage)){
                 Console.WriteLine($"No image found for {symbol}.");
             }
-            Console.WriteLine($"After: {StockImage}");
 
             if (StockImage != null){
                 _stockImageCache[symbol] = (StockImage, StockName);
+                dbStock = await _context.StockLogoName.FindAsync(symbol);
+                if (dbStock == null)
+                    {
+                        var stock = new StockLogoName
+                        {
+                            Symbol = symbol,
+                            Name = null,
+                            Logo = StockImage
+                        };
+                        _context.StockLogoName.Add(stock);
+                    }
+                    else
+                    {
+                        dbStock.Logo = StockImage;
+                    }
+                    await _context.SaveChangesAsync();
             }
-            Console.WriteLine($"Cache after update: {_stockImageCache.ContainsKey(symbol)}");
 
             return StockImage;
         }
@@ -90,6 +115,14 @@ namespace TradingSimulator_Backend.Services
             if(_stockApiInfoCache.ContainsKey(symbol)){
                 return _stockApiInfoCache[symbol].Name;
             }
+
+            var dbStock = await _context.StockLogoName.FindAsync(symbol);
+
+            if (dbStock != null && !string.IsNullOrWhiteSpace(dbStock.Name))
+                {
+                    Console.WriteLine($"Found {symbol} name in DB");
+                    return dbStock.Name;
+                }
 
             var result = await FetchStockInfoFromApi(symbol);
 
@@ -101,6 +134,22 @@ namespace TradingSimulator_Backend.Services
             if(result != null){
                 Console.WriteLine($"Fetched {symbol} → Name: '{result.Name}'");
                 _stockApiInfoCache[symbol] = result;
+                dbStock = await _context.StockLogoName.FindAsync(symbol);
+                if (dbStock == null)
+                    {
+                        var stock = new StockLogoName
+                        {
+                            Symbol = symbol,
+                            Name = result.Name,
+                            Logo = null
+                        };
+                        _context.StockLogoName.Add(stock);
+                    }
+                    else
+                    {
+                        dbStock.Name = result.Name;
+                    }
+                    await _context.SaveChangesAsync();
             }
 
             return result.Name;

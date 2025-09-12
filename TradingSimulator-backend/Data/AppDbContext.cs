@@ -12,14 +12,20 @@ namespace TradingSimulator_Backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Stock> Stocks { get; set; }
+        public DbSet<StockLogoName> StockLogoName { get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Portfolio>()
                 .HasOne(p => p.User)
-                .WithOne() // Assuming User doesn't have a navigation property for Portfolio
+                .WithOne()
                 .HasForeignKey<Portfolio>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade); // Deletes Portfolio if User is deleted
+
+            modelBuilder.Entity<StockLogoName>()
+                .HasKey(s => s.Symbol);
         }
+
+        
     }
 }
