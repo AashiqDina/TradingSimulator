@@ -4,6 +4,7 @@
     align-items: center;
     flex-direction: row;
     gap: 3px;
+    transition: all 0.5s  ease-in-out;
 }
 
 .TheLogo > h2{
@@ -14,7 +15,21 @@
     font-family: Inter, sans-serif;;
     font-weight: 500;
     font-size: 2rem;
+    transition: all 0.5s  ease-in-out;
 }
+
+@media (max-width: 600px) {
+    .TheLogo > h2{
+      font-size: 1.5rem;
+
+    }
+    .BarCollection{
+        scale: 0.75;
+    }
+    .TheLogo{
+        gap: 0px
+    }
+  }
 
 .TheLogo > h2:hover{
     background: linear-gradient(90deg, #ffffff 25%, #45a04974 50%, #ffffff 75%);
@@ -34,6 +49,7 @@
     flex-direction: row;
     gap: 2px;
     margin-bottom: 0.7rem;
+    transition: all 0.5s  ease-in-out;
 }
 
 .BarOne{

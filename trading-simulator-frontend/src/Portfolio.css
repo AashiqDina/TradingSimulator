@@ -365,10 +365,12 @@ th{
   font-family: Inter, sans-serif;;
   font-weight: 600;
   box-shadow: 0px 5px 10px 1px #3747384c;
+  transition: all 0.2s ease-in-out;
 }
 
 .Filter > input:focus{
-  outline-color: #45a049;
+  outline: 1px #45a04979 solid;
+  box-shadow: 0 0 4rem 0.4rem #45a049cb;
 }
 
 .Filter > select{
@@ -381,6 +383,7 @@ th{
   font-family: Inter, sans-serif;;
   font-weight: 600;
   box-shadow: 0px 5px 10px 1px #3747384c;
+  transition: all 0.2s ease-in-out;
 }
 
 .Filter > select:focus{

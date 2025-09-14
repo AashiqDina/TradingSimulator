@@ -1,41 +1,41 @@
 import { useEffect, useState } from "react";
 import createApi from "realtime-newsapi";
 
-interface Article {
-  title: string;
-  description?: string;
-  url: string;
-}
+// interface Article {
+//   title: string;
+//   description?: string;
+//   url: string;
+// }
 
 
-const api = createApi({
-  socketOptions: {
-    transports: ["websocket"],
-    withCredentials: false        
-  }
-});
+// const api = createApi({
+//   socketOptions: {
+//     transports: ["websocket"],
+//     withCredentials: false        
+//   }
+// });
 
 export default function StockDetailsNews(props: any) {
-  const [news, setNews] = useState<Article[]>([]);
+//   const [news, setNews] = useState<Article[]>([]);
 
-  useEffect(() => {
-    const handler = (articles: Article[]) => {
-      const filtered = articles.filter(a =>
-        a.title.includes(props.Symbol) ||
-        (a.description ?? "").includes(props.Symbol)
-      );
-      setNews(filtered);
-    };
+//   useEffect(() => {
+//     const handler = (articles: Article[]) => {
+//       const filtered = articles.filter(a =>
+//         a.title.includes(props.Symbol) ||
+//         (a.description ?? "").includes(props.Symbol)
+//       );
+//       setNews(filtered);
+//     };
 
-    api.on("articles", handler);
-    return () => {
-      api.off("articles", handler);
-    };
-  }, [props.Symbol]);  // dependency on props.Symbol
+//     api.on("articles", handler);
+//     return () => {
+//       api.off("articles", handler);
+//     };
+//   }, [props.Symbol]);  // dependency on props.Symbol
 
   return (
     <>
-      {news.length > 0 ? (
+      {/* {news.length > 0 ? (
         news.map(a => (
           <a
             key={a.url}
@@ -54,7 +54,7 @@ export default function StockDetailsNews(props: any) {
         <h3 className="text-center text-gray-500">
           No articles found for “{props.Symbol}”
         </h3>
-      )}
+      )} */}
     </>
   );
 }

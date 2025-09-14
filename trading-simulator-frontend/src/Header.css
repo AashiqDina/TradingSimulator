@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
     background-color: rgba(28, 26, 48, 0);
@@ -91,7 +90,7 @@
     left: 0rem;
     background-color: rgba(4, 9, 11, 0.86);
     color: white;
-    border-radius: 0rem 1rem 1rem 0rem;
+    border-radius: 0rem 2rem 2rem 0rem;
     border-color: #ffffffa8;
     border-style: solid;
     border-width: 1px 1px 1px 0px;
@@ -114,6 +113,11 @@
   
   .DropdownMenu li {
     padding: 0.9rem 1.7rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .DropdownMenu li:hover{
+    scale: 1.1;
   }
   
   .DropdownMenu li a {
@@ -133,6 +137,18 @@
     font-size: 1.2rem;
     font-family: Inter, sans-serif;;
     font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    .HeaderUsername{
+      font-size: 1rem;
+    }
+     .Hamburger1, .Hamburger2, .Hamburger3 {
+      width: 75%;
+     }
+     .Header-menu{
+      height: 20px;
+     }
   }
 
   .HeaderUsername:hover{
@@ -155,29 +171,28 @@
 
   .LogoutButton{
     border-radius: 10rem;
-    padding: 1rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding: 0.9rem;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
     font-size: 1.1rem;
-    background-color: #e2e2e2;
-    color: #45a049;
     font-weight: 900;
     border-width: 1px;
-    border-color: #45a04973;
+    border-color: #45a049;
     border-style: solid;
     transition: all 0.5s ease-in-out;
+    background-color: #45a049;
+    color:  white;
   }
 
   .LogoutButton:hover{
-    background-color: #45a049;
-    color:  white;
-    border-color: white;
+    background-color: #e2e2e2;
+    color: #45a049;
+    scale: 1.1;
   }
 
   .LogoutButton:focus{
-    background-color: #45a049;
-    color:  white;
-    border-color: white;
+    background-color: #e2e2e2;
+    color: #45a049;
   }
   
 @keyframes shimmer {

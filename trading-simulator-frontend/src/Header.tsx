@@ -46,7 +46,7 @@ const Header: React.FC = () => {
 
 
       
-        <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -1000, opacity: 0}: {zIndex: 1000, opacity: 1}}>
+        <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -1000, opacity: 0, borderRadius: '0 7rem 7rem 0'}: {zIndex: 1000, opacity: 1}}>
           <ul>
             <li>
               <Link role="button" to="/" onClick={toggleMenu}>
