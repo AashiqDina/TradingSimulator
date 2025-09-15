@@ -145,9 +145,13 @@
     }
      .Hamburger1, .Hamburger2, .Hamburger3 {
       width: 75%;
+      height: 3px;
      }
      .Header-menu{
       height: 20px;
+     }
+      .Header-menu.Open{
+      height: 23px;
      }
   }
 

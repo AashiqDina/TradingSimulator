@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 
 export default function StocksTable(props: any){
@@ -72,7 +73,7 @@ export default function StocksTable(props: any){
               <option value="ValueAsc">Value (Asc)</option>
               <option value="ValueDesc">Value (Desc)</option>
             </select>
-            <button onClick={props.FilterSearch}>Submit</button>
+            {/* <button onClick={props.FilterSearch}>Submit</button> */}
           </section>
 
           <div className="StocksTable">
@@ -92,8 +93,8 @@ export default function StocksTable(props: any){
               </thead>
                 <tbody style={{transition: "all 0.6s ease-in-out"}}>
                   {FilteredSearch.map((stockAvg: any, index: number) => (
-                    <>                    
-                    <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} key={index} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
+                    <React.Fragment key={index}>                    
+                    <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
                       <td><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
                       <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{stockAvg.name}</td>
                       <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stockAvg.totalShares}</td>
@@ -123,7 +124,7 @@ export default function StocksTable(props: any){
 
                       </tr>
                     ))}
-                    </>
+                    </React.Fragment>
                   ))}
 
                 </tbody>

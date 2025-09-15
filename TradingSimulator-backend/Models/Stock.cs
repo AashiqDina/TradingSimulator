@@ -6,6 +6,7 @@ public class Stock
     public int Quantity { get; set; }
     public decimal CurrentPrice { get; set; }
     public decimal TotalValue => CurrentPrice * Quantity;
-
     public decimal ProfitLoss => (CurrentPrice - PurchasePrice) * Quantity;
+
+    public ICollection<StockHistory> History { get; set; } = new List<StockHistory>();
 }

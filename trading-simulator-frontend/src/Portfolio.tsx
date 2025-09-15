@@ -9,6 +9,7 @@ import StocksTable from "./PorfolioSections/StocksTable";
 import getPortfolio from "./Functions/GetPortfolio";
 import handleAxiosError from "./Functions/handleAxiosError";
 import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
+import getHistory from "./Functions/getHistory";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
@@ -52,7 +53,9 @@ const Portfolio = () => {
         await updateAllStocksInPortfolio({ user });
         const result = await getPortfolio({ user });
         setPortfolio(result);
-        console.log("Result: ", result)
+        const History = await getHistory({ user });
+        console.log("Portfolio Result: ", result)
+        console.log("History Result: ", History)
 
         const BestStocks = [...result.stocks].sort((a, b) => b.profitLoss - a.profitLoss);
         setCurrentBestStocks(BestStocks);

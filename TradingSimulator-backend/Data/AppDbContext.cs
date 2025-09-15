@@ -13,6 +13,7 @@ namespace TradingSimulator_Backend.Data
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<StockLogoName> StockLogoName { get; set;}
+        public DbSet<StockHistory> StockHistory { get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,12 @@ namespace TradingSimulator_Backend.Data
 
             modelBuilder.Entity<StockLogoName>()
                 .HasKey(s => s.Symbol);
+
+            modelBuilder.Entity<StockHistory>()
+                .HasOne(h => h.Stock)
+                .WithMany(s => s.History)
+                .HasForeignKey(h => h.StockId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         

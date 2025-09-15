@@ -69,6 +69,8 @@ public class PortfolioController : ControllerBase
         return CreatedAtAction(nameof(GetPortfolio), new { userId = portfolio.UserId }, portfolio);
     }
 
+    
+
     // Buy Stock (Updated)
     [HttpPost("{userId}/stocks")]
     public async Task<IActionResult> BuyStock(int userId, [FromBody] StockPurchaseRequest request)
@@ -130,6 +132,20 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
             if (stockPrice.HasValue)
             {
                 stock.CurrentPrice = stockPrice.Value;
+
+                bool alreadyLoggedToday = await _context.StockHistory.AnyAsync(h => h.StockId == stock.Id && h.Timestamp.Date == DateTime.UtcNow.Date);
+                
+                if(!alreadyLoggedToday){
+                    var history = new StockHistory
+                    {
+                        StockId = stock.Id,
+                        Timestamp = DateTime.UtcNow,
+                        Price = stockPrice.Value,
+                        Quantity = stock.Quantity
+                    };
+
+                    _context.StockHistory.Add(history);
+                }
             }
         }
     }
@@ -161,4 +177,33 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
 
         return Ok(portfolio);
     }
+
+    [HttpGet("stocks/getHistory/{userId}")]
+    public async Task<IActionResult> GetPortfolioHistory(int userId)
+    {
+        var portfolio = await _context.Portfolios
+            .Include(p => p.Stocks)
+                .ThenInclude(s => s.History)
+            .FirstOrDefaultAsync(p => p.UserId == userId);
+
+        if (portfolio == null)
+            return NotFound("Portfolio not found.");
+
+        var result = portfolio.Stocks.Select(stock => new 
+        {
+            StockId = stock.Id,
+            Symbol = stock.Symbol,
+            History = stock.History
+                .OrderByDescending(h => h.Timestamp)
+                .Select(h => new {
+                    h.Timestamp,
+                    h.Price,
+                    h.Quantity
+                })
+                .ToList()
+        });
+
+        return Ok(result);
+    }
+
 }

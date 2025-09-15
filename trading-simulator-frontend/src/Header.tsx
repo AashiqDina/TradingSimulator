@@ -29,7 +29,7 @@ const Header: React.FC = () => {
   return ( 
     <header id="Top" className="Header">
 
-        <div  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleMenu(); }} aria-label="Click to open Menu" aria-expanded={menuOpen ? "true" : "false"} className="Header-menu" onClick={toggleMenu}>
+        <div  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleMenu(); }} aria-label="Click to open Menu" aria-expanded={menuOpen ? "true" : "false"} className={`Header-menu ${menuOpen ? "Open" : ""}`} onClick={toggleMenu}>
           <div className={`Hamburger1 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger2 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger3 ${menuOpen ? "Open" : ""}`} ></div>

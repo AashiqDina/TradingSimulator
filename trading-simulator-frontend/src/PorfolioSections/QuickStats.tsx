@@ -1,4 +1,6 @@
 export default function QuickStats(props: any){
+
+    
     let ProfitColour = "#45a049";
     let ProfitLossTitle = "Profit";
     let ValueColour = "#45a049";

@@ -83,6 +83,7 @@ html{
     flex-grow: 1;
     border: 2px solid white;
     box-shadow: 0px 10px 10px green;
+        height: 12rem;
 }
 
 .Box2{
@@ -93,6 +94,7 @@ html{
     padding: 1rem;
     flex-grow: 1;
     border: 2px solid white;
+        height: 12rem;
 }
 
 .Box3{
@@ -103,6 +105,7 @@ html{
     padding: 1rem;
     flex-grow: 1;
     border: 2px solid white;
+        height: 12rem;
 }
 
 .StocksTable{
@@ -378,12 +381,15 @@ th{
   min-width: 10%;
   border-radius: 5rem;
   text-align: center;
-  color: rgb(108, 108, 108);
   font-size: 1rem;
   font-family: Inter, sans-serif;;
   font-weight: 600;
   box-shadow: 0px 5px 10px 1px #3747384c;
   transition: all 0.2s ease-in-out;
+  outline: none;
+  border: none;
+  color: white;
+  background-color:#4CAF50;
 }
 
 .Filter > select:focus{
@@ -391,10 +397,10 @@ th{
 }
 
 .Filter > select:hover{
-  appearance: none;
+  /* appearance: none; */
 }
 
-.Filter > button{
+/* .Filter > button{
   margin-right: 1rem;
   width: clamp(120px, 18%, 200px);
   max-height: 18rem;
@@ -405,9 +411,48 @@ th{
   font-weight: 600;
   box-shadow: 0px 5px 10px 1px #3747384c;
   overflow: hidden;
+  transition: all 0.5s ease-in-out;
 }
 
+.Filter > button:hover{
+  scale: 1.05;
+  color: #45a049;
+  background-color: white;
+  border: 1px #45a049 solid;
+} */
 
+.Filter > select:hover{
+  color: #45a049;
+  background-color: white;
+}
+
+@media (max-width: 850px) {
+  .PageTitle{
+    font-size: 2rem;
+    margin-top: 1.5rem
+  }
+  .QuickStats{
+    gap: 0.1rem;
+  }
+  .Box1, .Box2, .Box3{
+    margin: 1rem;
+    width: 15rem;
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .PageTitle{
+    font-size: 2rem;
+    margin-top: 1.5rem
+  }
+  .QuickStats{
+    gap: 0.1rem;
+  }
+  .Box1, .Box2, .Box3{
+    margin: 1rem;
+  }
+}
 
 @keyframes DeleteButtonAnimation {
   0%{
