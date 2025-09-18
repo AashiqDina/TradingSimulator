@@ -27,6 +27,67 @@ html{
     max-width: 600px;
   }
 
+  .PortfolioSummary{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 0.9rem;
+    transition: all 0.5s ease-in-out;
+    margin-bottom: 3rem;
+  }
+
+  .PortfolioSummary > div{
+    width: 17rem;
+  }
+
+  .PortfolioSummary > div > h4{
+    font-size: 1.4rem;
+    color: rgb(194, 200, 196);
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    transition: all 0.5s ease-in-out;
+    margin-bottom: 0.5rem;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .PortfolioSummary > div > h5{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Inter, sans-serif;
+    font-size: 1.7rem;
+    margin: 0;
+    font-weight: 400;
+    transition: all 0.5s ease-in-out;
+  }
+
+   .PortfolioSummary > div > h5 > span{
+    margin-left: 5px;
+    font-size: 1.3rem;
+   }
+
+  .PortfolioSummary > div > h3{
+    font-size: 1.6rem;
+    color: rgb(194, 200, 196);
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    transition: all 0.5s ease-in-out;
+    margin-bottom: 0.5rem;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .PortfolioSummary > .PortfolioSummaryCenter > h4{
+    font-size: 1.8rem;
+    color: white;
+    font-family: Inter, sans-serif;
+    margin: 0;
+    font-weight: 400;
+    transition: all 0.5s ease-in-out;
+  }
+
   .QuickStats {
     display: flex;
     justify-content: center;
@@ -41,8 +102,12 @@ html{
 }
 
 .PageTitle{
-  font-size: 3rem;
-  margin-top: 3rem;
+  font-size: 2rem;
+  margin: 0;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
 }
 
 .LineOne{
@@ -52,7 +117,7 @@ html{
   top: 5rem;
   background-color: white;
   height: 4px;
-  width: 90vw;
+  width: 40vw;
   margin: 0 auto;
   border-radius: 10rem;
 }
@@ -158,7 +223,6 @@ html{
   min-width: 1000px; 
   max-width: 90%;
   border-collapse: collapse;
-  border-spacing: 1;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 5rem;
@@ -170,7 +234,6 @@ html{
   min-width: 1000px; 
   max-width: 90%;
   border-collapse: collapse;
-  border-spacing: 1;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -192,6 +255,7 @@ html{
 }
 
 .ProftibleTitle{
+  margin-top: 10rem;
   background: linear-gradient(90deg, #e2e2e2 25%, #45a049 50%, #e2e2e2 75%);
   background-size: 200% 100%;
   animation-name: shimmer;
@@ -220,6 +284,7 @@ th{
   padding: 1.5rem;
   font-size: 1.5rem;
   font-family: Inter, sans-serif;
+	font-weight: 400;
 }
 
 .BestTableHeader{
@@ -347,6 +412,43 @@ th{
   animation-direction: alternate;
 }
 
+.FilterGraph{
+  margin: 2rem 2rem 0 2rem;
+}
+
+.FilterGraph > article{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+  font-family: Inter, sans-serif;
+}
+
+.FilterGraph > article > button{
+  border: 1px #45a049 solid;
+  background-color: #45a04900;
+  border-radius: 2rem;
+  width: 10rem;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  font-family: Inter, sans-serif;
+  transition: all 0.5s ease-in-out;
+  box-shadow: 0px 0px 10px 1px #3e91444c;
+
+}
+
+.FilterGraph > article > button:hover{
+  border: 1px #45a049 solid;
+  background-color: #45a0497f;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 5rem 1rem rgba(0, 0, 0, 0.599);
+  font-family: Inter, sans-serif;
+}
+
 .Filter{
   display: flex;
   justify-content: center;
@@ -367,13 +469,16 @@ th{
   font-size: 1rem;
   font-family: Inter, sans-serif;;
   font-weight: 600;
-  box-shadow: 0px 5px 10px 1px #3747384c;
+  box-shadow: 0px 0px 10px 1px #3e91444c;
   transition: all 0.2s ease-in-out;
+  background-color: #45a04900;
+  color: #ffffff;
+  border: 1px #45a049 solid;
 }
 
 .Filter > input:focus{
   outline: 1px #45a04979 solid;
-  box-shadow: 0 0 4rem 0.4rem #45a049cb;
+  box-shadow: 0 0 2rem 0.4rem #45a049cb;
 }
 
 .Filter > select{
@@ -384,20 +489,23 @@ th{
   font-size: 1rem;
   font-family: Inter, sans-serif;;
   font-weight: 600;
-  box-shadow: 0px 5px 10px 1px #3747384c;
+  box-shadow: 0px 0px 10px 1px #3e91444c;
   transition: all 0.2s ease-in-out;
   outline: none;
-  border: none;
   color: white;
-  background-color:#4CAF50;
+  border: 1px #45a049 solid;
+  background-color: #45a04900;
 }
 
 .Filter > select:focus{
-  outline-color: #45a049;
+  border: 1px #45a049 solid;
+  background-color: #45a049a9;
 }
 
 .Filter > select:hover{
   /* appearance: none; */
+  border: 1px #45a049 solid;
+  background-color: #45a049a9;
 }
 
 /* .Filter > button{
@@ -421,9 +529,24 @@ th{
   border: 1px #45a049 solid;
 } */
 
-.Filter > select:hover{
-  color: #45a049;
-  background-color: white;
+.StocksAverageGraph{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  max-width: 90vw;
+  margin: 0 auto; 
+  margin-bottom: 3rem;
+  display: block;
+}
+
+.StocksAverageGraph > h2{
+  font-weight: 200;
+  margin: 0;
+}
+
+.StocksAverageGraph canvas{
+
 }
 
 @media (max-width: 850px) {
@@ -439,6 +562,20 @@ th{
     width: 15rem;
     font-size: 2rem;
   }
+
+  .PortfolioSummary > div > h3{
+    font-size: 1.4rem;
+    color: rgb(194, 200, 196);
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+  }
+
+  .PortfolioSummary > .PortfolioSummaryCenter > h4{
+    font-family: Inter, sans-serif;
+    font-size: 1.7rem;
+    margin: 0;
+    font-weight: 400;
+  }
 }
 
 @media (max-width: 600px) {
@@ -452,6 +589,13 @@ th{
   .Box1, .Box2, .Box3{
     margin: 1rem;
   }
+  .FilterGraph > article{
+    gap: 0.8rem
+  }
+  .FilterGraph > article > button{
+    font-size: 1rem;
+  }
+  
 }
 
 @keyframes DeleteButtonAnimation {

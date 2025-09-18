@@ -7,7 +7,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",  // Make sure this name matches
+    options.AddPolicy("AllowAll", 
         policy =>
         {
             // Make sure the frontend is using localhost
@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
     {
-        Url = "http://localhost:5048",  // Changed to localhost
+        Url = "http://localhost:3000",  // Changed to localhost
         Description = "API Server"
     });
 });

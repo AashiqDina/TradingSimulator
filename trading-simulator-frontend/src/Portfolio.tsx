@@ -10,6 +10,7 @@ import getPortfolio from "./Functions/GetPortfolio";
 import handleAxiosError from "./Functions/handleAxiosError";
 import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
 import getHistory from "./Functions/getHistory";
+import { Filter } from "@mui/icons-material";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
@@ -22,6 +23,12 @@ const Portfolio = () => {
   const [FilteredOption, setFilteredOption] = useState("");
   const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
   const [JumpTo, setJumpTo] = useState("Top");
+  const [FilterHistory, setFilterHistory] = useState("all")
+  const [StockHistory, setStockHistory] = useState<any | null>(null)
+  const [Invested, setInvested] = useState<number | null>(null)
+  const [PorfolioValue, setPorfolioValue] = useState<number | null>(null)
+  const [Profit, setProfit] = useState<number | null>(null)
+
   const Fetched = useRef(false)
 
   function handleDelete(index: number, stock: any, name: string, logo: string){
@@ -53,18 +60,28 @@ const Portfolio = () => {
         await updateAllStocksInPortfolio({ user });
         const result = await getPortfolio({ user });
         setPortfolio(result);
-        const History = await getHistory({ user });
         console.log("Portfolio Result: ", result)
-        console.log("History Result: ", History)
-
         const BestStocks = [...result.stocks].sort((a, b) => b.profitLoss - a.profitLoss);
         setCurrentBestStocks(BestStocks);
+        setInvested(result.totalInvested.toFixed(2))
+        setPorfolioValue(result.currentValue.toFixed(2))
+        setProfit(result.profitLoss.toFixed(2))
       };
 
       updateAndFetch();
     }
   }, [user]);
+  
+  useEffect(() => { // Fetch the History
+    if (user?.id) {
+      const updateAndFetch = async () => {
+        const History = await getHistory({ user, FilterHistory });
+        setStockHistory(History)
+      };
 
+      updateAndFetch();
+    }
+  }, [user, FilterHistory]);
 
   useEffect(() => { // Reset after delete
     if(ToDelete.name == null && ToReload && ToDelete.logo == null){
@@ -114,12 +131,44 @@ const Portfolio = () => {
     <>
       {portfolio ? (
         <>
-          <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
-          <div className="LineOne"></div>
+          <section className="PortfolioPageHeader">
+            <article className="PortfolioPageTitle">
+              
+              <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
+              <div className="LineOne"></div>
+            </article>
+            <article className="PortfolioSummary">
+              <div>
+                <h4>Invested</h4>
+                <h5>£{Invested}</h5>
+              </div>
+              <div className="PortfolioSummaryCenter">
+                <h3>Portfolio Value</h3>
+                <h4>£{PorfolioValue}</h4>
+              </div>
+              <div>
+                <h4>Profit</h4>
+                <h5>{Profit != null && Profit >= 0 ? "+" : "-"}£{Profit != null ? Math.abs(Profit) : ""}
+                </h5>
+                <div>
+                  <span style={Profit != null && Profit >= 0 ? {color: '#45a049'} : {color: '#bb1515'}}>
+                    ({Profit != null && Profit >= 0 ? "+" : ""}{(PorfolioValue != null && Invested != null) ? ((PorfolioValue/Invested)*100-100).toFixed(2) : ""}{(PorfolioValue != null && Invested != null) ? "%" : ""})
+                  </span>
+                </div>
+              </div>
+            </article>
+          </section>
 
-          <QuickStats portfolio={portfolio}/>
+          <QuickStats 
+            portfolio={portfolio} 
+            History={StockHistory} 
+            FilterHistory={FilterHistory} 
+            setFilterHistory={setFilterHistory}
+            setPortfolioValue={setPorfolioValue}
+            setProfit={setProfit}
+            setInvested={setInvested}/>
 
-          <CurrentBestStockTable CurrentBestStocks={CurrentBestStocks}/>
+          {/* <CurrentBestStockTable CurrentBestStocks={CurrentBestStocks}/> */}
 
           <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">          
             <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
@@ -138,6 +187,9 @@ const Portfolio = () => {
             setToDelete={setToDelete}
             ToDelete={ToDelete}
             handleTrueDelete={handleTrueDelete}/>
+
+          <div id="Space"></div>
+
         </>
       ) : (
         <>

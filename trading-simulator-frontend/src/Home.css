@@ -31,16 +31,20 @@
     font-size: 1rem;
     font-family: Inter, sans-serif;;
     font-weight: 600;
-    box-shadow: 0px 5px 10px 1px #3747384c;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
     transition: all 0.4s ease-in-out;
+    background-color: rgb(255, 255, 255);
+    color: #000000;
 }
 
 .StockSearchInput:focus{
-    outline: 1px #45a04979 solid;
-    box-shadow: 0 0 4rem 0.4rem #45a049cb;
+  border: 1px #45a049 solid;
+  box-shadow: 0 0 2rem 0.4rem #45a049cb;
 }
 
 .StockSearchButton{
+    border: 1px #45a049 solid;
+    background-color: #45a04900;
     border-radius: 10rem;
     min-width: 10%;
     max-width: 50%;
@@ -49,10 +53,15 @@
     font-family: Inter, sans-serif;;
     font-weight: 600;
     text-align: center;
-    box-shadow: 0px 5px 10px 1px #3e91444c;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.5s ease-in-out;
+}
+
+.StockSearchButton:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
 }
 
 @media (max-width: 600px) {

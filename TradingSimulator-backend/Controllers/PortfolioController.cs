@@ -179,8 +179,9 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
     }
 
     [HttpGet("stocks/getHistory/{userId}")]
-    public async Task<IActionResult> GetPortfolioHistory(int userId)
+    public async Task<IActionResult> GetPortfolioHistory(int userId, [FromQuery] string range = "all")
     {
+        Console.WriteLine("Range of History: " + range);
         var portfolio = await _context.Portfolios
             .Include(p => p.Stocks)
                 .ThenInclude(s => s.History)
@@ -189,19 +190,59 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
         if (portfolio == null)
             return NotFound("Portfolio not found.");
 
-        var result = portfolio.Stocks.Select(stock => new 
+        DateTime cutoff = DateTime.MinValue;
+        
+        switch (range.ToLower())
         {
-            StockId = stock.Id,
-            Symbol = stock.Symbol,
-            History = stock.History
-                .OrderByDescending(h => h.Timestamp)
-                .Select(h => new {
-                    h.Timestamp,
-                    h.Price,
-                    h.Quantity
-                })
-                .ToList()
-        });
+            case "week":
+                cutoff = DateTime.UtcNow.AddDays(-7);
+                break;
+            case "month":
+                cutoff = DateTime.UtcNow.AddMonths(-1);
+                break;
+            case "year":
+                cutoff = DateTime.UtcNow.AddYears(-1);
+                break;
+        }
+
+        var result = portfolio.Stocks.Select(stock =>
+            {
+                var filtered = stock.History
+                    .Where(h => h.Timestamp >= cutoff)
+                    .OrderBy(h => h.Timestamp)
+                    .Select(h => new
+                    {
+                        h.Timestamp,
+                        h.Price,
+                        Quantity = (double)h.Quantity
+                    })
+                    .ToList();
+
+                if (range.ToLower() == "year" || range.ToLower() == "all")
+                {
+                    int targetPoints = 200;
+                    int totalPoints = filtered.Count;
+                    int bucketSize = Math.Max(1, totalPoints / targetPoints);
+
+                    filtered = filtered
+                        .Select((h, i) => new { h, i })
+                        .GroupBy(x => x.i / bucketSize)
+                        .Select(g => new
+                        {
+                            Timestamp = g.First().h.Timestamp,
+                            Price = g.Average(x => x.h.Price),
+                            Quantity = g.Average(x => x.h.Quantity)
+                        })
+                        .ToList();
+                }
+
+                return new
+                {
+                    StockId = stock.Id,
+                    Symbol = stock.Symbol,
+                    History = filtered
+                };
+            });
 
         return Ok(result);
     }

@@ -42,7 +42,6 @@ export default function StocksTable(props: any){
     setFilteredSearch(Portfolio)
   }, [props.portfolio.stocks, props.StockNameArray, props.StockLogoArray])
 
-  console.log(Portfolio)
 
   function inputFilter(input: string){
     if(input == ""){
