@@ -13,7 +13,7 @@ namespace TradingSimulator_Backend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _context;
-        private readonly string _apiKey = "A";
+        private readonly string _apiKey = "ApIkEy";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
@@ -27,6 +27,14 @@ namespace TradingSimulator_Backend.Services
         {
             _httpClient = httpClient;
             _context = appDbContext;
+        }
+
+        public Dictionary<string, DateTime> GetAllLastUpdated()
+        {
+            return _stockCache.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Timestamp
+            );
         }
 
         public async Task<decimal?> GetStockPriceAsync(string symbol)

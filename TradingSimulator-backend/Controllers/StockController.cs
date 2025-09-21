@@ -81,6 +81,20 @@ namespace TradingSimulator_Backend.Controllers
             });
         }
 
+        [HttpGet("GetAllStockLastUpdated")]
+        public IActionResult GetAllStockLastUpdated(){
+
+            var data = _stockService.GetAllLastUpdated();
+
+            if(data == null){
+                Console.WriteLine("No data available");
+            }
+
+            return Ok(new {
+                data
+            });
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchStocks(string symbol)
         {

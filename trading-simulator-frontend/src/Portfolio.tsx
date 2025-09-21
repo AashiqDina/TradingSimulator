@@ -3,14 +3,12 @@ import axios from "axios";
 import "./Portfolio.css";
 import Loading from './Loading';
 import { useAuth } from "./AuthContext";
-import CurrentBestStockTable from './PorfolioSections/CurrentBestStockTable'
 import QuickStats from "./PorfolioSections/QuickStats";
 import StocksTable from "./PorfolioSections/StocksTable";
 import getPortfolio from "./Functions/GetPortfolio";
 import handleAxiosError from "./Functions/handleAxiosError";
 import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
 import getHistory from "./Functions/getHistory";
-import { Filter } from "@mui/icons-material";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
@@ -21,7 +19,6 @@ const Portfolio = () => {
   const [ModalVisible, setModalVisibility] = useState(false);
   const [ToReload, setToReload] = useState(false);
   const [FilteredOption, setFilteredOption] = useState("");
-  const [CurrentBestStocks, setCurrentBestStocks] = useState<any>(null)
   const [JumpTo, setJumpTo] = useState("Top");
   const [FilterHistory, setFilterHistory] = useState("all")
   const [StockHistory, setStockHistory] = useState<any | null>(null)
@@ -61,8 +58,6 @@ const Portfolio = () => {
         const result = await getPortfolio({ user });
         setPortfolio(result);
         console.log("Portfolio Result: ", result)
-        const BestStocks = [...result.stocks].sort((a, b) => b.profitLoss - a.profitLoss);
-        setCurrentBestStocks(BestStocks);
         setInvested(result.totalInvested.toFixed(2))
         setPorfolioValue(result.currentValue.toFixed(2))
         setProfit(result.profitLoss.toFixed(2))
@@ -89,7 +84,6 @@ const Portfolio = () => {
         setToReload(false)
         const result = await getPortfolio({ user });
         setPortfolio(result.portfolio);
-        setCurrentBestStocks(result.CurrentBestStocks);
       }
       FetchPortfolioData();
     }

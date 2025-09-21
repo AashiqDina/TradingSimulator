@@ -13,5 +13,6 @@ public interface IStockService
     Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol);
     Task<StockApiInfo?> FetchStockInfo(string symbol);
     Task<CompanyProfile?> GetStockCompanyProfile(string symbol);
+    Dictionary<string, DateTime> GetAllLastUpdated();
 
 }

@@ -1,3 +1,5 @@
+import { ForkRight, Transform } from "@mui/icons-material";
+import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
 
@@ -7,6 +9,7 @@ export default function StocksTable(props: any){
   const [IndexExpanded, setIndexExpanded] = useState<number | null>(null)
   const [Portfolio, setPortfolio] = useState<any | null>([])
   const [FilteredSearch, setFilteredSearch] = useState<any | null>([])
+  const [LastUpdatedDictionary, setLastUpdatedDictionary] = useState<Map<string, Date> | null>(null)
 
 
   useEffect(() => {
@@ -42,12 +45,23 @@ export default function StocksTable(props: any){
     setFilteredSearch(Portfolio)
   }, [props.portfolio.stocks, props.StockNameArray, props.StockLogoArray])
 
+  useEffect(() => {
+    const getLastUpdated = async () => {
+      let LastUpdatedDictionary = await axios.get(`http://localhost:3000/api/stocks/GetAllStockLastUpdated`)
+      const map = new Map<string, Date>(
+      Object.entries(LastUpdatedDictionary.data.data).map(([key, value]) => [key, new Date(value as string)]));
+      setLastUpdatedDictionary(map);
+    }
+    getLastUpdated()
+  }, [Portfolio])
+
 
   function inputFilter(input: string){
     if(input == ""){
       setFilteredSearch(Portfolio)
     }
     else{
+      console.log("LUD", LastUpdatedDictionary)
       setFilteredSearch(Portfolio.filter((stockAvg: { name: string; symbol: string;}) => {
         return ((stockAvg.name?.toUpperCase().includes(input) || stockAvg.symbol?.includes(input)))
       }))
@@ -79,14 +93,13 @@ export default function StocksTable(props: any){
             <table className="Table" style={{transition: "all 0.6s ease-in-out"}}>
               <thead>
                 <tr>
-                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0.5rem"}}></th>
-                  <th style={{padding: "1rem 1rem 1rem 0rem"}}>Companies</th>
-                  <th style={{paddingRight: "1rem"}}>Quantity</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Bought Price</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>Current Price</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}} className="PLTitle">Profit/Loss</th>
-                  <th style={{paddingLeft: "1rem", paddingRight: "1rem"}}>%</th>
-                  <th style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th>
+                  <th className="thLogo"></th>
+                  <th className="thCompanies">Companies</th>
+                  <th className="thBoughtPrice">Bought Price</th>
+                  <th className="thCurrentValue">Current Value</th>
+                  <th className="thProfit" style={IndexExpanded != null ? {paddingRight: 0} : undefined}>Profit/Loss</th>
+                  {IndexExpanded != null ? <th style={{padding: 0}}></th> : ""}
+                  {/* <th style={{padding: "0.5rem 0.8rem 0.5rem 0rem"}}></th> */}
 
                 </tr>
               </thead>
@@ -94,25 +107,38 @@ export default function StocksTable(props: any){
                   {FilteredSearch.map((stockAvg: any, index: number) => (
                     <React.Fragment key={index}>                    
                     <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
-                      <td><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
-                      <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{stockAvg.name}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stockAvg.totalShares}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}> £{stockAvg.totalCost.toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{stockAvg.currentWorth.toFixed(2)}</td>
-                      <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(stockAvg.currentWorth - stockAvg.totalCost).toFixed(2)} </td>
-                      <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stockAvg.currentWorth/stockAvg.totalCost)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stockAvg.currentWorth/stockAvg.totalCost)*100)-100) > 0) ? "+" : null}{(((stockAvg.currentWorth/stockAvg.totalCost)*100)-100).toFixed(1)}%</span></td>
-                      <td></td>
+                      <td className="tdLogo"><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
+                      <td className="tdCompanies"><div><div><h3>{stockAvg.name}</h3><span>Quantity: {stockAvg.totalShares}</span></div></div></td>
+                      <td className="tdBoughtPrice"> £{stockAvg.totalCost.toFixed(2)}</td>
+                      <td className="tdCurrentValue"><div>£{stockAvg.currentWorth.toFixed(2)}<span className={"LastUpdatedStockTableValue"}>Last Updated: {LastUpdatedDictionary?.get(stockAvg.symbol)
+                          ? LastUpdatedDictionary.get(stockAvg.symbol)!.toLocaleString(undefined, {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              day: 'numeric',
+                              month: 'numeric',
+                              year: '2-digit',
+                            })
+                          : "Error"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="tdProfit"><div><div>£{(stockAvg.currentWorth - stockAvg.totalCost).toFixed(2)}<span style={{color: (((((stockAvg.currentWorth/stockAvg.totalCost)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stockAvg.currentWorth/stockAvg.totalCost)*100)-100) > 0) ? "+" : null}{(((stockAvg.currentWorth/stockAvg.totalCost)*100)-100).toFixed(1)}%</span></div></div></td>
+                      {IndexExpanded != null ? <td style={{padding: 0}}></td> : ""}
                     </tr>
                     {IndexExpanded == index && stockAvg.transactions.map((stock: any, i: number) => (
                       <tr key={i}>
-                        <td><img className="StockLogos" style={{padding: "0rem 0rem 0rem 0.5rem"}} src={stockAvg.logo} alt="Stock Logo" /></td>
-                        <td style={{padding: "1rem 1rem 1rem 3rem"}} className="StockNameLogo">{stockAvg.name}</td>
-                        <td style={{padding: "1rem 0rem 1rem 3rem"}}>{stock.quantity}</td>
-                        <td style={{padding: "1rem 0rem 1rem 3rem"}}> {(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
-                        <td style={{padding: "1rem 0rem 1rem 3rem"}}>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
-                        <td style={{padding: "1rem 0rem 1rem 3rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
-                        <td style={{padding: "1rem 1rem 1rem 3.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                        <td style={{padding: "1rem 1.5rem 1rem 1rem"}} className="DeleteButton">
+                        {/* <td><img className="StockLogos" style={{padding: "0rem 0rem 0rem 0.5rem"}} src={stockAvg.logo} alt="Stock Logo" /></td> */}
+                        <td className="tdLogoMore">
+                          <div style={{height: "10px", width: "10px", transform: "rotate(-90deg)", marginLeft: "20px"}}>
+                            <div className={`ArrowOne`} ></div>
+                            <div className={`ArrowTwo`} ></div>
+                          </div>
+                        </td>
+                        <td className="tdCompanies" ><div><div><p style={{fontWeight: 400}}>{stockAvg.name}</p><span>Quantity: {stock.quantity}</span></div></div></td>
+                        <td className="tdBoughtPrice">£{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
+                        <td className="tdCurrentValue">£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
+                        <td className="tdProfit"><div><div>£{((stock.currentPrice - stock.purchasePrice)*stock.quantity).toFixed(2)}<span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></div></div></td>
+                        <td className="DeleteButton">
                           <div className="CrossContainer" onClick={() => {
                             props.handleDelete(index, stock, stockAvg.name, stockAvg.logo)
                           }}>
@@ -127,6 +153,22 @@ export default function StocksTable(props: any){
                   ))}
 
                 </tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
               {/* <tbody>
                 {props.portfolio.stocks.map((stock: any, index: number) => (
                   <tr key={index} style={{opacity: (props.ToDelete != null) ? ((props.ToDelete == index ) ? 1 : 0.5) : 1}}>

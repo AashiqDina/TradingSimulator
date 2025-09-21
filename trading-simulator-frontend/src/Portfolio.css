@@ -207,16 +207,14 @@ html{
   text-align: center;
 }
 
-.ModalContent > h2{
-
-}
-
 .DeleteLogo{
   width: 1.6rem;
   border-radius: 0.5rem;
   margin-right: 3px;
 
 }
+
+/* Stocks Table */
   
 .Table {
   margin: 0 auto;
@@ -287,23 +285,6 @@ th{
 	font-weight: 400;
 }
 
-.BestTableHeader{
-  background-color: #45a04921;
-}
-
-.BestTable thead tr:first-child th:first-child {
-  border-top-left-radius: 10px;
-}
-.BestTable thead tr:first-child th:last-child {
-  border-top-right-radius: 10px;
-}
-.BestTable tbody tr:last-child td:first-child {
-  border-bottom-left-radius: 10px;
-}
-.BestTable tbody tr:last-child td:last-child {
-  border-bottom-right-radius: 10px;
-}
-
 .Table thead tr:first-child th:first-child {
   border-top-left-radius: 10px;
 }
@@ -317,12 +298,319 @@ th{
   border-bottom-right-radius: 10px;
 }
 
+.thLogo{
+  padding: 0.5rem 0.8rem 0.5rem 0.5rem;
+}
 
+.thCompanies{
+  padding: 1.5rem 0rem 1.5rem 0rem;
+  text-align: start;
+}
+
+.thBoughtPrice{
+  padding: 0 1rem 0 1rem;
+}
+
+.thCurrentValue{
+  padding: 0 ;
+}
+
+.thProfit{
+  padding: 0 1rem 0 1rem;
+}
+
+.thPercent{
+  padding: 0 ;
+}
+
+.tdLogo{
+
+}
+
+.tdCompanies{
+  padding: 1rem 0rem 1rem 0rem;
+}
+
+.tdBoughtPrice{
+  padding: 1rem 0rem 1rem 0rem;
+}
+
+.tdCurrentValue{
+  padding: 1rem 0rem 1rem 0rem;
+}
+
+.tdProfit{
+  padding: 1rem 0rem 1rem 1rem;
+  
+}
+
+.tdPercent{
+  padding: 1rem 1rem 1rem 0.3rem
+}
+
+.tdCurrentValue > div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.tdCurrentValue > div > span{
+  font-weight: 300;
+  font-size: 1rem;
+}
 
 .StockLogos{
   width: 35px;
   border-radius: 0.5rem;
 }
+
+.tdCompanies > div{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.tdCompanies > div > div{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tdCompanies > div > div > h3, .tdCompanies > div > div > p{
+  font-family: Inter, sans-serif;
+  margin: 0;
+  font-weight: 500;
+}
+
+.tdCompanies > div > div > span{
+  font-family: Inter, sans-serif;
+  margin: 0;
+  font-weight: 300;
+  font-size: 1rem;
+}
+
+.tdCompanies > div > div > span{
+  font-family: Inter, sans-serif;
+  margin: 0;
+  font-weight: 300;
+  font-size: 1rem;
+}
+
+.tdProfit > div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.tdProfit > div > div{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.tdProfit > div > div > span{
+  font-size: 1rem;
+  text-align: end;
+}
+
+@media (max-width: 1020px) {
+  th{
+    font-size: 1.3rem;
+    padding: 0;
+  }
+  td{
+    font-size: 1rem;
+    padding: 0 0 0 0.5rem;
+  }
+  .tdCurrentValue > div > span{
+    font-size: 0.8rem;
+  }
+
+  .tdCompanies > div > div > span{
+    font-size: 0.8rem;
+  }
+
+  .tdCompanies > div > div{
+    align-items: flex-start;
+    padding-left: 1rem;
+  }
+
+  .tdProfit > div > div > span{
+    font-size: 0.8rem;
+    text-align: end;
+  }
+
+  .tdCompanies > div > div > h3,  .tdCompanies > div > div > p{
+    text-align: start;
+  }
+
+  .Table{
+    min-width: 55rem;
+  }
+
+  
+  .thLogo{
+    padding: 0;
+  }
+
+  .thCompanies{
+    padding: 1.5rem 0rem 1.5rem 1rem;
+    text-align: start;
+  }
+
+  .thBoughtPrice{
+    padding: 0;
+  }
+
+  .thCurrentValue{
+    padding: 0;
+  }
+
+  .thProfit{
+    padding: 0;
+  }
+
+  .thPercent{
+    padding: 0;
+  }
+
+  .tdLogoMore{
+    scale: 0.8;
+  }
+
+  .tdCompanies{
+    padding: 1rem 0rem 1rem 0rem 
+  }
+
+  .tdBoughtPrice{
+    padding: 1rem 0rem 1rem 0rem
+  }
+
+  .tdCurrentValue{
+    padding: 1rem 0rem 1rem 0rem
+  }
+
+  .tdProfit{
+    padding: 1rem 0rem 1rem 0rem
+  }
+
+  .tdPercent{
+    padding: 1rem 1rem 1rem 0.3rem
+  }
+}
+
+@media (max-width: 900px) {
+  .Table{
+    min-width: 40rem;
+  }
+  .StockLogos{
+    width: 30px;
+  }
+}
+
+@media (max-width: 660px) {
+  .Table{
+    min-width: 30rem;
+  }
+  th{
+    font-size: 1.1rem;
+    padding: 0;
+  }
+  td{
+    font-size: 0.8rem;
+    padding: 0 0 0 0.5rem;
+  }
+  .tdCurrentValue > div > span{
+    font-size: 0.7rem;
+  }
+  .tdCompanies > div > div > span{
+    font-size: 0.7rem;
+  }
+
+  .tdProfit > div > div > span{
+    font-size: 0.7rem;
+    text-align: end;
+  }
+
+  .thCompanies{
+    padding: 1.5rem 0rem 1.5rem 0rem;
+  }
+
+  .thBoughtPrice{
+    padding: 0 0.8rem 0 0.8rem;
+  }
+
+  .thCurrentValue{
+    padding: 0 ;
+  }
+
+  .thProfit{
+    padding: 0 0.8rem 0 0.8rem;
+  }
+
+  .thPercent{
+    padding: 0 ;
+  }
+
+  .tdLogoMore{
+    scale: 0.5;
+  }
+
+  .DeleteButton{
+    scale: 0.7;
+  }
+
+}
+
+@media (max-width: 500px) {
+  .Table{
+    min-width: 20rem;
+  }
+  th{
+    font-size: 1rem;
+    padding: 0;
+  }
+  .tdCurrentValue > div > span{
+    font-size: 0.7rem;
+  }
+  .tdCompanies > div > div > span{
+    font-size: 0.7rem;
+  }
+
+  .tdProfit > div > div > span{
+    font-size: 0.7rem;
+    text-align: end;
+  }
+
+  .StockLogos{
+    width: 25px;
+  }
+}
+
+@media (max-width: 360px) {
+  th{
+    font-size: 0.8rem;
+  }
+  .tdCompanies > div > div > h3,  .tdCompanies > div > div > p{
+    font-size: 0.8rem;
+  }
+
+  .tdCompanies > div > div{
+    padding-left: 0.5rem;
+  }
+}
+
+
+
+
+
+
+
 
 .ViewMore{
   position: fixed;
@@ -400,6 +688,10 @@ th{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.DeleteButton{
+  padding: 0 0.3rem 0 0;
 }
 
 .DeleteButton:hover .Cross1,
@@ -543,10 +835,6 @@ th{
 .StocksAverageGraph > h2{
   font-weight: 200;
   margin: 0;
-}
-
-.StocksAverageGraph canvas{
-
 }
 
 @media (max-width: 850px) {
