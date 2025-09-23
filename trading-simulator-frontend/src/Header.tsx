@@ -58,11 +58,13 @@ const Header: React.FC = () => {
                 About
               </Link>
             </li>
-            <li>
-              <Link role="button" to="/portfolio" onClick={toggleMenu}>
-              Portfolio
-              </Link>
+            {user ? (
+              <li>
+                <Link role="button" to="/portfolio" onClick={toggleMenu}>
+                Portfolio
+                </Link>
             </li>
+            ) : <></>}
             {user ? (
               <>
                 <li>
@@ -72,6 +74,11 @@ const Header: React.FC = () => {
             ) : (
               <></>
             )}
+            {!user ? (
+              <li style={{marginTop: "0.5rem"}}>
+                <Link role="button" to="/login" className="LogoutButton" style={{fontSize: "1.1rem"}} onClick={toggleMenu}>Login</Link>
+              </li>
+            ) : <></>}
           </ul>
         </nav>
     </header>

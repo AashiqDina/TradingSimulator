@@ -19,7 +19,7 @@ const Login = () => {
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
-    setError("reset")
+    setError("")
     e.preventDefault();
 
     try {
@@ -63,7 +63,7 @@ const Login = () => {
   };
 
   return (
-    <div className={`login-container ${(error && (error != "reset")) ? "error" : ""}`}>
+    <div className={`login-container ${(error && (error != "")) ? "error" : ""}`}>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
@@ -74,7 +74,7 @@ const Login = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="UsernameInput"
+            className="UsernameInputLogin"
             aria-required="true"
             required
           />
@@ -87,7 +87,7 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="PasswordInput"
+            className="PasswordInputLogin"
             aria-invalid={error ? "true" : "false"}
             aria-required="true"
             required
@@ -96,8 +96,8 @@ const Login = () => {
         <button aria-label="Submit Login Form" className="SubmitButton" type="submit">Login</button>
       </form>
       {error && <p role="alert" className="ErrorType">{error}</p>}
-      <p>Don't have an account?</p>
-      <a aria-label="Go to registration page" href="/register">Register</a>
+      <p className="noAccount">Don't have an account?</p>
+      <a aria-label="Go to registration page" href="/register" className="noAccountRegister">Register</a>
     </div>
   );
 };

@@ -16,7 +16,7 @@ function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("reset");
+    setError("");
   
     try {
       const checkResponse = await fetch("http://localhost:3000/api/User/checkUsername", {
@@ -83,7 +83,7 @@ function Register() {
   
 
   return (
-    <section className={`register-container ${(error && (error != "reset")) ? "error" : ""}`}>
+    <section className={`register-container ${(error && (error != "")) ? "error" : ""}`}>
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
       <label htmlFor="username" className="SrOnly">Username</label>
@@ -127,9 +127,10 @@ function Register() {
 
         <button className="SubmitButton" type="submit">Register</button>
       </form>
-      <p>
-        Already have an account? <a aria-label="Go to login page" href="/login">Login here</a>
+      <p className="noAccount">
+        Already have an account?
       </p>
+      <a className="noAccountRegister" aria-label="Go to login page" href="/login">Login here</a>
     </section>
   );
 }

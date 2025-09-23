@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TradingSimulator_Backend.Data;
 
@@ -10,9 +11,11 @@ using TradingSimulator_Backend.Data;
 namespace TradingSimulator_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921232801_ChangeQuantityToDecimalTwo")]
+    partial class ChangeQuantityToDecimalTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -43,7 +46,7 @@ namespace TradingSimulator_Backend.Migrations
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PortfolioId")
+                    b.Property<int?>("PortfolioId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("PurchasePrice")
@@ -145,13 +148,9 @@ namespace TradingSimulator_Backend.Migrations
 
             modelBuilder.Entity("Stock", b =>
                 {
-                    b.HasOne("Portfolio", "Portfolio")
+                    b.HasOne("Portfolio", null)
                         .WithMany("Stocks")
-                        .HasForeignKey("PortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Portfolio");
+                        .HasForeignKey("PortfolioId");
                 });
 
             modelBuilder.Entity("StockHistory", b =>

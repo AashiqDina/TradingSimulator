@@ -110,6 +110,21 @@ html{
   font-weight: 500;
 }
 
+.PageTitleHoldings{
+  font-size: 2rem;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+}
+
+.genericFlexRow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 1rem
+}
+
 .LineOne{
   display: flex;
   justify-content: space-between;
@@ -133,44 +148,6 @@ html{
   margin: 0 auto;
   margin-bottom: 5rem;
   border-radius: 10rem;
-}
-
-
-
-
-.Box1{
-    width: 15rem;
-    color: #45a049;
-    border-radius: 2rem;
-    text-align: center;
-    font-size: 2rem;
-    padding: 1rem;
-    flex-grow: 1;
-    border: 2px solid white;
-    box-shadow: 0px 10px 10px green;
-        height: 12rem;
-}
-
-.Box2{
-    width: 17rem;
-    border-radius: 2rem;
-    text-align: center;
-    font-size: 2.2rem;
-    padding: 1rem;
-    flex-grow: 1;
-    border: 2px solid white;
-        height: 12rem;
-}
-
-.Box3{
-    width: 15rem;
-    border-radius: 2rem;
-    text-align: center;
-    font-size: 2rem;
-    padding: 1rem;
-    flex-grow: 1;
-    border: 2px solid white;
-        height: 12rem;
 }
 
 .StocksTable{
@@ -264,7 +241,9 @@ html{
   -webkit-text-fill-color: transparent;
 }
 
-tr:nth-child(even){background-color: #28312972}
+tr:nth-child(even){background-color: #2831298b}
+
+tr:nth-child(odd){background-color: rgba(7, 17, 20, 0.271)}
 
 td{
   border: 2px solid rgba(255, 255, 255, 0);
@@ -754,7 +733,6 @@ th{
 
 .Filter > input{
   margin-bottom: 0;
-  margin-left: 1rem;
   height: 3rem;
   width: clamp(120px, 50%, 60%);
   border-radius: 5rem;
@@ -762,7 +740,7 @@ th{
   font-family: Inter, sans-serif;;
   font-weight: 600;
   box-shadow: 0px 0px 10px 1px #3e91444c;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.5s ease-in-out;
   background-color: #45a04900;
   color: #ffffff;
   border: 1px #45a049 solid;
@@ -782,7 +760,7 @@ th{
   font-family: Inter, sans-serif;;
   font-weight: 600;
   box-shadow: 0px 0px 10px 1px #3e91444c;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.5s ease-in-out;
   outline: none;
   color: white;
   border: 1px #45a049 solid;
@@ -864,9 +842,21 @@ th{
     margin: 0;
     font-weight: 400;
   }
+
+  .FilterGraph > article > button{
+    width: 7rem;
+  }
+
+  .Filter > input {
+    font-size: 0.8rem;
+  }
 }
 
-@media (max-width: 600px) {
+.PortfolioHoldings{
+  background: linear-gradient(rgba(0, 0, 0, 0) 0%, #3e91444c 95%);
+}
+
+@media (max-width: 608px) {
   .PageTitle{
     font-size: 2rem;
     margin-top: 1.5rem
@@ -882,6 +872,35 @@ th{
   }
   .FilterGraph > article > button{
     font-size: 1rem;
+  }
+
+  .PortfolioSummary > div > h3{
+    font-size: 1rem;
+  }
+
+  .PortfolioSummary > div > h4{
+    font-size: 1rem;
+  }
+
+  .PortfolioSummary > .PortfolioSummaryCenter > h4{
+    font-size: 1.3rem;
+  }
+
+    .PortfolioSummary > div > h5{
+    font-size: 1.3rem;
+  }
+  
+
+  .PortfolioSummary > div{
+    width: 9rem;
+  }
+
+  .Filter > select{
+    font-size: 0.9rem;
+  }
+
+  .StocksAverageGraph > h2{
+    font-size: 1.7rem;
   }
   
 }

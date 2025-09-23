@@ -146,7 +146,7 @@ const Portfolio = () => {
                 </h5>
                 <div>
                   <span style={Profit != null && Profit >= 0 ? {color: '#45a049'} : {color: '#bb1515'}}>
-                    ({Profit != null && Profit >= 0 ? "+" : ""}{(PorfolioValue != null && Invested != null) ? ((PorfolioValue/Invested)*100-100).toFixed(2) : ""}{(PorfolioValue != null && Invested != null) ? "%" : ""})
+                    {Profit != null && Profit >= 0 ? "+" : ""}{(PorfolioValue != null && Invested != null) ? ((PorfolioValue/Invested)*100-100).toFixed(2) : ""}{(PorfolioValue != null && Invested != null) ? "%" : ""}
                   </span>
                 </div>
               </div>
@@ -170,7 +170,10 @@ const Portfolio = () => {
           </a>
 
           <div id="Space"></div>
+          <div id="Space"></div>
+          {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div> */}
           <div id="ToJump"></div>
+          {/* <div style={{width: "50vw"}} className="LineOne"></div> */}
 
           <StocksTable 
             setFilteredOption={setFilteredOption} 
@@ -182,7 +185,11 @@ const Portfolio = () => {
             ToDelete={ToDelete}
             handleTrueDelete={handleTrueDelete}/>
 
-          <div id="Space"></div>
+          {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div>
+          <h2 className="PageTitle">Transaction History</h2>
+          <div style={{width: "50vw"}} className="LineOne"></div>
+          <div id="Space"></div> */}
+
 
         </>
       ) : (

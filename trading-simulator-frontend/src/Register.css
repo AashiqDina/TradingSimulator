@@ -10,6 +10,8 @@
     padding-right: 2rem;
     border: 1px solid #45a049;
     border-radius: 2rem;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+    transition: all 0.5s ease-in-out;
   }
 
   .register-container.error {
@@ -46,11 +48,7 @@
   
   button {
     width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
     color: white;
-    border: none;
-    border-radius: 0.4rem;
     cursor: pointer;
   }
   
@@ -79,10 +77,12 @@
     height: 2.5rem;
     font-size: 0.9rem;
     border: none;
+    outline: none;
+    transition: all 0.5s ease-in-out;
   }
 
-  .UsernameInput{
-    outline-color: #45a049;
+  .UsernameInput:focus{
+    box-shadow: 0px 0px 30px 2px #3e91444c;
   }
 
   .PasswordInput{
@@ -90,10 +90,12 @@
     height: 2.5rem;
     font-size: 0.9rem;
     border: none;
+    outline: none;
+    transition: all 0.5s ease-in-out;
   }
 
-  .PasswordInput{
-    outline-color: #45a049;
+  .PasswordInput:focus{
+    box-shadow: 0px 0px 30px 2px #3e91444c;
   }
 
   .ConfirmPasswordInput{
@@ -101,19 +103,18 @@
     height: 2.5rem;
     font-size: 0.9rem;
     border: none;
+    outline: none;
+    transition: all 0.5s ease-in-out;
   }
 
-  .ConfirmPasswordInput{
-    outline-color: #45a049;
+  .ConfirmPasswordInput:focus{
+    box-shadow: 0px 0px 30px 2px #3e91444c;
   }
 
-  .SubmitButton{
-      border-radius: 10rem;
-      width: 12rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      font-family: Inter, sans-serif;
-
+  @media (max-width: 400px) {
+    .register-container{
+      width: 20rem;
+    }
   }
 
   @keyframes RegisterError {

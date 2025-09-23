@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import Confetti from 'react-confetti'
 import { FocusTrap } from 'focus-trap-react';
+import QuickStats from './PorfolioSections/QuickStats';
 
 interface StockInfoResponse {
   lastUpdated: string | null;
@@ -71,6 +72,7 @@ const Home: React.FC = () => {
     try{
       const response4 = await axios.get<StockInfoResponse>(`http://localhost:3000/api/stocks/GetStockInfo/${stockSymbol}`);
       setStockQuickData(response4.data);
+      console.log("Quick Data: ", response4.data)
     } catch (err) {
       setError(error + ' | Stock Data not found');
       setFound(false);
@@ -137,6 +139,58 @@ const Home: React.FC = () => {
         {(stockFound && (stockPrice !== null) &&
           <section className='CompleteSearchResult'>
             <article className='SearchResult'>
+              <div className='StockHeader'>
+                <img className='StockLogo' src={stockLogo} alt={`${stockName} Logo`} />
+                <h3>{stockName}</h3>
+                <span>{stockSymbol}</span>
+              </div>
+              <div className='StockBody'>
+                <div className='StockBodyLeft'>
+                  <div>
+                    <h4>£{stockPrice.toFixed(2)}</h4>
+                    <div>
+                      <p style={stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? "+" : "-"}£{stockQuickData?.percentChange ? Math.abs((stockPrice-(stockPrice/((stockQuickData?.percentChange+100)/100)))).toFixed(2) : ""}</p>
+                      <p style={stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? "+" : ""}{stockQuickData?.percentChange ? stockQuickData.percentChange.toFixed(2) : ""}%</p>
+                    </div>
+                    <p>Last Updated: {stockQuickData?.lastUpdated ? new Date(stockQuickData?.lastUpdated).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "N/A"}</p>
+                </div>
+                </div>
+                <div className='StockBodyRight'>
+                  <div className='StockDailyRange' style={{width: "100%"}}>
+                    <h4 style={{textAlign: 'left', padding: "0 0 0 10%" }}>Daily Range</h4>
+                    <div style={{width: "100%"}}>
+                      <div className='LineOne' style={{width: "80%"}}>
+                        <div className='StockDailyAveragePoint'>
+                          <span style={stockQuickData?.lowPrice && stockQuickData?.highPrice ? {left: `${((stockPrice-stockQuickData.lowPrice)/(stockQuickData.highPrice-stockQuickData.lowPrice))*100}%`} : {}}>
+                          </span>
+                          </div>
+                          {/* </div>stockQuickData?.lowPrice && stockQuickData?.highPrice ? {left: `${Math.floor(stockPrice-stockQuickData?.lowPrice)/(stockQuickData?.highPrice-stockQuickData?.lowPrice)*100}%}`}: {}}></span></div> */}
+                      </div>
+                    </div>
+                    <div className='lhTitles'>
+                      <p>£{stockQuickData?.lowPrice}</p>
+                      <p>£{stockQuickData?.highPrice}</p>
+                    </div>
+                  </div>
+                  <p>data</p>
+                  <p>data</p>
+                  <p>data</p>
+
+                </div>
+              </div>
+              <div className='StockFooter'>
+                <button aria-label="View Stock Details" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                <button aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy</button>
+              </div>
+
+{/* 
                 {stockPrice !== null && (
                   <>
                     <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt={`${stockName},  Logo"`} /> {stockName} </h3>
@@ -175,7 +229,8 @@ const Home: React.FC = () => {
                           .map((price, index) => `£${price}`)
                           .join(' - ')
                       : 'N/A'} </span></p>
-                  <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p>
+                  <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p> */}
+             
               </article>
             </section>
         )}

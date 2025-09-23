@@ -8,6 +8,8 @@
     padding-right: 2rem;
     border: 1px solid #45a049;
     border-radius: 2rem;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+    transition: all 0.5s ease-in-out;
   }
 
   .login-container.error {
@@ -22,6 +24,7 @@
     margin-top: 1rem;
     margin-bottom: 2rem;
     font-family: Inter, sans-serif;
+    font-weight: 400;
   }
   
   .form-group {
@@ -31,6 +34,7 @@
   label {
     display: block;
     margin-bottom: 0.5rem;
+    font-family: Inter, sans-serif;
   }
   
   input {
@@ -42,58 +46,77 @@
     box-sizing: border-box;
   }
   
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 0.4rem;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
   p {
     text-align: center;
+    font-family: Inter, sans-serif;
   }
   
   a {
     color: #4e91d8;
     text-decoration: none;
+    font-family: Inter, sans-serif;
+
   }
 
-  .UsernameInput{
+  .UsernameInputLogin{
     border-radius: 10rem;
     height: 2.5rem;
     font-size: 0.9rem;
     border: none;
+    outline: none;
+    transition: all 0.5s ease-in-out;
   }
 
-  .UsernameInput:focus{
-    outline-color: #45a049;
+  .UsernameInputLogin:focus{
+    box-shadow: 0px 0px 30px 2px #3e91444c;
   }
 
-  .PasswordInput{
+  .PasswordInputLogin{
     height: 2.5rem;
     border-radius: 10rem;
     font-size: 0.9rem;
     border: none;
+    outline: none;
+    transition: all 0.5s ease-in-out;
   }
 
-  .PasswordInput:focus{
-    outline-color: #45a049;
+  .PasswordInputLogin:focus{
+    box-shadow: 0px 0px 30px 2px #3e91444c;
   }
   
   .SubmitButton{
-    border-radius: 10rem;
+    border-radius: 2rem;
     width: 12rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-bottom: 1rem;
     font-family: Inter, sans-serif;
+    border: 1px #45a049 solid;
+    background-color: #45a04900;
+    padding: 0.5rem;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+    color: white;
+  }
 
+  .SubmitButton:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    border-radius: 2rem;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    box-shadow: 0 3px 5rem 1rem rgba(0, 0, 0, 0.599);
+    font-family: Inter, sans-serif;
+  }
+
+  .noAccount{
+    margin-bottom: 0.5rem;
+    font-family: Inter, sans-serif;
+  }
+
+  .noAccountRegister{
+    color: #45a049e4;
+    font-weight: 700;
+    font-family: Inter, sans-serif;
   }
 
   .ErrorType{
@@ -110,6 +133,12 @@
     clip: rect(0, 0, 0, 0);
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+
+  @media (max-width: 400px) {
+    .login-container{
+      width: 20rem;
+    }
   }
 
   @keyframes LoginError {

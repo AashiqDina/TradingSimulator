@@ -13,7 +13,7 @@ namespace TradingSimulator_Backend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _context;
-        private readonly string _apiKey = "ApIkEy";
+        private readonly string _apiKey = "";
         
         private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();

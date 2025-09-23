@@ -146,6 +146,18 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
 
                     _context.StockHistory.Add(history);
                 }
+                else
+                {
+                    var existingHistory = await _context.StockHistory
+                        .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp.Date == DateTime.UtcNow.Date);
+
+                    if (existingHistory != null)
+                    {
+                        existingHistory.Price = stockPrice.Value;
+                        existingHistory.Quantity = stock.Quantity;
+                        existingHistory.Timestamp = DateTime.UtcNow;
+                    }
+                }
             }
         }
     }

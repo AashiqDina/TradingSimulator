@@ -74,8 +74,13 @@ export default function StocksTable(props: any){
 
 
     return (
-        <>
-        <section className="Filter">
+        <section className="PortfolioHoldings">
+          <article className="genericFlexRow" style={{marginBottom: "4rem"}}>
+            <div style={{width: "25%", margin: 0}} className="LineOne"></div>
+            <h2 className="PageTitleHoldings">Holdings</h2>
+            <div style={{width: "25%", margin: 0}} className="LineOne"></div>
+          </article>
+        <article className="Filter">
             <input type="text" onChange={(e) => inputFilter(e.target.value.toUpperCase())} placeholder="Enter stock symbol/name (e.g, AAPL, Apple)"/>
             <select name="" id="" onChange={(e) => props.setFilteredOption(e.target.value)}>
               <option value="">Sort by</option>
@@ -87,9 +92,9 @@ export default function StocksTable(props: any){
               <option value="ValueDesc">Value (Desc)</option>
             </select>
             {/* <button onClick={props.FilterSearch}>Submit</button> */}
-          </section>
+          </article>
 
-          <div className="StocksTable">
+          <article className="StocksTable">
             <table className="Table" style={{transition: "all 0.6s ease-in-out"}}>
               <thead>
                 <tr>
@@ -192,7 +197,7 @@ export default function StocksTable(props: any){
                 ))}
               </tbody> */}
             </table>
-          </div>
+          </article>
           {props.ModalVisible && (
             <div className="Modal">
               <div className="ModalContent">
@@ -209,6 +214,6 @@ export default function StocksTable(props: any){
               </div>
             </div>
           )}
-        </>
+        </section>
     )
 }
