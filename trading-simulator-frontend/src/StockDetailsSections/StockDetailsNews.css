@@ -1,0 +1,115 @@
+.ArticleCollection{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.NewsArticle{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 1rem;
+    border: 1px #45a049 solid;
+    box-shadow: 0px 0px 5px 1px #3e91444c;
+    padding: 1rem;
+    border-radius: 3rem;
+    width: 85%;
+    height: 12rem;
+    transition: all 0.5s ease-in-out;
+}
+
+.NewsArticle > div{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.NewsArticle > div > div{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: -0.5rem;
+}
+
+.NewsArticle > div > div > p{
+    color: #ffffffba;
+    font-weight: 250;
+    margin: 0;
+}
+
+.NewsArticle > div > div > .Source{
+    padding-left: 0.5rem;
+}
+
+.NewsArticle > div > div > .Date{
+    padding-right: 0.5rem;
+}
+
+.NewsArticle:hover{
+    background-color: #45a0491a;
+    box-shadow: none;
+    scale: 1.01;
+}
+
+.NewsArticle > div > h2{
+    font-size: 1.2rem;
+    margin: 0;
+    font-weight: 450;
+    text-align: start;
+    padding-left: 0.5rem;
+}
+
+.NewsArticle > div > h3{
+    font-size: 1.2rem;
+    margin: 0;
+    font-weight: 450;
+    text-align: start;
+    padding-left: 0.5rem;
+    width: 100%;
+}
+
+.NewsArticle > div > p{
+    margin: 0;
+    text-align: left;
+    padding-left: 0.5rem;
+    font-weight: 300;
+}
+
+.NewsArticle > img{
+    width: 9rem;
+    /* border-radius: 0.5rem; */
+    border-radius: 1.5rem;
+    margin-left: 0.2rem;
+}
+
+.MoreNewsArticles{
+    margin-top: 1rem;
+}
+
+.SeeMoreNews{
+    background-color: #00000000;
+    color: white;
+    outline: none;
+    border-radius: 5rem;
+    border: 1px #45a049 solid;
+    /* padding: 1rem 0.1rem 1rem 0.1rem; */
+    font-size: 1.3rem;
+    font-family: Inter, sans-serif;
+    width: 17rem;
+    height: 3rem;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.SeeMoreNews:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    color: white;
+}

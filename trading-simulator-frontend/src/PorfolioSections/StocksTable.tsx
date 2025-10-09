@@ -1,4 +1,4 @@
-import { ForkRight, Transform } from "@mui/icons-material";
+import { FocusTrap } from 'focus-trap-react';
 import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -68,11 +68,6 @@ export default function StocksTable(props: any){
     }
   }
 
-
-
-
-
-
     return (
         <section className="PortfolioHoldings">
           <article className="genericFlexRow" style={{marginBottom: "4rem"}}>
@@ -134,7 +129,7 @@ export default function StocksTable(props: any){
                       <tr key={i}>
                         {/* <td><img className="StockLogos" style={{padding: "0rem 0rem 0rem 0.5rem"}} src={stockAvg.logo} alt="Stock Logo" /></td> */}
                         <td className="tdLogoMore">
-                          <div style={{height: "10px", width: "10px", transform: "rotate(-90deg)", marginLeft: "20px"}}>
+                          <div style={{height: "10px", width: "10px", transform: "rotate(-90deg)", marginLeft: "20px", scale: "0.85"}}>
                             <div className={`ArrowOne`} ></div>
                             <div className={`ArrowTwo`} ></div>
                           </div>
@@ -159,51 +154,39 @@ export default function StocksTable(props: any){
 
                 </tbody>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                
-              {/* <tbody>
-                {props.portfolio.stocks.map((stock: any, index: number) => (
-                  <tr key={index} style={{opacity: (props.ToDelete != null) ? ((props.ToDelete == index ) ? 1 : 0.5) : 1}}>
-                    <td><img className="StockLogos" src={props.StockLogoArray[index]} alt="Stock Logo" /></td>
-                    <td style={{padding: "1rem 1rem 1rem 0rem"}} className="StockNameLogo">{props.StockNameArray[index]}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>{stock.quantity}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}> {(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{stock.currentPrice.toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 0rem"}}>£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
-                    <td style={{padding: "1rem 0rem 1rem 1rem"}}>£{(stock.profitLoss).toFixed(2)} </td>
-                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}}><span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></td>
-                    <td style={{padding: "1rem 1rem 1rem 0.3rem"}} className="DeleteButton">
-                      <div className="CrossContainer" onClick={() => {
-                        props.handleDelete(index, stock)
-                      }}>
-                        <div className="Cross1"></div>
-                        <div className="Cross2"></div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody> */}
             </table>
           </article>
           {props.ModalVisible && (
+            <FocusTrap>
             <div className="Modal">
               <div className="ModalContent">
-                <h2>
-                    Delete <img className="DeleteLogo" src={props.ToDelete.logo !== null ? props.ToDelete.logo : null} alt="" />{props.ToDelete.name !== null ? props.ToDelete.name : "this stock"} from your portfolio?
-                </h2>
+                <h2>Are you sure you want to delete?</h2>
+                <div>
+                  <table className="Table" style={{transition: "all 0.6s ease-in-out", scale: 0.8}}>
+                  <thead>
+                    <tr>
+                      <th className="thLogo"></th>
+                      <th className="thCompanies">Companies</th>
+                      <th className="thBoughtPrice">Bought Price</th>
+                      <th className="thCurrentValue">Current Value</th>
+                      <th className="thProfit" style={IndexExpanded != null ? {paddingRight: 0} : undefined}>Profit/Loss</th>
+                      {IndexExpanded != null ? <th style={{padding: 0}}></th> : ""}
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <td className="tdLogoMore">
+                        <img className="StockLogos"  src={props.ToDelete.logo} alt="" style={{width: "60px", padding: "none", margin: "none"}}/>
+                      </td>
+                      <td className="tdCompanies" ><div><div><p style={{fontWeight: 400}}>{props.ToDelete.name}</p><span>Quantity: {props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).quantity}</span></div></div></td>
+                      <td className="tdBoughtPrice">£{(props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).purchasePrice * props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).quantity).toFixed(2)}</td>
+                      <td className="tdCurrentValue">£{(props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).quantity * props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).currentPrice).toFixed(2)}</td>
+                      <td className="tdProfit"><div><div>£{((props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).currentPrice - props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).purchasePrice)*props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).quantity).toFixed(2)}<span style={{color: (((((props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).currentPrice/props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).currentPrice/props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).purchasePrice)*100)-100) > 0) ? "+" : null}{(((props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).currentPrice/props.portfolio.stocks.find((s: any) => s.id === props.ToDelete.stock).purchasePrice)*100)-100).toFixed(1)}%</span></div></div></td>
+
+                  </tbody>
+                </table>
+              </div>
+
                 <div className="ModalFooter">
                   <button className="" onClick={() => {
                     props.setModalVisibility(false);
@@ -213,6 +196,7 @@ export default function StocksTable(props: any){
                 </div>
               </div>
             </div>
+            </FocusTrap>
           )}
         </section>
     )

@@ -1,60 +1,57 @@
-import { useEffect, useState } from "react";
-import createApi from "realtime-newsapi";
+import { useEffect, useState } from "react"
+import getStockNews from "../Functions/getStockNews"
+import "./StockDetailsNews.css"
 
-// interface Article {
-//   title: string;
-//   description?: string;
-//   url: string;
-// }
+export default function StockDetailsNews(props: any){
 
+  const [NewsArray, setNewsArray] = useState<any | null>(null)
+  const [amountNewsDisplay, setAmountNewsDisplay] = useState<number>(5)
 
-// const api = createApi({
-//   socketOptions: {
-//     transports: ["websocket"],
-//     withCredentials: false        
-//   }
-// });
+  useEffect(() => {
+    const getNews = async () => {
+      let response = await getStockNews({symbol: props.symbol});
+      setNewsArray(response)
+      console.log(response);
+    }
+    getNews()
+  }, [])
 
-export default function StockDetailsNews(props: any) {
-//   const [news, setNews] = useState<Article[]>([]);
-
-//   useEffect(() => {
-//     const handler = (articles: Article[]) => {
-//       const filtered = articles.filter(a =>
-//         a.title.includes(props.Symbol) ||
-//         (a.description ?? "").includes(props.Symbol)
-//       );
-//       setNews(filtered);
-//     };
-
-//     api.on("articles", handler);
-//     return () => {
-//       api.off("articles", handler);
-//     };
-//   }, [props.Symbol]);  // dependency on props.Symbol
-
-  return (
+  return(
     <>
-      {/* {news.length > 0 ? (
-        news.map(a => (
-          <a
-            key={a.url}
-            href={a.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mb-4 p-3 border rounded hover:bg-gray-50"
-          >
-            <h3 className="text-lg font-semibold">{a.title}</h3>
-            {a.description && (
-              <p className="text-sm text-gray-700">{a.description}</p>
-            )}
-          </a>
-        ))
-      ) : (
-        <h3 className="text-center text-gray-500">
-          No articles found for “{props.Symbol}”
-        </h3>
-      )} */}
+    <section>
+      <article className="ArticleCollection">
+        {NewsArray?.slice(0, amountNewsDisplay).map((article: any, index: number) => {
+            return(
+              <a key={index} className="NewsArticle" href={article.url}>
+                <img src={article.image} alt="" />
+                <div>
+                  <h2>{article.headline}</h2>
+                  <p>{article.summary}</p>
+                  <div>
+                    <p className="Source">Source: {article.source}</p>
+                    <p className="Date">{new Date(article.datetime * 1000).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}</p>
+                  </div>
+                </div>
+              </a>
+            )
+        })
+        }
+      </article>
+      <article className="MoreNewsArticles">
+        {amountNewsDisplay < NewsArray?.length ?
+        <button className="SeeMoreNews" onClick={() => {setAmountNewsDisplay(amountNewsDisplay+5)}}>
+          View More
+        </button> : 
+        <h2>No more Articles.</h2>
+        }
+      </article>
+    </section>
     </>
-  );
+  )
 }

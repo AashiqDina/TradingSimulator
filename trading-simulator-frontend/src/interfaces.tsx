@@ -58,3 +58,8 @@ export interface FiftyTwoWeek {
     phone: string;
   }
   
+  export interface Suggestion {
+    name: string;
+    symbol: string;
+    logo: string;
+  }

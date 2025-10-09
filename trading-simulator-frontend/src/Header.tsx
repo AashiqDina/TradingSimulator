@@ -46,21 +46,21 @@ const Header: React.FC = () => {
 
 
       
-        <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -1000, opacity: 0, borderRadius: '0 7rem 7rem 0'}: {zIndex: 1000, opacity: 1}}>
+        <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -10000, opacity: 0, borderRadius: '0 7rem 7rem 0', pointerEvents: "none"}: {zIndex: 100000, opacity: 1}}>
           <ul>
             <li>
-              <Link role="button" to="/" onClick={toggleMenu}>
+              <Link role="button" to="/" tabIndex={menuOpen ? 0 : -1}  onClick={toggleMenu}>
                 Home
               </Link>
             </li>
             <li>
-              <Link role="button" to="/about" onClick={toggleMenu}>
+              <Link role="button" to="/about" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
                 About
               </Link>
             </li>
             {user ? (
               <li>
-                <Link role="button" to="/portfolio" onClick={toggleMenu}>
+                <Link role="button" to="/portfolio" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
                 Portfolio
                 </Link>
             </li>
@@ -68,7 +68,7 @@ const Header: React.FC = () => {
             {user ? (
               <>
                 <li>
-                  <button className="LogoutButton" onClick={handleLogout}>Logout</button>
+                  <button className="LogoutButton" tabIndex={menuOpen ? 0 : -1} onClick={handleLogout}>Logout</button>
                 </li>
               </>
             ) : (
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
             )}
             {!user ? (
               <li style={{marginTop: "0.5rem"}}>
-                <Link role="button" to="/login" className="LogoutButton" style={{fontSize: "1.1rem"}} onClick={toggleMenu}>Login</Link>
+                <Link role="button" to="/login" tabIndex={menuOpen ? 0 : -1} className="LogoutButton" style={{fontSize: "1.1rem"}} onClick={toggleMenu}>Login</Link>
               </li>
             ) : <></>}
           </ul>

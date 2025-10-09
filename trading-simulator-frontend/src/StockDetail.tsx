@@ -6,11 +6,16 @@ import { StockApiInfo, CompanyProfile } from "./interfaces";
 import { useAuth } from "./AuthContext";
 import { StocksAI } from './StocksAI';
 import AiLoading from './AiLoading';
+import getStockApiInfo from './Functions/getStockApiInfo';
 import CompanyInformation from './StockDetailsSections/StockDetailsCompanyInformation'
 import StockDetails from './StockDetailsSections/StockDetailsStockData'
 import StockDetailsOwnedStocks from './StockDetailsSections/StockDetailsOwnedStocks';
 import StockDetailsNews from './StockDetailsSections/StockDetailsNews';
-
+import buyStock from './Functions/buyStock';
+import { FocusTrap } from 'focus-trap-react';
+import Confetti from 'react-confetti';
+import AiChat from './StockDetailsSections/AiChat';
+import StockDetailsOverview from './StockDetailsSections/StockDetailsOverview';
 
 interface AxiosErrorType {
     response?: { data: string; status: number; statusText: string };
@@ -20,17 +25,23 @@ interface AxiosErrorType {
 const StockDetail: React.FC = () => {
     const { user } = useAuth();
     const { symbol } = useParams();
+    const stockSymbol = decodeURIComponent(symbol ?? '');
     const [StockName, setStockName] = useState("Unknown")
     const [stockLogo, setStockLogo] = useState<string>('');
     const [BasicStockData, setStockBasicData] = useState<StockApiInfo | null>(null);
-    const [StockCompanyDetails, setCompanyDetails] = useState<CompanyProfile | null>(null);
-    const [DisplayedData, setDisplayedData] = useState<any | null>("CompanyInformation")
-    const [UserPrompts, setUserPrompts] = useState<string[]>([""])
-    const [AiResponses, setAiResponses] = useState<string[]>([""])
+    const [StockCompanyDetails, setCompanyDetails] = useState<CompanyProfile | null | undefined>(undefined);
+    const [DisplayedData, setDisplayedData] = useState<any | null>("Overview")
+    const [UserPrompts, setUserPrompts] = useState<string[]>([])
+    //(["Hi","Can you tell me about this stock?","ok how about this?","so blah blahblahblah"])
+    const [AiResponses, setAiResponses] = useState<string[]>([])
+    //(["Hi","Sure blah blah blah blah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blah","blah blah blahblah blah blahblah blah blah", "bla"])
     const [AIAssistantSearchInput,setSearchInput] = useState<string>("")
 
-    console.log(BasicStockData)
-    console.log(StockCompanyDetails)
+    const [stockPrice, setStockPrice] = useState<number | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [quantity, setQuantity] = useState<string>("0");
+    const [cost, setCost] = useState<string | null>(null);
+    const [showConfetti, setShowConfetti] = useState(false);
 
 
     useEffect(() => {
@@ -39,16 +50,12 @@ const StockDetail: React.FC = () => {
 
     const GetData = async() => {
         try{
-            const response = await axios.get(`http://localhost:3000/api/stocks/GetStockName/${symbol}`);
+            const response = await axios.get(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
             setStockName(response.data);
-            const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symbol}`);
+            const response5 = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
+            setStockPrice(response5.data.price)
+            const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
             setStockLogo(response2.data.image);
-            const response3 = await axios.get<{quoteData: StockApiInfo}>(`http://localhost:3000/api/stocks/GetStockQuoteInfo/${symbol}`);
-            console.log(response3.data.quoteData);
-            setStockBasicData(response3.data.quoteData);
-            const response4 = await axios.get<{profile: CompanyProfile}>(`http://localhost:3000/api/stocks/GetCompanyDetails/${symbol}`);
-            console.log("This One:", response4.data)
-            setCompanyDetails(response4.data.profile)
         }
         catch(error){
             handleAxiosError(error);
@@ -65,6 +72,10 @@ const StockDetail: React.FC = () => {
           console.error("Unknown error:", error);
         }
       };
+
+    const handleBuyStock = async () => {
+        await buyStock({stockPrice: stockPrice, stockSymbol: stockSymbol, quantity: quantity, setShowConfetti: setShowConfetti, setIsModalOpen: setIsModalOpen, user: user})
+    };
 
     const HandleAiResponse = async() => {
       try{
@@ -87,7 +98,7 @@ const StockDetail: React.FC = () => {
         const AiResponse = await StocksAI(AIAssistantSearchInput, AllStockData)
         console.log(AiResponse)
         if(AiResponses[0] == ""){
-          AiResponse != null ? setAiResponses([AiResponse]) : setAiResponses(["Could no get AI Data"])
+          AiResponse != null ? setAiResponses([AiResponse]) : setAiResponses(["Failed to communicate with the AI API."])
         }
         else{
           AiResponse != null ? setAiResponses(prevValues => [
@@ -95,7 +106,7 @@ const StockDetail: React.FC = () => {
             AiResponse
           ]) : setAiResponses(prevValues => [
             ...prevValues,
-            "Could not get AI Data"
+            "Failed to communicate with the AI API."
           ])
         }
         setSearchInput("")
@@ -106,6 +117,9 @@ const StockDetail: React.FC = () => {
 
       function SwitchSection(Section: string){
         switch(Section){
+          case "Overview":
+            setDisplayedData("Overview")
+            break
           case "CompanyInformation":
             setDisplayedData("CompanyInformation")
             break
@@ -122,74 +136,114 @@ const StockDetail: React.FC = () => {
             setDisplayedData("AIAssistant")
             break
           default:
-            setDisplayedData("CompanyInformation")
+            setDisplayedData("Overview")
             break
         }
       }
 
-      const container = document.getElementById('Chat');
-      if (container) {
-        container.scrollTop = 0;
-      }
-
   return (
     <>
+      {showConfetti && 
+        <Confetti
+        numberOfPieces={(Number(quantity) * 20) > 1000 ? 999 : (Number(quantity) * 20)}
+        recycle={false}
+      />}
         <header className='TitleBox'>
+          <section>
             <img className='TitleLogo' src={stockLogo} alt={`Stock Logo for ${StockName}`} />
             <h1 className='Title'>{StockName}</h1>
-            <span className='StockSymbol'>{symbol}</span>
-        </header>
-        <section className='MainBody'>
-            <div className='StockDetails'>
+            <span className='StockSymbol'>{stockSymbol}</span>
+          </section>
+          <section className='CompleteSelector'>
+            <button className='BuyStockButton' aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy Stock</button>
+            <section className='SectionSection'>
               <article className='Selector'>
-                <button aria-pressed={DisplayedData === "CompanyInformation"} aria-label="View company information" onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>Overview</button>
+                <button aria-pressed={DisplayedData === "Overview"} aria-label="View overview" onClick={() => SwitchSection("Overview")} className={"Overview" + (DisplayedData == "Overview" ? "Selected" : "")}>Overview</button>
+                <button aria-pressed={DisplayedData === "CompanyInformation"} aria-label="View company information" onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>About</button>
                 <button aria-pressed={DisplayedData === "StockData"} aria-label="View stock data" onClick={() => SwitchSection("StockData")} className={"StockData" + (DisplayedData == "StockData" ? "Selected" : "")}>Stock Data</button>
                 <button aria-pressed={DisplayedData === "OwnedStocks"} aria-label="View owned stocks" onClick={() => SwitchSection("OwnedStocks")} className={"OwnedStocks" + (DisplayedData == "OwnedStocks" ? "Selected" : "")}>Owned Stocks</button>
                 <button aria-pressed={DisplayedData === "News"} aria-label="View stock related news" onClick={() => SwitchSection("News")} className={"News" + (DisplayedData == "News" ? "Selected" : "")}>News</button>
                 <button aria-pressed={DisplayedData === "AIAssistant"} aria-label="View AI assistant" onClick={() => SwitchSection("AIAssistant")} className={"AIAssistant" + (DisplayedData == "AIAssistant" ? "Selected" : "")}>AI Assistant</button>
               </article>
+            </section>
+          </section>
+        </header>
+
+        <section className='MainBody'>
+            <div className='StockDetails'>
               {
-                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails}/>
+                (DisplayedData == "Overview") && <StockDetailsOverview StockName={StockName} symbol={stockSymbol}/>
               }
               {
-                  (DisplayedData == "StockData") && <StockDetails BasicStockData={BasicStockData} />
+                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails} setCompanyDetails={setCompanyDetails} DisplayedData={DisplayedData} symbol={stockSymbol}/>
+              }
+              {
+                  (DisplayedData == "StockData") && <StockDetails symbol={stockSymbol} setStockBasicData={setStockBasicData} BasicStockData={BasicStockData} stockPrice={stockPrice}/>
 
               }      
               {
-                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={symbol}/>
+                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={stockSymbol}/>
               } 
               {
-                // Try AlphaVantage API
-                  (DisplayedData == "News") && <StockDetailsNews Symbol={symbol}/>
+                  (DisplayedData == "News") && <StockDetailsNews symbol={stockSymbol}/>
               } 
               {
-                // Try the same one used in another project
-                  (DisplayedData == "AIAssistant") && 
-                  <article className='ChatDisplayed'>
-                    <div id='Chat' className='Chat'>
-                      { UserPrompts.map((UserPrompts, index) => (
-                        <>
-                          {UserPrompts != "" && <div className='UserMessageDisplayed'>
-                            <h2>{UserPrompts}</h2>
-                          </div>}
-                          <div role="status" aria-live="polite" className='AiMessageDisplayed'>
-                            {AiResponses[0] != "" && <h2>{AiResponses[index] || <AiLoading/>}</h2>}
-                          </div>
-                        </>
-                      ))
-                      }
-                    </div>
-                    <div className='ChatQueryBar'>
-                      <input aria-label="Ask a question about the stock"  value={AIAssistantSearchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" />
-                      <button aria-label="Submit query to AI" onClick={() => HandleAiResponse()}>Submit</button>
-                    </div>
-                  </article>
+                  (DisplayedData == "AIAssistant") && <AiChat setSearchInput={setSearchInput} HandleAiResponse={HandleAiResponse} AIAssistantSearchInput={AIAssistantSearchInput} AiResponses={AiResponses} UserPrompts={UserPrompts}/>
               }         
             </div>
-            <article  aria-live="polite" aria-label={`Stock graph for ${StockName}`} className='InteractiveGraph'>
-              <h2>{StockName} Graph</h2>
-            </article>
         </section>
+        {isModalOpen && (
+            <FocusTrap>
+              <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
+                <div className="ToBuyContent">
+                  <header>
+                    <div className='BuyStockTitle'>
+                      <h2>Buy</h2>
+                      <img className='StockLogo' style={{margin: "0 -0.5rem 0 0", width: "2.5rem"}} src={stockLogo} alt="Stock Logo" />
+                      <h2>{StockName}</h2>
+                    </div>
+                  </header>
+                  <div className='toBuyBody'>
+                    <label htmlFor="quantity">Quantity:</label>
+                    <input                         
+                        aria-label="Enter the quantity here."
+                        id="quantity"
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => {setQuantity(e.target.value); setCost((String(Number(e.target.value)*(stockPrice || 0))))}}
+                        className="QuantityInput"
+                        onBlur={() => {
+                          if (quantity === "" || Number(quantity) < 1) {
+                            setQuantity("0")
+                          }
+                          if (cost) setCost(Number(cost).toFixed(2));
+                          if (quantity) setQuantity(Number(quantity).toFixed(2));
+                        }}/>
+                    <label htmlFor="cost">Total Cost:</label>
+                    <input                         
+                        aria-label="Price"
+                        id="cost"
+                        type="number"
+                        value={(cost || String(Number(quantity)*(stockPrice || 0)))}
+                        onChange={(e) => {
+                          let q = (Number(e.target.value)/(stockPrice || 0))
+                          setQuantity(String(q)); 
+                          setCost(String(Number(q)*(stockPrice || 0)))}}
+                        className="QuantityInput"
+                        onBlur={() => {
+                          if (cost) setCost(Number(cost).toFixed(2));
+                          if (quantity) setQuantity(Number(quantity).toFixed(2));
+                        }}
+                        /> 
+                  </div>
+                  <footer className="ToBuyFooter">
+                      <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                      <button onClick={handleBuyStock}>Confirm Purchase</button>
+                  </footer>
+                </div>
+              </div>
+            </FocusTrap>
+          )}    
     </>
   );
 };

@@ -83,7 +83,7 @@ const Portfolio = () => {
       const FetchPortfolioData = async () => {
         setToReload(false)
         const result = await getPortfolio({ user });
-        setPortfolio(result.portfolio);
+        setPortfolio(result);
       }
       FetchPortfolioData();
     }
@@ -171,9 +171,7 @@ const Portfolio = () => {
 
           <div id="Space"></div>
           <div id="Space"></div>
-          {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div> */}
           <div id="ToJump"></div>
-          {/* <div style={{width: "50vw"}} className="LineOne"></div> */}
 
           <StocksTable 
             setFilteredOption={setFilteredOption} 

@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
 import { useRef, useEffect, useState } from "react";
 
 ChartJS.register(LineElement, LineController, PointElement, LinearScale, TimeScale, Tooltip, Legend, CategoryScale);
@@ -22,6 +21,7 @@ type InvestedPoint = {
 export default function QuickStats(props: any){
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const chartRef = useRef<ChartJS | null>(null);
     const [hoverValue, setHoverValue] = useState<string | null>(null);
     const [valueLineValues, setVLV] = useState<any[] | undefined>(undefined)
     const [investedLineValues, setILV] = useState<any[] | undefined>(undefined)
@@ -30,79 +30,75 @@ export default function QuickStats(props: any){
         setGraphValues()
     }, [props.History])
 
-    useEffect(() => {
-        if(canvasRef.current){
-            const ctx = canvasRef.current?.getContext("2d");
-            if (!ctx || !valueLineValues || !investedLineValues) return;
+useEffect(() => {
+    if (!canvasRef.current || !valueLineValues || !investedLineValues) return;
 
-            const Chart = new ChartJS(ctx, {
-                type: "line",
-                data: {
-                labels: valueLineValues.map(entry => entry.date),
-                datasets: [
-                    {
-                        label: "Invested",
-                        data: investedLineValues.map(p => p.invested),
-                        borderColor: "#45a049ff",
-                        backgroundColor: "#45a049ff",
-                        fill: false,
-                        pointRadius: 0
-                    },
-                    {
-                        label: "Portfolio Value",
-                        data: valueLineValues.map(entry => entry.value),
-                        borderColor: "green",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                    },
-                ],
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    if (chartRef.current) {
+        chartRef.current.destroy();
+    }
+
+    chartRef.current = new ChartJS(ctx, {
+        type: "line",
+        data: {
+            labels: valueLineValues.map(entry => entry.date),
+            datasets: [
+                {
+                    label: "Invested",
+                    data: investedLineValues.map(p => p.invested),
+                    borderColor: "#45a049ff",
+                    backgroundColor: "#45a049ff",
+                    fill: false,
+                    pointRadius: 0
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, 
-                    plugins: {
-                        tooltip: {
-                            mode: "index", 
-                            intersect: false,  
-                            enabled: false,    
-                            external: (context) => {
-                                const tooltip = context.tooltip;
-                                if (!tooltip || !tooltip.dataPoints || tooltip.dataPoints.length === 0) return;
-
-                                let investedValue = 0;
-                                let portfolioValue = 0;
-                                let xValue = "";
-
-                                tooltip.dataPoints.forEach((dataPoint) => {
-                                    if (dataPoint.dataset.label === "Invested") investedValue = dataPoint.parsed.y;
-                                    if (dataPoint.dataset.label === "Portfolio Value") portfolioValue = dataPoint.parsed.y;
-
-                                    xValue = dataPoint.label as string; 
-                                });
-
-                                props.setPortfolioValue(portfolioValue.toFixed(2));
-                                props.setProfit((portfolioValue - investedValue).toFixed(2));
-                                props.setInvested(investedValue.toFixed(2))
-                                setHoverValue(xValue)
-                            },
-                        },
-                    },
-                    interaction: {
-                        mode: "index",
-                        intersect: false,
-                    },
-                    scales: {
-                        x: { display: false },
-                        y: { display: false },
-                    }
+                {
+                    label: "Portfolio Value",
+                    data: valueLineValues.map(entry => entry.value),
+                    borderColor: "green",
+                    borderWidth: 2,
+                    pointRadius: 0,
                 },
-            });
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    mode: "index",
+                    intersect: false,
+                    enabled: false,
+                    external: (context) => {
+                        const tooltip = context.tooltip;
+                        if (!tooltip || !tooltip.dataPoints || tooltip.dataPoints.length === 0) return;
 
-            return () => {
-                Chart.destroy();
-            };
-        }
-    }, [valueLineValues, investedLineValues])
+                        let investedValue = 0;
+                        let portfolioValue = 0;
+                        let xValue = "";
+
+                        tooltip.dataPoints.forEach((dataPoint) => {
+                            if (dataPoint.dataset.label === "Invested") investedValue = dataPoint.parsed.y;
+                            if (dataPoint.dataset.label === "Portfolio Value") portfolioValue = dataPoint.parsed.y;
+                            xValue = dataPoint.label as string;
+                        });
+
+                        props.setPortfolioValue(portfolioValue.toFixed(2));
+                        props.setProfit((portfolioValue - investedValue).toFixed(2));
+                        props.setInvested(investedValue.toFixed(2));
+                        setHoverValue(xValue);
+                    },
+                },
+            },
+            interaction: { mode: "index", intersect: false },
+            scales: { x: { display: false }, y: { display: false } },
+        },
+    });
+
+    return () => chartRef.current?.destroy();
+
+}, [valueLineValues, investedLineValues]);
 
     
 

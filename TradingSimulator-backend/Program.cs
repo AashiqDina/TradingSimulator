@@ -37,6 +37,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddHttpClient<StockService>();
+builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddHttpClient<NewsService>();
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

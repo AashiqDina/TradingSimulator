@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TradingSimulator_Backend.Data;
 using TradingSimulator_Backend.Services;
+using TradingSimulator_Backend.Models;
 
 namespace TradingSimulator_Backend.Controllers
 {
@@ -12,11 +13,13 @@ namespace TradingSimulator_Backend.Controllers
     public class StockController : ControllerBase
     {
         private readonly IStockService _stockService;
+        private readonly INewsService _newsService;
         private readonly AppDbContext _context; 
 
-        public StockController(IStockService stockService, AppDbContext context)
+        public StockController(IStockService stockService, INewsService newsService, AppDbContext context)
         {
             _stockService = stockService;
+            _newsService = newsService;
             _context = context; 
         }
 
@@ -45,26 +48,26 @@ namespace TradingSimulator_Backend.Controllers
             return Ok(name);
         }
 
-        [HttpGet("GetStockInfo/{*symbol}")]
-        public async Task<IActionResult> GetStockInfo(string symbol)
-        {
-            var stockData = await _stockService.GetQuickData(symbol);
+        // [HttpGet("GetStockInfo/{*symbol}")]
+        // public async Task<IActionResult> GetStockInfo(string symbol)
+        // {
+        //     var stockData = await _stockService.GetQuickData(symbol);
 
-            if (stockData == (null, null, null, null, null, null))
-            {
-                Console.WriteLine("Data is unavailable.");
-            }
+        //     if (stockData == (null, null, null, null, null, null))
+        //     {
+        //         Console.WriteLine("Data is unavailable.");
+        //     }
 
-            return Ok(new
-            {
-                LastUpdated = stockData.LastUpdated,
-                LowPrice = stockData.LowPrice,
-                HighPrice = stockData.HighPrice,
-                FiftyTwoWeekRange = stockData.FiftyTwoWeekRange,
-                ClosePrice = stockData.ClosePrice,
-                PercentChange = stockData.PercentChange
-            });
-        }
+        //     return Ok(new
+        //     {
+        //         LastUpdated = stockData.LastUpdated,
+        //         LowPrice = stockData.LowPrice,
+        //         HighPrice = stockData.HighPrice,
+        //         FiftyTwoWeekRange = stockData.FiftyTwoWeekRange,
+        //         ClosePrice = stockData.ClosePrice,
+        //         PercentChange = stockData.PercentChange
+        //     });
+        // }
 
         [HttpGet("GetStockQuoteInfo/{*symbol}")]
         public async Task<IActionResult> GetStockQuoteInfo(string symbol)
@@ -85,6 +88,34 @@ namespace TradingSimulator_Backend.Controllers
         public IActionResult GetAllStockLastUpdated(){
 
             var data = _stockService.GetAllLastUpdated();
+
+            if(data == null){
+                Console.WriteLine("No data available");
+            }
+
+            return Ok(new {
+                data
+            });
+        }
+
+        [HttpGet("GetStockLastUpdated/{*symbol}")]
+        public IActionResult GetAllStockLastUpdated(string symbol){
+
+            DateTime? data = _stockService.GetStockLastUpdated(symbol);
+
+            if(data == null){
+                Console.WriteLine("No data available");
+            }
+
+            return Ok(new {
+                data
+            });
+        }
+
+        [HttpGet("GetStockInfoLastUpdated/{*symbol}")]
+        public IActionResult GetAllStockInfoLastUpdated(string symbol){
+
+            var data = _stockService.GetStockInfoLastUpdated(symbol);
 
             if(data == null){
                 Console.WriteLine("No data available");
@@ -127,6 +158,73 @@ namespace TradingSimulator_Backend.Controllers
 
             return Ok(new {
                 Profile
+            });
+        }
+
+        [HttpGet("GetStockNews/{*symbol}")]
+        public async Task<IActionResult> getCompanyNews(string symbol){
+            if(string.IsNullOrEmpty(symbol)){
+                return BadRequest(symbol);
+            }
+
+            var news = await _newsService.getCompanyNews(symbol);
+
+            return Ok(new {
+                news
+            });
+        }
+
+        [HttpGet("GetStockNewsLastUpdated/{*symbol}")]
+        public IActionResult GetStockNewsLastUpdated(string symbol){
+
+            DateTime? data = _newsService.getCompanyNewsLastUpdated(symbol);
+
+            if(data == null){
+                Console.WriteLine("No data available");
+            }
+
+            return Ok(new {
+                data
+            });
+        }
+
+
+        public class StockInfo
+        {
+            public string? Symbol { get; set; }
+            public string? Logo { get; set; }
+        }
+
+        [HttpGet("GetStockList")]
+        public async Task<ActionResult<Dictionary<string, StockInfo>>> GetStockMap()
+        {
+            var stocks = await _context.StockLogoName.ToListAsync();
+
+            var stockMap = stocks
+                .Where(s => !string.IsNullOrEmpty(s.Name))
+                .ToDictionary(
+                    s => s.Name!,
+                    s => new StockInfo { Symbol = s.Symbol, Logo = s.Logo }
+                );
+
+            return Ok(stockMap);
+        }
+
+        [HttpGet("GetStocksFullHistory/{*symbol}")]
+        public async Task<ActionResult> GetStocksFullHistory(string symbol){
+
+            if (string.IsNullOrEmpty(symbol)){
+                return BadRequest("Symbol query is required.");
+            }
+
+            var History = await _stockService.GetFullStockHistory(symbol);
+
+            if (History == null){
+                Console.WriteLine("No Data available");
+            }
+
+            return Ok(new {
+                History
             });
         }
     }

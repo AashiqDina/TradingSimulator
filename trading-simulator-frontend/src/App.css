@@ -20,3 +20,12 @@ body {
     background-color: rgb(7, 17, 20);
   }
 }
+
+@keyframes BodyBackgroundLight{
+  from{
+    background-color: rgb(12, 17, 24);
+  }
+  to{
+    background-color: rgb(14, 23, 26);
+  }
+}

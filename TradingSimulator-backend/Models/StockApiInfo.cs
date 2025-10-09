@@ -24,17 +24,25 @@ public class StockApiInfo
     [JsonProperty("average_volume")]
     public long AverageVolume { get; set; }
 
+    [JsonProperty("rolling_1day_change")]
     public decimal Rolling1DChange { get; set; }
+    [JsonProperty("rolling_7day_change")]
     public decimal Rolling7DChange { get; set; }
+    [JsonProperty("rolling_period_change")]
     public decimal RollingPeriodChange { get; set; }
 
+    [JsonProperty("is_market_open")]
     public bool IsMarketOpen { get; set; }
     [JsonProperty("fifty_two_week")]
     public FiftyTwoWeek FiftyTwoWeek { get; set; }
 
+    [JsonProperty("extended_change")]
     public decimal ExtendedChange { get; set; }
+    [JsonProperty("extended_percent_change")]
     public decimal ExtendedPercentChange { get; set; }
+    [JsonProperty("extended_price")]
     public decimal ExtendedPrice { get; set; }
+    [JsonProperty("extended_timestamp")]
     public long ExtendedTimestamp { get; set; } 
 }
 public class FiftyTwoWeek

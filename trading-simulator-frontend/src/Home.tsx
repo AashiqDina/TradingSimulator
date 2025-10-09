@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import Confetti from 'react-confetti'
 import { FocusTrap } from 'focus-trap-react';
-import QuickStats from './PorfolioSections/QuickStats';
+import getStockApiInfo from './Functions/getStockApiInfo';
+import { StockApiInfo, Suggestion} from './interfaces';
+import getStockLastUpdated from './Functions/getStockLastUpdated';
+import formatNumber from './Functions/FormatNumber';
+import buyStock from './Functions/buyStock';
+import Error from './Error/Error';
 
-interface StockInfoResponse {
-  lastUpdated: string | null;
-  lowPrice: number | null;
-  highPrice: number | null;
-  fiftyTwoWeekRange: string | null;
-  closePrice: number | null;
-  percentChange: number | null;
-}
+type StockInfo = {
+  symbol: string;
+  logo: string;
+};
+
+type StockMap = Record<string, StockInfo>;
 
 const Home: React.FC = () => {
   const { user, logout } = useAuth();
@@ -35,21 +38,67 @@ const Home: React.FC = () => {
 
   // State for stock search
   const [stockSymbol, setStockSymbol] = useState<string>('');
+  const [stockSymbol2, setStockSymbolTwo] = useState<string>('');
   const [stockPrice, setStockPrice] = useState<number | null>(null);
   const [stockLogo, setStockLogo] = useState<string>('');
   const [stockName, setStockName] = useState<string>('');
-  const [stockQuickData, setStockQuickData] = useState<StockInfoResponse | null>(null)
+  const [BasicStockData, setStockBasicData] = useState<StockApiInfo | null>(null);
   const [stockFound, setFound] = useState<boolean | null>(null)
   const [error, setError] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<string>("0");
+  const [cost, setCost] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>();
+  const [stockList, setStockList] = useState<any | null>();
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [displaySuggestions, setDisplaySuggestions] = useState<boolean>(false)
+  const [displayError, setDisplayError] = useState<{display: boolean, warning: boolean, title: string, bodyText: string, buttonText: string}>({display: false, title: "", bodyText: "", warning: false, buttonText: ""});
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const searchStock = async () => {
+
+  useEffect(() => {
+      const getMap = async () => {
+        const map = await axios.get(`http://localhost:3000/api/stocks/GetStockList`)
+        console.log(map.data)
+        setStockList(map.data)
+      };
+  
+      getMap();
+    }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setDisplaySuggestions(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const searchStock = async (symbol: string) => {
+    let symb = ""
+    console.log(symbol)
+
+    if(symbol == ""){
+      symb = stockSymbol
+    }
+    else{
+      console.log(symbol)
+      symb = symbol
+    }
+
+    setStockSymbolTwo(symb)
+    setDisplaySuggestions(false)
+
     try {
       setError('');
       setFound(true)
-      const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
+      const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${symb}`);
       setStockPrice(response.data.price);
     } catch (err) {
       setError('Stock Price not found');
@@ -57,102 +106,126 @@ const Home: React.FC = () => {
       setStockPrice(null);
     }
     try{
-      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
+      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symb}`);
       setStockLogo(response2.data.image);
     } catch (err){
       setError(error + ' | Stock Logo not found |');
     }
     try{
-      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
+      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symb}`);
       setStockName(response3.data);
     } catch (err){
       setError(error + ' | Stock Name not found');
       setFound(false);
     }
     try{
-      const response4 = await axios.get<StockInfoResponse>(`http://localhost:3000/api/stocks/GetStockInfo/${stockSymbol}`);
-      setStockQuickData(response4.data);
-      console.log("Quick Data: ", response4.data)
-    } catch (err) {
-      setError(error + ' | Stock Data not found');
+      if(stockSymbol){
+        const response4 = await getStockApiInfo(symb)
+        console.log(response4);
+        setStockBasicData(response4);
+      }
+    }
+    catch{
+      setError(error + ' | Stock Info not found');
+      setFound(false);
+    }
+    try{
+      if(stockSymbol){
+        const response5 = await getStockLastUpdated(symb)
+        console.log(response5);
+        setLastUpdated(response5);
+      }
+    }
+    catch{
+      setError(error + ' | Last Updated not found');
       setFound(false);
     }
     console.log(error)
   };
 
   const handleBuyStock = async () => {
-    if (stockPrice === null) {
-      alert('Stock price not available.');
-      return;
-    }
-
-    if (quantity <= 0) {
-      alert('Please enter a valid quantity.');
-      return;
-    }
-
-    const stockPurchaseRequest = {
-      symbol: stockSymbol,
-      quantity: quantity,
-    };
-
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/portfolio/${user?.id}/stocks`,
-        stockPurchaseRequest
-      );
-      alert('Stock purchased successfully');
-      setShowConfetti(true)
-      setTimeout(() => {setShowConfetti(false)}, 100000)
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error('Error purchasing stock:', error);
-      alert('Error purchasing stock');
-    }
+    await buyStock({stockPrice: stockPrice, stockSymbol: stockSymbol2, quantity: quantity, setShowConfetti: setShowConfetti, setIsModalOpen: setIsModalOpen, user: user, setDisplayError: setDisplayError})
   };
 
-  useEffect(() => {
-    if (stockQuickData) {
-      console.log('Updated Stock Data:', stockQuickData);
+  const handleSuggestions = (symbol: string) => {
+    if(symbol == ""){
+      setSuggestions([])
     }
-  }, [stockQuickData]);
+    
+    console.log(stockList)
+    if(stockList){
+    const matches = (Object.entries(stockList) as [string, { symbol: string; logo: string }][])
+            .filter(([name]) => name.toLowerCase().startsWith(symbol.toLowerCase()))
+            .slice(0, 5)
+            .map(([name, stock]) => ({
+              name,
+              symbol: stock.symbol,
+              logo: stock.logo,
+            }));
+
+    setSuggestions(matches);
+    console.log("Suggestions ",matches)
+   }
+  }
 
   return (
     <>
       {showConfetti && 
       <Confetti
-        numberOfPieces={(quantity * 20) > 1000 ? 999 : (quantity * 20)}
+        numberOfPieces={(Number(quantity) * 20) > 1000 ? 999 : (Number(quantity) * 20)}
         recycle={false}
       />}
-      <section className='StockSearch'>
-        <section className='SearchSection'>
-          <input 
-            aria-label="Enter stock symbol (e.g, AAPL)"
-            type="text" 
-            placeholder="Enter stock symbol (e.g, AAPL)" 
-            className='StockSearchInput'
-            value={stockSymbol} 
-            onChange={(e) => setStockSymbol(e.target.value.toUpperCase())} 
-            />
-          <button className='StockSearchButton' onClick={searchStock}>Search</button>
+      <section className='SearchAndResult'>
+        <section ref={wrapperRef} className='StockSearch'>
+          <section className='SearchSection'>
+            <input 
+              aria-label="Search by stock name or symbol (e.g. AAPL or Apple)"
+              type="text" 
+              placeholder="Search by stock name or symbol (e.g. AAPL or Apple)" 
+              className='StockSearchInput'
+              value={stockSymbol} 
+              onChange={(e) => {
+                setStockSymbol(e.target.value.toUpperCase())
+                handleSuggestions(e.target.value.toLowerCase())
+              }} 
+              onFocus={() => setDisplaySuggestions(true)}
+
+              onKeyDown={(e) => {
+                if(e.key === "Enter"){
+                  searchStock(stockSymbol)
+                }
+              }}
+              />
+            <button className='StockSearchButton' onClick={() => {searchStock("")}}>Search</button>
+          </section>
+          {displaySuggestions && suggestions.length != 0 && stockSymbol.length > 0 && <section className='SearchSuggestions'>
+             {suggestions.map((suggestion, index) => {
+              return (
+                <button key={index} onClick={() => {searchStock(suggestion.symbol)}} style={(suggestions.length == 1) ? {margin: "0.5rem 0.5rem 0.5rem 0.5rem"} : (index == suggestions.length-1) ? {margin: "0rem 0.5rem 0.5rem 0.5rem"} : (index == 0) ? {margin: "0.5rem 0.5rem 0rem 0.5rem"} : {}}>
+                  <img src={suggestion.logo} alt={`${suggestion.name[0].toUpperCase()}`} />
+                  <h4>{suggestion.name}</h4>
+                </button>
+            )
+            })}
+          </section>}
         </section>
         {(stockFound && (stockPrice !== null) &&
           <section className='CompleteSearchResult'>
             <article className='SearchResult'>
               <div className='StockHeader'>
-                <img className='StockLogo' src={stockLogo} alt={`${stockName} Logo`} />
+                <img className='StockLogo' src={stockLogo} alt={`stock logo`} />
                 <h3>{stockName}</h3>
-                <span>{stockSymbol}</span>
+                <span>{stockSymbol2}</span>
               </div>
               <div className='StockBody'>
                 <div className='StockBodyLeft'>
                   <div>
                     <h4>£{stockPrice.toFixed(2)}</h4>
                     <div>
-                      <p style={stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? "+" : "-"}£{stockQuickData?.percentChange ? Math.abs((stockPrice-(stockPrice/((stockQuickData?.percentChange+100)/100)))).toFixed(2) : ""}</p>
-                      <p style={stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{stockQuickData?.percentChange && stockQuickData?.percentChange > 0 ? "+" : ""}{stockQuickData?.percentChange ? stockQuickData.percentChange.toFixed(2) : ""}%</p>
+                      <p style={BasicStockData?.percentChange && BasicStockData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{BasicStockData?.percentChange && BasicStockData?.percentChange > 0 ? "+" : "-"}£{BasicStockData?.percentChange ? Math.abs((stockPrice-(stockPrice/((BasicStockData?.percentChange+100)/100)))).toFixed(2) : ""}</p>
+                      <p style={BasicStockData?.percentChange && BasicStockData?.percentChange > 0 ? {color: "#45a049"} : {color: "#bb1515"}}>{BasicStockData?.percentChange && BasicStockData?.percentChange > 0 ? "+" : ""}{BasicStockData?.percentChange ? BasicStockData.percentChange.toFixed(2) : ""}%</p>
                     </div>
-                    <p>Last Updated: {stockQuickData?.lastUpdated ? new Date(stockQuickData?.lastUpdated).toLocaleString("en-GB", {
+                    <p className='lastUpdated'>Last Updated: {lastUpdated ? new Date(lastUpdated).toLocaleString("en-GB", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "2-digit",
@@ -168,76 +241,48 @@ const Home: React.FC = () => {
                     <div style={{width: "100%"}}>
                       <div className='LineOne' style={{width: "80%"}}>
                         <div className='StockDailyAveragePoint'>
-                          <span style={stockQuickData?.lowPrice && stockQuickData?.highPrice ? {left: `${((stockPrice-stockQuickData.lowPrice)/(stockQuickData.highPrice-stockQuickData.lowPrice))*100}%`} : {}}>
+                          <span style={BasicStockData?.low && BasicStockData?.high ? {left: `${((stockPrice-BasicStockData.low)/(BasicStockData.high-BasicStockData.low))*100}%`} : {}}>
                           </span>
                           </div>
-                          {/* </div>stockQuickData?.lowPrice && stockQuickData?.highPrice ? {left: `${Math.floor(stockPrice-stockQuickData?.lowPrice)/(stockQuickData?.highPrice-stockQuickData?.lowPrice)*100}%}`}: {}}></span></div> */}
                       </div>
                     </div>
                     <div className='lhTitles'>
-                      <p>£{stockQuickData?.lowPrice}</p>
-                      <p>£{stockQuickData?.highPrice}</p>
+                      <p>£{BasicStockData?.low?.toFixed(2)}</p>
+                      <p>£{BasicStockData?.high?.toFixed(2)}</p>
                     </div>
                   </div>
-                  <p>data</p>
-                  <p>data</p>
-                  <p>data</p>
-
+                  <div className='StockDailyRange' style={{width: "100%"}}>
+                    <h4 style={{textAlign: 'left', padding: "0 0 0 10%", marginTop: "0.4rem" }}>52-Week Range</h4>
+                    <div style={{width: "100%"}}>
+                      <div className='LineOne' style={{width: "80%"}}>
+                        <div className='StockDailyAveragePoint'>
+                          <span style={BasicStockData?.fiftyTwoWeek.range ? {left: `${((stockPrice-Number(BasicStockData?.fiftyTwoWeek.range?.split(" ")[0]))/(Number(BasicStockData?.fiftyTwoWeek.range?.split(" ")[2])-Number(BasicStockData?.fiftyTwoWeek.range?.split(" ")[0])))*100}%`} : {}}>
+                          </span>
+                          </div>
+                      </div>
+                    </div>
+                    <div className='lhTitles'>
+                      <p>£{Number(BasicStockData?.fiftyTwoWeek.range?.split(" ")[0]).toFixed(2)}</p>
+                      <p>£{Number(BasicStockData?.fiftyTwoWeek.range?.split(" ")[2]).toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className='genericFlexRow'>
+                    <h4 className='VolumeGFR'>Volume: <span style={{fontWeight: 400}}>{formatNumber(Number(BasicStockData?.volume))}</span></h4>
+                    <h4 className='VolumeGFR'>Average Volume: <span style={{fontWeight: 400}}>{formatNumber(Number(BasicStockData?.averageVolume))}</span></h4>
+                  </div>
                 </div>
               </div>
               <div className='StockFooter'>
-                <button aria-label="View Stock Details" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
+                <button aria-label="View Stock Details" onClick={() => navigate(`/stock/${encodeURIComponent(String(stockSymbol2 ?? ''))}`)}>View</button>
                 <button aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy</button>
               </div>
-
-{/* 
-                {stockPrice !== null && (
-                  <>
-                    <h3 className='StockPriceText2'><img className='StockLogo' src={stockLogo} alt={`${stockName},  Logo"`} /> {stockName} </h3>
-                    <span className='StockPrice'> £{stockPrice.toFixed(2)}</span>
-                  </>
-                )}
-                {error && <p  role="alert" aria-live="assertive" style={{ color: 'red' }}>{error}</p>}
-                {(stockPrice !== null) && !user && (
-                  <p className='LoginStockPriceText'>Log in to access additional information <br /> and purchase this stock.</p>
-                )}
-                {(stockPrice !== null) && user && (
-                  <div className="BuyViewButtonsContainer">
-                    <div className='BuyViewButtons'>
-                      <button aria-label='Buy Stock' className="BuyButton" onClick={() => setIsModalOpen(true)}>Buy</button>
-                      <button aria-label="View Stock Details" className="ViewButton" onClick={() => navigate(`/stock/${stockSymbol}`)}>View</button>
-                    </div>
-                  </div>
-                )}
-              </article>
-              <article className='SearchResult2'>
-                <div className='SR2Head'>
-                  <h3>{stockName} </h3>
-                  <span className='Symb'>{stockSymbol}</span>
-                </div>
-                  <p>Last Updated: <span style={{color: "#45a049"}}>{stockQuickData?.lastUpdated 
-                    ? new Date(stockQuickData.lastUpdated).toLocaleDateString('en-GB', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })
-                    : 'N/A'} </span></p>
-                  <p>24h-Hour range: <span style={{color: "#45a049"}}>£{stockQuickData?.lowPrice ?? 'N/A'} - £{stockQuickData?.highPrice ?? 'N/A'} ({stockQuickData?.percentChange?.toFixed(2) ?? 'N/A'}%)</span></p>
-                  <p>52-Week range:  <span style={{color: "#45a049"}}> {stockQuickData?.fiftyTwoWeekRange 
-                      ? stockQuickData?.fiftyTwoWeekRange
-                          .split(' - ')
-                          .map((price, index) => `£${price}`)
-                          .join(' - ')
-                      : 'N/A'} </span></p>
-                  <p>Last Close: <span style={{color: "#45a049"}}> £{stockQuickData?.closePrice ?? 'N/A'}</span></p> */}
-             
               </article>
             </section>
         )}
         {(stockFound != null && !stockFound && 
           <>
             <div className='StockNotFound'>
-                <h2>Stock Not Found</h2>
+                <h2>Stock Symbols found matching {stockSymbol}</h2>
             </div>
           </>
         )}
@@ -246,14 +291,50 @@ const Home: React.FC = () => {
       {user ? (
         <>
       
-          {isModalOpen && (
+          {isModalOpen && !displayError.display && (
             <FocusTrap>
               <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
-                <div className="ModalContent">
+                <div className="ToBuyContent">
                   <header>
-                    <h2 id='BuyStockTitle'>Buy {stockName}</h2>
+                    <div className='BuyStockTitle'>
+                      <img className='StockLogo' style={{margin: "0 -0.5rem 0 0", width: "2.5rem", height: "2.5rem"}} src={stockLogo} alt="Stock Logo" />
+                      <h2>Buy {stockName} stocks</h2>
+                    </div>
                   </header>
-                  <div className="ModalBody">
+                  <div className='toBuyBody'>
+                    <label htmlFor="quantity">Quantity:</label>
+                    <input                         
+                        aria-label="Enter the quantity here."
+                        id="quantity"
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => {setQuantity(e.target.value); setCost((String(Number(e.target.value)*(stockPrice || 0))))}}
+                        className="QuantityInput"
+                        onBlur={() => {
+                          if (quantity === "" || Number(quantity) < 1) {
+                            setQuantity("0")
+                          }
+                          if (cost) setCost(Number(cost).toFixed(2));
+                          if (quantity) setQuantity(Number(quantity).toFixed(2));
+                        }}/>
+                    <label htmlFor="cost">Total Cost:</label>
+                    <input                         
+                        aria-label="Price"
+                        id="cost"
+                        type="number"
+                        value={(cost || String(Number(quantity)*(stockPrice || 0)))}
+                        onChange={(e) => {
+                          let q = (Number(e.target.value)/(stockPrice || 0))
+                          setQuantity(String(q)); 
+                          setCost(String(Number(q)*(stockPrice || 0)))}}
+                        className="QuantityInput"
+                        onBlur={() => {
+                          if (cost) setCost(Number(cost).toFixed(2));
+                          if (quantity) setQuantity(Number(quantity).toFixed(2));
+                        }}
+                        /> 
+                  </div>
+                  {/* <div className="ToBuyBody">
                     <main>
                       <label htmlFor="quantity">Quantity:</label>
                       <input 
@@ -269,10 +350,10 @@ const Home: React.FC = () => {
                         Total Cost: £{stockPrice !== null ? (stockPrice * quantity).toFixed(2) : 'N/A'}
                       </p>
                     </main>
-                  </div>
-                  <footer className="ModalFooter">
-                      <button className="CancelButton" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                      <button className="ConfirmButton" onClick={handleBuyStock}>Confirm Purchase</button>
+                  </div> */}
+                  <footer className="ToBuyFooter">
+                      <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                      <button onClick={handleBuyStock}>Confirm Purchase</button>
                   </footer>
                 </div>
               </div>
@@ -282,6 +363,12 @@ const Home: React.FC = () => {
       ) : (
         <></>
       )}
+        {displayError.display && 
+        <FocusTrap>
+          <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
+            <Error setDisplayError={setDisplayError} warning={displayError.warning} title={displayError.title} bodyText={displayError.bodyText} buttonText={displayError.buttonText}/>
+          </div>
+        </FocusTrap>}
     </>
   );
 };

@@ -13,6 +13,27 @@ a{
     padding: 0.7rem;
     margin-left: 0.5rem;
     font-size: 1.8rem;
+    transition: all 0.5s ease-in-out;
+}
+
+.BuyStockButton{
+    background-color: #00000000;
+    color: white;
+    outline: none;
+    border-radius: 5rem;
+    border: 1px #45a049 solid;
+    padding: 0.8rem;
+    font-size: 1.5rem;
+    font-family: Inter, sans-serif;
+    width: 12rem;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.BuyStockButton:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
 }
 
 
@@ -20,16 +41,27 @@ a{
     margin-right: 1rem;
     border-radius: 0.5rem;
     width: 3rem;
+    transition: all 0.5s ease-in-out;
 }
 
-.TitleBox{
-    margin-top: 3rem;
-    margin-bottom: 2rem;
+.TitleBox > section{
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
+    transition: all 0.5s ease-in-out;
+}
+
+.TitleBox{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-left: 2.5rem;
+    transition: all 0.5s ease-in-out;
 }
 
 .MainBody{
@@ -38,7 +70,9 @@ a{
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
+    width: 100%;
     gap: 2rem;
+    transition: all 0.5s ease-in-out;
 }
 
 .StockDetails{
@@ -48,52 +82,126 @@ a{
     flex-wrap: wrap;
     flex-direction: column;
     padding: 1.5rem 1rem 1rem 1rem;
-    border: 1px white solid;
     border-radius: 1rem;
-    width: 80%;
-    overflow: auto;
+    width: 100%;
 }
 
-.InteractiveGraph{
-    background-color: grey;
-    padding: 1rem;
-    border-radius: 1rem;
+
+.SectionSection{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin: 1rem 0 1rem 0;
 }
 
 .Selector{
     display: flex;
+    align-items: center;
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
+    height: 100%;
     max-width: 100%;
-    overflow: hidden;
+    margin: 0 1rem 0 2rem;
+    transition: all 0.5s ease-in-out;
 }
 
 .Selector > button{
-    width: 4.5rem;
+    background-color: #00000000;
+    color: white;
+    outline: none;
+    border-radius: 5rem;
+    border: 1px #45a049 solid;
+    /* padding: 1rem 0.1rem 1rem 0.1rem; */
+    font-size: 1rem;
+    font-family: Inter, sans-serif;
+    width: 7rem;
+    height: 3rem;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
 }
 
-.CompanyInformationSelected, .StockDataSelected, .OwnedStocksSelected, .NewsSelected, .AIAssistantSelected{
-    background-color: white;
-    color: #3e9143;
-}
-
-.CompanyInformationSelected:hover, .StockDataSelected:hover, .OwnedStocksSelected:hover, .NewsSelected:hover, .AIAssistantSelected:hover{
-    background-color: white;
-    color: #3e9143;
+.Selector > button:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    color: white;
 }
 
 .CompanyInfoDisplayed{
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0 0.5rem 1rem;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    flex-direction: column;
-    overflow: none
+    flex-direction: row;
+    overflow-x: hidden;
+    width: 98%
+}
 
+.CompanyInfoDisplayed > .CompInfoTable{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+}
+
+.CompInfoTable .Row{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 3rem;
+    /* margin: 0 0.5rem 0 0.5rem; */
+    border: 1px #45a0499a solid;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.CompInfoTable .Row:hover{
+    
+}
+
+.CompInfoTable .Row h4{
+    margin:  0 0 0 1rem;
+    font-family: Inter, sans-serif;
+    font-weight: 550;
+    font-size: 1.1rem;
+}
+
+.CompInfoTable .Row p, .CompInfoTable .Row a{
+    margin:  0 1rem 0 0;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+}
+
+
+
+.StockCompanyDetailsTable{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.CompanyInfoDisplayed > div > h2{
+    text-align: left;
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+    font-family: Inter, sans-serif;
+}
+
+.CompanyInfoDisplayed > div{
+    text-align: left;
+    font-weight: 300;
+    font-family: Inter, sans-serif;
 }
 
 .StockDataDisplayed{
@@ -140,76 +248,105 @@ a{
 }
 
 .Chat{
-    display: inline-block;
-    justify-content: center;
-    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
     flex-direction: column;
     overflow-y: auto;
-    max-height: 23rem;
+    max-height: 24rem;
     min-height: 23rem;
     width: 100%;
+    padding-bottom: 5rem;
 }
 
 .UserMessageDisplayed{
     display: inline-flex;
-    background-color: rgba(210, 210, 210, 0.116);
+    background-color: rgba(210, 210, 210, 0);
+    border: 1px #45a049 solid;
     border-radius: 2rem;
     padding: 0.7rem 1rem 0.7rem 1rem;
+    text-align: right;
 }
 
 .UserMessageDisplayed > h2{
     display: inline;
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    font-family: Inter, sans-serif;
+    font-weight: 200;
 }
 
+
 .ChatQueryBar{
+    animation-name: BodyBackground;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    position: fixed;
+    bottom: 0rem;
     margin-top: 1rem;
+    padding-bottom: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
     overflow-y: auto;
-    max-height: 20rem;
+    height: 5rem;
     width: 100%;
 }
 
 .ChatQueryBar > input{
     margin: 0;
-    border-radius: 10rem 0rem 0rem 10rem;
-    height: 2.2rem;
+    border-radius: 10rem 10rem 10rem 10rem;
+    height: 3rem;
     width: 80%;
+    border: none;
+    font-size: 1rem;
+    font-family: Inter, sans-serif;
+    box-shadow: 0px 2px 10px 5px #0000004c;
 }
 
 .ChatQueryBar > input:focus{
     outline: none;
+    box-shadow: 0px 2px 10px 5px #3e91444c;
+}
+
+.ChatQueryBar > button > div{
+    position: relative;
+
 }
 
 .ChatQueryBar > button{
-    border-radius: 0rem 10rem 10rem 0rem;
-    height: 2.2rem;
-    width: 20%;
+    animation-name: BodyBackground;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    position: relative;
+    left: -2.9rem;
+    border-radius: 10rem;
+    width: 2.7rem;
+    height: 2.7rem;
+    background-color: #00000000;
+    color: white;
+    outline: none;
+    border: none;
+    font-size: 1.5rem;
+    font-family: Inter, sans-serif;
+    transition: all 0.5s ease-in-out;
 }
 
-.Description{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex-wrap: wrap;
+.ChatQueryBar > button:hover{
+    animation-name: BodyBackgroundLight;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    box-shadow: 0px 0px 10px 2px #3e91444c;
+    scale: 1.02;
 }
 
 .Description > p{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    max-height: 8rem;
-    overflow-y: auto;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    width: 90%;
+    text-align: left;
 }
 
 .StockDetailsTableData{
@@ -235,7 +372,6 @@ a{
 
 .StockDataDisplayed{
     display: flex;
-    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -244,11 +380,18 @@ a{
 }
 
 .AiMessageDisplayed{
- margin: 0rem 0.5rem 0rem 0.5rem;
+    margin: 0rem 0.5rem 0rem 0.5rem;
+    width: 100%;
+    font-family: Inter, sans-serif;
 }
+
 
 .AiMessageDisplayed > h2{
     font-size: 1.2rem;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    text-align: left;
+    margin-left: 1rem;
 }
 
 .StockDetailsColumnOne{
@@ -348,4 +491,285 @@ a{
     justify-content: center;
     flex-direction: row;
     gap: 1rem;
+}
+
+.Selector > .OverviewSelected, .Selector > .CompanyInformationSelected, .Selector > .StockDataSelected, .Selector > .OwnedStocksSelected, .Selector > .NewsSelected, .Selector > .AIAssistantSelected{
+    border: 1px #3e9144a2 solid;
+    color: white;
+    /* font-weight: 500; */
+    background-color: #3e9144a2;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.StockData{
+    width: 100%;
+}
+
+.OpenMarketArticle, .CloseMarketArticle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    width: 100%;
+    border-radius: 2rem;
+    padding: 1rem 0 1rem 0;
+
+}
+
+.OpenMarketArticle{
+    background-color: #45a049;
+    box-shadow: 0px 0px 5px 1px #3e91444c;
+}
+
+.CloseMarketArticle{
+    background-color: rgba(22, 19, 44, 0.325);
+    box-shadow: 0px 0px 5px 1px rgba(22, 19, 44, 0.325);
+}
+
+.OpenMarketArticle > img, .CloseMarketArticle > img{
+    width: 2.5rem;
+    transition: all 0.5s ease-in-out;
+}
+
+.OpenMarketArticle > h2, .CloseMarketArticle > h2{
+    margin: 0;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    transition: all 0.5s ease-in-out;
+}
+
+.StockDataMain{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+}
+
+.StockDataMain > .StockDataMainLeft{
+    width: 40rem;
+}
+
+.StockDataMain > .StockDataMainRight{
+    width: 30rem;
+}
+
+.StockDataMain > div{
+    width: 100%;
+}
+
+.lastUpdated{
+    color: #ededed;
+    font-weight: 350;
+}
+
+.VolumeContainer{
+    background-color: rgba(255, 255, 255, 0.079);
+    width: 100%;
+    height: 1rem;
+    border-radius: 5rem;
+    overflow: hidden;
+}
+
+.VolumeFill{
+    width: 50%;
+    height: 100%;
+}
+
+.genericFlexRow > .ClosePrevClose{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.genericFlexRow > .ClosePrevClose > .ClosePrevClosePerc{
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1075px) {
+    .TitleBox{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+    }
+    .CompleteSelector{
+        justify-content: center;
+    }
+
+    .Selector{
+        gap: 1rem;
+    }
+
+    .Selector > button{
+        width: 6rem;
+        font-size: 0.85rem;
+        padding: 0rem;
+    }
+
+    .CompanyInfoDisplayed{
+        margin-left: 0;
+    }
+
+    .OpenMarketArticle > img, .CloseMarketArticle > img{
+        width: 2rem;
+    }
+
+    .OpenMarketArticle > h2, .CloseMarketArticle > h2{
+        margin: 0;
+        font-family: Inter, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 300;
+    }
+}
+
+@media (max-width: 847px) {
+    .Selector{
+        margin: 0;
+    }
+}
+
+@media (max-width: 665px) {
+    .CompInfoTable .Row{
+        padding: 0.8rem;
+    }
+
+    .CompInfoTable .Row h4{
+        margin-left: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .CompInfoTable .Row p, .CompInfoTable .Row a{
+        margin-right: 0.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .TitleBox{
+        margin: 0;
+    }
+
+    .Selector > button{
+        width: 5rem;
+    }
+
+    .SectionSection{
+        margin: 0.5rem 0 0.5rem 0 ;
+    }
+
+    .BuyStockButton{
+        padding: 0.8rem;
+        width: 7rem;
+        font-size: 1.1rem;
+    }
+
+    .CompanyInfoDisplayed .CompInfoTable{
+        gap: 0.2rem;
+    }
+
+    .CompInfoTable .Row{
+        gap: 1rem;
+        padding: 0.6rem;
+    }
+    .CompInfoTable .Row h4{
+        margin-left: 0.2rem;
+    }
+
+    .CompInfoTable .Row p, .CompInfoTable .Row a{
+        margin-right: 0.2rem;
+        font-size: 0.85rem;
+    }
+
+    .StockDetails{
+        padding: 0;
+    }
+
+    .CompanyInfoDisplayed > .Desc{
+        padding-left: 1rem;
+    }
+
+    .Selector{
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .TitleBox{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .TitleBox > section{
+        justify-content: center;
+    }
+
+    .CompleteSelector{
+        justify-content: center;
+    }
+
+    .Selector{
+        gap: 0.5rem;
+    }
+
+    .Selector > button{
+        width: 5rem;
+        font-size: 0.8rem;
+        padding: 0rem;
+        height: 2.5rem;
+    }
+
+    .BuyStockButton{
+        padding: 0.5rem;
+        width: 8rem;
+        font-size: 1.1rem;
+    }
+
+    .TitleLogo{
+        width: 2.5rem;
+    }
+
+    .TitleBox > section > h1{
+        font-size: 1.5rem;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .StockSymbol{
+        font-size: 1.5rem;
+    }
+
+    .CompanyInfoDisplayed .CompInfoTable{
+        gap: 0.1rem;
+    }
+
+    .CompInfoTable .Row{
+        gap: 0.5rem;
+        padding: 0.4rem;
+        border-radius: 0.7rem;
+    }
+    .CompInfoTable .Row h4{
+        margin-left: 0.2rem;
+    }
+
+    .CompInfoTable .Row p, .CompInfoTable .Row a{
+        margin-right: 0.2rem;
+        font-size: 0.85rem;
+    }
+
+    .OpenMarketArticle > img, .CloseMarketArticle > img{
+        width: 1.5rem;
+    }
+
+    .OpenMarketArticle > h2, .CloseMarketArticle > h2{
+        margin: 0;
+        font-family: Inter, sans-serif;
+        font-size: 1.2rem;
+        font-weight: 300;
+    }
 }

@@ -8,6 +8,8 @@ namespace TradingSimulator_Backend.Services
     using System;
     using TradingSimulator_Backend.Models;
     using TradingSimulator_Backend.Data;
+    using System.Collections.Concurrent;
+
 
     public class StockService : IStockService
     {
@@ -15,11 +17,11 @@ namespace TradingSimulator_Backend.Services
         private readonly AppDbContext _context;
         private readonly string _apiKey = "";
         
-        private static Dictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new Dictionary<string, (decimal? Price, DateTime Timestamp)>();
-        private static Dictionary<string, (string? Logo, string? Name)> _stockImageCache = new Dictionary<string, (string? Logo, string? Name)>();
-        private static Dictionary<string, StockApiInfo?> _stockApiInfoCache = new Dictionary<string, StockApiInfo?>();
-        private static Dictionary<string, CompanyProfile?> _CompanyDetailsCache = new Dictionary<string, CompanyProfile?>();
-        private static DateTime? StockInfoDateTime = null;
+        private static ConcurrentDictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new ConcurrentDictionary<string, (decimal? Price, DateTime Timestamp)>();
+        private static ConcurrentDictionary<string, (string? Logo, string? Name)> _stockImageCache = new ConcurrentDictionary<string, (string? Logo, string? Name)>();
+        private static ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)> _stockApiInfoCache = new ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)>();
+        private static ConcurrentDictionary<string, CompanyProfile?> _CompanyDetailsCache = new ConcurrentDictionary<string, CompanyProfile?>();
+        private static ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)> _StockFullHistoryCache = new ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)>();
 
 
         
@@ -35,6 +37,31 @@ namespace TradingSimulator_Backend.Services
                 kvp => kvp.Key,
                 kvp => kvp.Value.Timestamp
             );
+        }
+
+        public DateTime GetStockLastUpdated(string symbol){
+            return _stockCache[symbol].Timestamp;
+        }
+
+        public DateTime GetStockInfoLastUpdated(string symbol){
+            var timestamp = _stockApiInfoCache[symbol].Info.Timestamp;
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+            DateTime localTime = dateTimeOffset.LocalDateTime;
+
+            return localTime;
+        }
+
+        public async Task<StockFullHistory?> GetFullStockHistory(string symbol){
+
+            if(_StockFullHistoryCache.ContainsKey(symbol) && DateTime.Now - _StockFullHistoryCache[symbol].Timestamp < TimeSpan.FromMinutes(480)){
+                return _StockFullHistoryCache[symbol].History;
+            }
+
+            var History = await FetchStockFullHistory(symbol);
+
+            _StockFullHistoryCache[symbol] = (History, DateTime.Now);
+
+            return History;
         }
 
         public async Task<decimal?> GetStockPriceAsync(string symbol)
@@ -121,7 +148,7 @@ namespace TradingSimulator_Backend.Services
         public async Task<string?> ConvertSymbolToName(string symbol)
         {
             if(_stockApiInfoCache.ContainsKey(symbol)){
-                return _stockApiInfoCache[symbol].Name;
+                return _stockApiInfoCache[symbol].Info.Name;
             }
 
             var dbStock = await _context.StockLogoName.FindAsync(symbol);
@@ -141,7 +168,7 @@ namespace TradingSimulator_Backend.Services
 
             if(result != null){
                 Console.WriteLine($"Fetched {symbol} → Name: '{result.Name}'");
-                _stockApiInfoCache[symbol] = result;
+                _stockApiInfoCache[symbol] = (result, DateTime.Now);
                 dbStock = await _context.StockLogoName.FindAsync(symbol);
                 if (dbStock == null)
                     {
@@ -163,34 +190,34 @@ namespace TradingSimulator_Backend.Services
             return result.Name;
         }
 
-        public async Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol)
-        {
-            if (StockInfoDateTime == null)
-            {
-                StockInfoDateTime = DateTime.Now;
-            }
+        // public async Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol)
+        // {
+        //     if (StockInfoDateTime == null)
+        //     {
+        //         StockInfoDateTime = DateTime.Now;
+        //     }
 
-            if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
-            {
-                var cachedData = _stockApiInfoCache[symbol];
-                Console.WriteLine(cachedData.FiftyTwoWeek);
-                return (TryParseDateTime(cachedData.Datetime), cachedData.Low, cachedData.High, cachedData.FiftyTwoWeek?.Range, cachedData.Close, cachedData.PercentChange);
-            }
+        //     if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
+        //     {
+        //         var cachedData = _stockApiInfoCache[symbol];
+        //         Console.WriteLine(cachedData.FiftyTwoWeek);
+        //         return (TryParseDateTime(cachedData.Datetime), cachedData.Low, cachedData.High, cachedData.FiftyTwoWeek?.Range, cachedData.Close, cachedData.PercentChange);
+        //     }
 
-            var result = await FetchStockInfoFromApi(symbol);
+        //     var result = await FetchStockInfoFromApi(symbol);
 
-            if (result == null)
-            {
-                Console.WriteLine("Unable to find information");
-                return (null, null, null, null, null, null);
-            }
+        //     if (result == null)
+        //     {
+        //         Console.WriteLine("Unable to find information");
+        //         return (null, null, null, null, null, null);
+        //     }
 
-            _stockApiInfoCache[symbol] = result;
-            StockInfoDateTime = DateTime.Now;
-            return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
-        }
+        //     _stockApiInfoCache[symbol] = result;
+        //     StockInfoDateTime = DateTime.Now;
+        //     return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
+        // }
 
-        public async Task<CompanyProfile> GetStockCompanyProfile(string symbol){
+        public async Task<CompanyProfile?> GetStockCompanyProfile(string symbol){
             if(_CompanyDetailsCache.ContainsKey(symbol)){
                 var cachedData = _CompanyDetailsCache[symbol];
                 Console.WriteLine("Company Cache" , cachedData);
@@ -208,15 +235,14 @@ namespace TradingSimulator_Backend.Services
         }
 
         public async Task<StockApiInfo?> FetchStockInfo(string symbol){
-            if (StockInfoDateTime == null)
-            {
-                StockInfoDateTime = DateTime.Now;
-            }
 
-            if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - StockInfoDateTime) < TimeSpan.FromMinutes(480))
+//---------------------------
+        
+
+            if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - _stockApiInfoCache[symbol].Timestamp) < TimeSpan.FromMinutes(480))
             {
                 var cachedData = _stockApiInfoCache[symbol];
-                return cachedData;
+                return cachedData.Info;
             }
 
             var result = await FetchStockInfoFromApi(symbol);
@@ -226,8 +252,7 @@ namespace TradingSimulator_Backend.Services
                 return null;
             }
 
-            _stockApiInfoCache[symbol] = result;
-            StockInfoDateTime = DateTime.Now;
+            _stockApiInfoCache[symbol] = (result, DateTime.Now);
 
             return result;
 
@@ -274,7 +299,7 @@ namespace TradingSimulator_Backend.Services
             }
         }
 
-        private async Task<(string, string)> FetchLogoAndNameFromApi(string symbol)
+        private async Task<(string?, string?)> FetchLogoAndNameFromApi(string symbol)
         {
             var encodedSymbol = Uri.EscapeDataString(symbol);
             var url = $"https://api.twelvedata.com/logo?symbol={symbol}&apikey={_apiKey}";
@@ -307,7 +332,7 @@ namespace TradingSimulator_Backend.Services
             return (logo, name);
         }
 
-        private async Task<StockApiInfo> FetchStockInfoFromApi(string symbol){
+        private async Task<StockApiInfo?> FetchStockInfoFromApi(string symbol){
             var url = $"https://api.twelvedata.com/quote?symbol={symbol}&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
@@ -337,9 +362,9 @@ namespace TradingSimulator_Backend.Services
             }
         }
 
-        private async Task<CompanyProfile> FetchCompanyProfile(string symbol){
+        private async Task<CompanyProfile?> FetchCompanyProfile(string symbol){
             var url = $"https://api.twelvedata.com/profile?symbol={symbol}&apikey={_apiKey}";
-            var  response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             if(!response.IsSuccessStatusCode){
                 Console.WriteLine($"Error: {response.StatusCode}");
@@ -365,6 +390,32 @@ namespace TradingSimulator_Backend.Services
                 return null;
             }
             
+        }
+
+        private async Task<StockFullHistory?> FetchStockFullHistory(string symbol){
+            var url = $"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1day&outputsize=5000&apikey={_apiKey}";
+            var response = await _httpClient.GetAsync(url);
+
+            if(!response.IsSuccessStatusCode){
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JObject.Parse(json);
+
+            if(data["status"]?.ToString() == "error"){
+                Console.WriteLine($"API error for {symbol}: {json}");
+                return null;
+            }
+
+            try{
+                var StockHistory = JsonConvert.DeserializeObject<StockFullHistory>(json);
+                return StockHistory;
+            }
+            catch{
+                return null;
+            }
         }
 
     }

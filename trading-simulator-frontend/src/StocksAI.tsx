@@ -2,6 +2,7 @@ import { HfInference } from '@huggingface/inference'
 
 
 const hf = new HfInference("")
+//"")
 
 export async function StocksAI(_Prompt: String, _StockData: any){
     try {
@@ -18,6 +19,6 @@ export async function StocksAI(_Prompt: String, _StockData: any){
         })
         return response.choices[0].message.content
     } catch {
-        console.error("Somethingwent wrong")
+        console.error("Something went wrong")
     }
 }

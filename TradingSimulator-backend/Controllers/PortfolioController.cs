@@ -133,11 +133,15 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
             {
                 stock.CurrentPrice = stockPrice.Value;
 
-                bool alreadyLoggedToday = await _context.StockHistory.AnyAsync(h => h.StockId == stock.Id && h.Timestamp.Date == DateTime.UtcNow.Date);
-                
-                if(!alreadyLoggedToday){
-                    var history = new StockHistory
-                    {
+                var today = DateTime.UtcNow.Date;
+                var tomorrow = today.AddDays(1);
+
+                var existingHistory = await _context.StockHistory
+                    .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp >= today && h.Timestamp < tomorrow);
+
+                if (existingHistory == null){
+                    var history = new StockHistory{
+                        
                         StockId = stock.Id,
                         Timestamp = DateTime.UtcNow,
                         Price = stockPrice.Value,
@@ -146,17 +150,15 @@ public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
 
                     _context.StockHistory.Add(history);
                 }
-                else
-                {
-                    var existingHistory = await _context.StockHistory
-                        .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp.Date == DateTime.UtcNow.Date);
+                else{
+                    Console.WriteLine($"Before update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
 
-                    if (existingHistory != null)
-                    {
-                        existingHistory.Price = stockPrice.Value;
-                        existingHistory.Quantity = stock.Quantity;
-                        existingHistory.Timestamp = DateTime.UtcNow;
-                    }
+                    existingHistory.Price = stockPrice.Value;
+                    existingHistory.Quantity = stock.Quantity;
+                    existingHistory.Timestamp = DateTime.UtcNow;
+
+                    Console.WriteLine($"After update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
+
                 }
             }
         }

@@ -11,13 +11,14 @@
   top: 2rem;
   flex-grow: 2;
   font-family: Inter, sans-serif;
+  width: 100%;
 }
 
 .SearchSection{
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
 }
 
@@ -31,37 +32,49 @@
     font-size: 1rem;
     font-family: Inter, sans-serif;;
     font-weight: 600;
-    box-shadow: 0px 0px 10px 1px #3e91444c;
+    box-shadow: 0px 0px 20px 0px #3e91444c;
     transition: all 0.4s ease-in-out;
     background-color: rgb(255, 255, 255);
     color: #000000;
+    margin: 0;
 }
 
 .StockSearchInput:focus{
   border: 1px #45a049 solid;
-  box-shadow: 0 0 2rem 0.4rem #45a049cb;
+  box-shadow: 0 0 10px 0.4px #45a049cb;
 }
 
 .StockSearchButton{
-    border: 1px #45a049 solid;
-    background-color: #45a04900;
+    border: 1px #45a04900 solid;
+    animation-name: BodyBackground;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
     border-radius: 10rem;
-    min-width: 10%;
-    max-width: 50%;
-    height: 3rem;
-    font-size: 1.5rem;
-    font-family: Inter, sans-serif;;
+    height: 2.3rem;
+    width: 14rem;
+    margin-left: -14.2rem;
+    font-size: 1.2rem;
+    font-family: Inter, sans-serif;
     font-weight: 600;
     text-align: center;
-    box-shadow: 0px 0px 10px 1px #3e91444c;
+    box-shadow: 0px 0px 10px 0px #3e91444c;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.5s ease-in-out;
 }
 
 .StockSearchButton:hover{
+  box-shadow: 0px 0px 10px 5px #3e91444c;
+  border: 1px #45a049 solid;
+  color: #9dcfa0;
+  scale: 1.02;
+}
+
+button:active{
     border: 1px #45a049 solid;
     background-color: #45a0497f;
+    transition: all 0s ease-in-out;
 }
 
 @media (max-width: 600px) {
@@ -69,7 +82,9 @@
     font-size: 0.8rem;
   }
   .StockSearchButton{
-    font-size: 1.3rem;
+    font-size: 1rem;
+    width: 6rem;
+    margin-left: -6.1rem;
   }
 }
 
@@ -87,16 +102,23 @@
     z-index: 1000; 
   }
   
-  .ModalContent {
+  .ToBuyBody{
+    padding: 2rem;
+    border-radius: 4rem;
+    text-align: center;
+  }
+
+  .ToBuyContent{
     animation-name: BodyBackground;
     animation-duration: 15s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+    border: 1px #45a049 solid;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
     padding: 2rem;
-    border: 1px green solid;
-    border-radius: 4rem;
-    width: 300px;
-    text-align: center;
+    border-radius: 3rem;
+    width: 35rem;
+    transition: all 0.5s ease-in-out;
   }
   
   .ModalBody {
@@ -111,40 +133,32 @@
     border-radius: 5rem; 
   }
   
-  .ModalFooter {
+  .ToBuyFooter {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
     gap: 1rem;
   }
-  
-  .CancelButton,
-  .ConfirmButton {
-    padding: 1;
-    border: none;
-    cursor: pointer;
+
+  .ToBuyFooter > button{
+    background-color: #00000000;
+    color: white;
+    outline: none;
     border-radius: 5rem;
-  }
-  
-  .CancelButton {
-    background-color: #45a049;
-    color: #ffffff;
-  }
-  
-  .ConfirmButton {
-    background-color: #45a049;
-    color: #ffffff;
+    border: 1px #45a049 solid;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-family: Inter, sans-serif;
+    width: 15rem;
+    transition: all 0.5s ease-in-out;
   }
 
-  .CancelButton:hover {
-    background-color: #3e9143;
-    color: #ffffff;
-  }
-  
-  .ConfirmButton:hover {
-    background-color: #3e9143;
-    color: #ffffff;
-  }
+  .ToBuyFooter > button:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+  }  
+
 
   .BuyButton{
     min-width: 2rem;
@@ -159,11 +173,13 @@
   }
 
   .StockNotFound{
-    margin-top: 1rem;
+    margin-top: 5rem;
   }
 
   .StockNotFound > h2{
     font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 2.5rem;
   }
 
 
@@ -210,9 +226,11 @@
   .CompleteSearchResult{
     padding: 1rem;
     margin-top: 2.5rem;
-    box-shadow: 0px 0px 10px 1px #3e91444c;
+    /* box-shadow: 0px 0px 10px 1px #3e91444c; */
     border-radius: 2rem;
-    border: 1px #3e9144 solid;
+    /* border: 1px #3e9144 solid; */
+    width: 53rem;
+    transition: all 0.5s ease-in-out;
   }
 
   .StockHeader{
@@ -243,6 +261,7 @@
     align-items: center;
     justify-content: space-around;
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .StockBodyLeft, .StockBodyRight{
@@ -252,6 +271,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+  }
+
+  .StockBodyLeft{
+    margin-top: 1rem;
   }
 
   .StockBodyLeft > div > h4{
@@ -292,8 +315,10 @@
     content: "";
     display: block;
     height: 1.5rem;
-    width: 0.5rem;
+    width: 3px;
     position: relative;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+    border: 1px #00000031 solid;
   }
 
   .StockDailyAveragePoint{
@@ -326,4 +351,270 @@
     border: 1px #45a049 solid;
     background-color: #45a0497f;
     box-shadow: 0px 0px 10px 1px #3e91444c;
+  }
+
+  .BuyStockTitle{
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .BuyStockTitle > h2{
+    margin: 0;
+  }
+
+  .toBuyBody > label{
+    margin: 1rem 0 0 0;
+    text-align: left;
+    font-weight: 300;
+  }
+
+  .toBuyBody > input{
+    height: 2.3rem;
+    font-size: 1rem;
+    font-family: Inter, sans-serif;
+  }
+
+  .SearchSuggestions{
+    animation-name: BodyBackgroundLight;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 10000;
+    position: fixed;
+    top: 13rem;
+    margin-top: -1.5rem;
+    min-width: 20%;
+    max-width: 80%;
+    width: 100%;
+    transition: all 0.5s ease-in-out;
+    border-radius: 2rem;
+    box-shadow: 0px 0px 3px 0px #3e91444c;
+  }
+
+  .SearchSuggestions > button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 98%;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    margin: 0 0.5rem 0 0.5rem;
+    background-color: #00000000;
+    border: 0px;
+    height: 62.8px;
+  }
+
+  .SearchSuggestions > button:hover, .SearchSuggestions > button:focus{
+    animation-name: none;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    background-color: #1b3f25;
+    border: none;
+    outline: none;
+  }
+
+  .SearchSuggestions > button > img{
+    width: 2.8rem;
+    margin: 0.5rem 0 0.5rem 1rem;
+    border-radius: 1rem;
+    transition: all 0.5s ease-in-out;
+    font-size: 1.6rem;
+    border: 0px white solid;
+  }
+
+  .SearchSuggestions > button > h4{
+    font-size: 1.4rem;
+    font-weight: 250;
+    margin: 0 0 0 1rem;
+    font-family: Inter, sans-serif;
+    transition: all 0.5s ease-in-out;
+    text-align: left;
+  }
+
+  .SearchAndResult{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+
+    .StockSearchButton{
+      width: 9rem;
+      margin-left: -9.2rem;
+    }
+
+    .SearchSuggestions{
+      width: 83%;
+    }
+
+    .CompleteSearchResult{
+      width: 35rem;
+    }
+    .StockBodyLeft{
+      margin-top: 1.6rem;
+    }
+    .StockBodyRight{
+      margin-top: 0.5rem;
+    }
+    .StockFooter > button{
+      padding: 0.6rem;
+      font-size: 1.2rem;
+      width: 13rem;
+    }
+
+    .StockBodyLeft > div > h4{
+      font-size: 2.8rem;
+    }
+
+    .StockLogo{
+      width: 3.3rem;
+    }
+
+    .StockHeader > span{
+      font-size: 1.6rem;
+    }
+    
+    .SearchSuggestions > div > h4{
+      font-size: 1.4rem;
+      margin: 1rem 1.7rem 1rem 1rem;
+      font-family: Inter, sans-serif;
+    }
+
+    .SearchSuggestions > div > img{
+      width: 2.5rem;
+    }
+  }
+
+    @media (max-width: 600px) {
+    .CompleteSearchResult{
+      width: 25rem;
+    }
+
+    .StockBodyLeft > div > h4{
+      font-size: 2.5rem;
+    }
+
+
+    .StockBodyLeft > div > p{
+      font-size: 0.9rem;
+    }
+
+    .StockHeader{
+      margin: 0;
+      justify-content: space-around;
+    }
+
+    .ToBuyContent{
+      width: 25rem;
+    }
+
+    .SearchSuggestions > button > h4{
+      font-size: 1.2rem;
+      font-weight: 250;
+      margin: 0 0 0 1rem;
+      font-family: Inter, sans-serif;
+      transition: all 0.5s ease-in-out;
+    }
+
+  }
+
+  @media (max-width: 420px) {
+
+    .StockSearchInput{
+      max-width: 90%;
+    }
+
+    .StockSearchButton{
+      width: 6rem;
+      margin-left: -6.2rem;
+    }
+
+    .CompleteSearchResult{
+      width: 20rem;
+    }
+
+    .StockLogo{
+      width: 2.8rem;
+    }
+
+    .StockHeader{
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .StockHeader > span{
+      font-size: 1.4rem;
+      margin: 0;
+    }
+
+    .StockHeader > h3{
+      font-size: 1.8rem;
+    }
+
+    .SearchSuggestions > div > h4{
+      font-size: 1rem;
+      margin: 1rem 1.7rem 1rem 1rem;
+      font-family: Inter, sans-serif;
+    }
+
+    .StockBodyLeft > div > h4{
+      font-size: 1.8rem;
+    }
+
+
+    .StockBodyLeft > div > p{
+      font-size: 0.8rem;
+    }
+
+    .StockBodyLeft > div > div > p{
+      font-size: 0.9rem;
+    }
+
+    .StockDailyRange > h4{
+      font-size: 0.9rem;
+    }
+
+    .StockDailyRange > p{
+      font-size: 0.8rem;
+    }
+
+    .lhTitles > h4{
+      font-size: 0.9rem;
+    }
+
+    .lhTitles > p{
+      font-size: 0.8rem;
+    }
+
+    .VolumeGFR{
+      font-size: 0.9rem;
+    }
+
+    .StockBodyRight{
+      margin: 0;
+    }
+
+    .StockFooter{
+      gap: 1rem;
+    }
+
+    .StockFooter > button{
+      padding: 0.5rem;
+    }
+
+    .ToBuyContent{
+      width: 90%;
+    }
   }

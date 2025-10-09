@@ -163,7 +163,7 @@ html{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,14 +174,64 @@ html{
 
 .ModalContent {
   animation-name: BodyBackground;
-      animation-duration: 15s;
-      animation-iteration-count: infinite;
-      animation-direction: alternate;
-  padding: 2rem;
-  width: 30rem;
+  animation-duration: 15s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
   border-radius: 4rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
+  margin: 0 1rem 0 1rem;
+  border: 1px #45a049 solid;
+  box-shadow: 0px 0px 10px 1px #3e91444c;
+  width: 95%;
+}
+
+.ModalContent h2{
+  padding: 1rem;
+}
+
+.ModalFooter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 3rem;
+  padding: 0 1rem 1rem 1rem;
+}
+
+.ModalFooter > button{
+  border: 1px #45a049 solid;
+  background-color: #45a04900;
+  border-radius: 2rem;
+  width: 10rem;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  font-family: Inter, sans-serif;
+  transition: all 0.5s ease-in-out;
+  box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.ModalFooter > button:hover{
+  border: 1px #45a049 solid;
+  background-color: #45a0497f;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 5rem 1rem rgba(0, 0, 0, 0.599);
+  font-family: Inter, sans-serif;
+}
+
+
+.ModalContent table{
+  margin: 0;
+  margin-bottom: 1rem;
+
+}
+
+.ModalContent div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .DeleteLogo{
@@ -264,16 +314,16 @@ th{
 	font-weight: 400;
 }
 
-.Table thead tr:first-child th:first-child {
+table thead tr:first-child th:first-child {
   border-top-left-radius: 10px;
 }
-.Table thead tr:first-child th:last-child {
+table thead tr:first-child th:last-child {
   border-top-right-radius: 10px;
 }
-.Table tbody tr:last-child td:first-child {
+table tbody tr:last-child td:first-child {
   border-bottom-left-radius: 10px;
 }
-.Table tbody tr:last-child td:last-child {
+table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
 
@@ -362,6 +412,7 @@ th{
   font-family: Inter, sans-serif;
   margin: 0;
   font-weight: 500;
+  text-align: left;
 }
 
 .tdCompanies > div > div > span{
@@ -397,6 +448,12 @@ th{
   text-align: end;
 }
 
+@media (max-width: 1120px) {
+  .ModalContent .Table{
+    min-width: 55rem;
+  }
+}
+
 @media (max-width: 1020px) {
   th{
     font-size: 1.3rem;
@@ -430,6 +487,10 @@ th{
 
   .Table{
     min-width: 55rem;
+  }
+
+  .ModalContent .Table{
+    min-width: 45rem;
   }
 
   
@@ -492,6 +553,12 @@ th{
   }
 }
 
+@media (max-width: 800px) {
+  .ModalContent .Table{
+    min-width: 35rem;
+  }
+}
+
 @media (max-width: 660px) {
   .Table{
     min-width: 30rem;
@@ -544,6 +611,20 @@ th{
     scale: 0.7;
   }
 
+  .ModalContent{
+    width: 95%;
+  }
+
+  .ModalContent .Table{
+    min-width: 30rem;
+  }
+
+}
+
+@media (max-width: 550px) {
+  .ModalContent .Table{
+    min-width: 20rem;
+  }
 }
 
 @media (max-width: 500px) {
@@ -849,6 +930,13 @@ th{
 
   .Filter > input {
     font-size: 0.8rem;
+  }
+  .ModalFooter{
+    gap: 1rem;
+  }
+
+  .ModalFooter > button{
+    width: 7rem;
   }
 }
 
