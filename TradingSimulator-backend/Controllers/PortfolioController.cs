@@ -76,97 +76,116 @@ public class PortfolioController : ControllerBase
     public async Task<IActionResult> BuyStock(int userId, [FromBody] StockPurchaseRequest request)
     {
         var portfolio = await _context.Portfolios
-                                  .Include(p => p.Stocks)
-                                  .FirstOrDefaultAsync(p => p.UserId == userId);
+                                    .Include(p => p.Stocks)
+                                    .FirstOrDefaultAsync(p => p.UserId == userId);
 
         if (portfolio == null)
         {
             return NotFound("Portfolio not found.");
         }
 
-        var stockPrice = await _stockService.GetStockPriceAsync(request.Symbol);
+        var response = await _stockService.GetStockPriceAsync(request.Symbol);
 
-        if (stockPrice == null)
+        // Handle API errors or missing data
+        if (response.HasError || !response.Data.HasValue)
         {
-            return BadRequest("Stock not found.");
+            return BadRequest(new
+            {
+                Message = "Failed to fetch stock price.",
+                Symbol = request.Symbol,
+                ErrorCode = response.ErrorCode
+            });
         }
+
+        var stockPrice = response.Data.Value;
 
         var stock = new Stock
         {
             Symbol = request.Symbol,
-            PurchasePrice = stockPrice.Value,
+            PurchasePrice = stockPrice,
             Quantity = request.Quantity,
-            CurrentPrice = stockPrice.Value 
+            CurrentPrice = stockPrice
         };
 
-        portfolio.Stocks.Add(stock);  // Add the stock to the portfolio
-        await _context.SaveChangesAsync();  // Save changes to the database
+        portfolio.Stocks.Add(stock);
+        await _context.SaveChangesAsync();
 
-        return Ok(new { Message = "Stock purchased successfully", Stock = stock });
+        return Ok(new
+        {
+            Message = "Stock purchased successfully.",
+            Stock = stock
+        });
     }
 
     // Change this
 // public class StockPriceUpdaterService : BackgroundService
 
-[HttpPut("{userId}/stocks/update")]
-public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
-{
-    var portfolio = await _context.Portfolios
-                                  .Include(p => p.Stocks)
-                                  .FirstOrDefaultAsync(p => p.UserId == userId);
-
-    if (portfolio == null)
+    [HttpPut("{userId}/stocks/update")]
+    public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
     {
-        return NotFound("Portfolio not found.");
-    }
+        var portfolio = await _context.Portfolios
+                                    .Include(p => p.Stocks)
+                                    .FirstOrDefaultAsync(p => p.UserId == userId);
 
-    var stockSymbols = portfolio.Stocks.Select(s => s.Symbol).ToList();
-
-    var stockPrices = await _stockService.GetMultipleStockPricesAsync(stockSymbols);
-
-    foreach (var stock in portfolio.Stocks)
-    {
-        if (stockPrices.ContainsKey(stock.Symbol))
+        if (portfolio == null)
         {
-            var stockPrice = stockPrices[stock.Symbol];
-            if (stockPrice.HasValue)
+            return NotFound("Portfolio not found.");
+        }
+
+        var stockSymbols = portfolio.Stocks.Select(s => s.Symbol).ToList();
+
+        var stockPrices = await _stockService.GetMultipleStockPricesAsync(stockSymbols);
+
+        foreach (var stock in portfolio.Stocks)
+        {
+            if (stockPrices.TryGetValue(stock.Symbol, out var stockPrice))
             {
-                stock.CurrentPrice = stockPrice.Value;
+                // Only update if the API call was successful and Data is not null
+                if (!stockPrice.HasError && stockPrice.Data.HasValue)
+                {
+                    stock.CurrentPrice = stockPrice.Data.Value;
 
-                var today = DateTime.UtcNow.Date;
-                var tomorrow = today.AddDays(1);
+                    var today = DateTime.UtcNow.Date;
+                    var tomorrow = today.AddDays(1);
 
-                var existingHistory = await _context.StockHistory
-                    .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp >= today && h.Timestamp < tomorrow);
+                    var existingHistory = await _context.StockHistory
+                        .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp >= today && h.Timestamp < tomorrow);
 
-                if (existingHistory == null){
-                    var history = new StockHistory{
-                        
-                        StockId = stock.Id,
-                        Timestamp = DateTime.UtcNow,
-                        Price = stockPrice.Value,
-                        Quantity = stock.Quantity
-                    };
+                    if (existingHistory == null)
+                    {
+                        var history = new StockHistory
+                        {
+                            StockId = stock.Id,
+                            Timestamp = DateTime.UtcNow,
+                            Price = stockPrice.Data.Value,
+                            Quantity = stock.Quantity
+                        };
 
-                    _context.StockHistory.Add(history);
+                        _context.StockHistory.Add(history);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Before update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
+
+                        existingHistory.Price = stockPrice.Data.Value;
+                        existingHistory.Quantity = stock.Quantity;
+                        existingHistory.Timestamp = DateTime.UtcNow;
+
+                        Console.WriteLine($"After update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
+                    }
                 }
-                else{
-                    Console.WriteLine($"Before update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
-
-                    existingHistory.Price = stockPrice.Value;
-                    existingHistory.Quantity = stock.Quantity;
-                    existingHistory.Timestamp = DateTime.UtcNow;
-
-                    Console.WriteLine($"After update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
-
+                else
+                {
+                    Console.WriteLine($"Skipping update for {stock.Symbol} due to API error or missing data.");
                 }
             }
         }
-    }
-    await _context.SaveChangesAsync();
 
-    return Ok(portfolio);
-}
+        await _context.SaveChangesAsync();
+
+        return Ok(portfolio);
+    }
+
 
     [HttpDelete("{userId}/stocks/delete/{stockId}")]
     public async Task<IActionResult> RemoveStockFromPortfolio(int userId, int stockId)

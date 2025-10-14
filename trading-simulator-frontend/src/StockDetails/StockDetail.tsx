@@ -2,20 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import './StockDetail.css';
-import { StockApiInfo, CompanyProfile } from "./interfaces";
-import { useAuth } from "./AuthContext";
-import { StocksAI } from './StocksAI';
-import AiLoading from './AiLoading';
-import getStockApiInfo from './Functions/getStockApiInfo';
-import CompanyInformation from './StockDetailsSections/StockDetailsCompanyInformation'
-import StockDetails from './StockDetailsSections/StockDetailsStockData'
-import StockDetailsOwnedStocks from './StockDetailsSections/StockDetailsOwnedStocks';
-import StockDetailsNews from './StockDetailsSections/StockDetailsNews';
-import buyStock from './Functions/buyStock';
+import { StockApiInfo, CompanyProfile } from "../Interfaces/interfaces";
+import { useAuth } from "../Functions/AuthContext";
+import { StocksAI } from '../StocksAI/StocksAI';
+import AiLoading from '../Loading/AiLoading';
+import getStockApiInfo from '../Functions/getStockApiInfo';
+import CompanyInformation from '../StockDetailsSections/StockDetailsCompanyInformation'
+import StockDetails from '../StockDetailsSections/StockDetailsStockData'
+import StockDetailsOwnedStocks from '../StockDetailsSections/StockDetailsOwnedStocks';
+import StockDetailsNews from '../StockDetailsSections/StockDetailsNews';
+import buyStock from '../Functions/buyStock';
 import { FocusTrap } from 'focus-trap-react';
 import Confetti from 'react-confetti';
-import AiChat from './StockDetailsSections/AiChat';
-import StockDetailsOverview from './StockDetailsSections/StockDetailsOverview';
+import AiChat from '../StockDetailsSections/AiChat';
+import StockDetailsOverview from '../StockDetailsSections/StockDetailsOverview';
+import getStockImage from '../Functions/getStockImage';
+import Error from '../Error/Error';
+import getStockName from '../Functions/getStockName';
+import getStockPrice from '../Functions/getStockPrice';
 
 interface AxiosErrorType {
     response?: { data: string; status: number; statusText: string };
@@ -36,12 +40,13 @@ const StockDetail: React.FC = () => {
     const [AiResponses, setAiResponses] = useState<string[]>([])
     //(["Hi","Sure blah blah blah blah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blahblah blah blah","blah blah blahblah blah blahblah blah blah", "bla"])
     const [AIAssistantSearchInput,setSearchInput] = useState<string>("")
-
     const [stockPrice, setStockPrice] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [quantity, setQuantity] = useState<string>("0");
     const [cost, setCost] = useState<string | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [displayError, setDisplayError] = useState<{display: boolean, warning: boolean, title: string, bodyText: string, buttonText: string}>({display: false, title: "", bodyText: "", warning: false, buttonText: ""});
+    
 
 
     useEffect(() => {
@@ -50,12 +55,12 @@ const StockDetail: React.FC = () => {
 
     const GetData = async() => {
         try{
-            const response = await axios.get(`http://localhost:3000/api/stocks/GetStockName/${stockSymbol}`);
-            setStockName(response.data);
-            const response5 = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${stockSymbol}`);
-            setStockPrice(response5.data.price)
-            const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${stockSymbol}`);
-            setStockLogo(response2.data.image);
+            const response = await getStockName({symbol: stockSymbol, setDisplayError: setDisplayError});
+            setStockName(response);
+            const response3 = await getStockPrice({symbol: stockSymbol, setDisplayError: setDisplayError});
+            setStockPrice(response3)
+            const response2 = await getStockImage({symbol: stockSymbol, setDisplayError: setDisplayError})
+            setStockLogo(response2);
         }
         catch(error){
             handleAxiosError(error);
@@ -172,20 +177,20 @@ const StockDetail: React.FC = () => {
         <section className='MainBody'>
             <div className='StockDetails'>
               {
-                (DisplayedData == "Overview") && <StockDetailsOverview StockName={StockName} symbol={stockSymbol}/>
+                (DisplayedData == "Overview") && <StockDetailsOverview StockName={StockName} symbol={stockSymbol} setDisplayError={setDisplayError}/>
               }
               {
-                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails} setCompanyDetails={setCompanyDetails} DisplayedData={DisplayedData} symbol={stockSymbol}/>
+                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails} setCompanyDetails={setCompanyDetails} DisplayedData={DisplayedData} symbol={stockSymbol} setDisplayError={setDisplayError}/>
               }
               {
-                  (DisplayedData == "StockData") && <StockDetails symbol={stockSymbol} setStockBasicData={setStockBasicData} BasicStockData={BasicStockData} stockPrice={stockPrice}/>
+                  (DisplayedData == "StockData") && <StockDetails symbol={stockSymbol} setStockBasicData={setStockBasicData} BasicStockData={BasicStockData} stockPrice={stockPrice} setDisplayError={setDisplayError}/>
 
               }      
               {
                   (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={stockSymbol}/>
               } 
               {
-                  (DisplayedData == "News") && <StockDetailsNews symbol={stockSymbol}/>
+                  (DisplayedData == "News") && <StockDetailsNews symbol={stockSymbol} setDisplayError={setDisplayError}/>
               } 
               {
                   (DisplayedData == "AIAssistant") && <AiChat setSearchInput={setSearchInput} HandleAiResponse={HandleAiResponse} AIAssistantSearchInput={AIAssistantSearchInput} AiResponses={AiResponses} UserPrompts={UserPrompts}/>
@@ -244,12 +249,15 @@ const StockDetail: React.FC = () => {
               </div>
             </FocusTrap>
           )}    
+
+        {displayError.display && 
+        <FocusTrap>
+          <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
+            <Error setDisplayError={setDisplayError} warning={displayError.warning} title={displayError.title} bodyText={displayError.bodyText} buttonText={displayError.buttonText}/>
+          </div>
+        </FocusTrap>}
     </>
   );
 };
 
 export default StockDetail;
-function handleAxiosError(error: any) {
-    throw new Error('Function not implemented.');
-}
-

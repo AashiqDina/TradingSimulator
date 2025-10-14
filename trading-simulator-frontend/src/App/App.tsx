@@ -1,14 +1,15 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./Home"; 
-import Portfolio from "./Portfolio";
-import About from "./About";
-import Login from "./Login";
-import Header from "./Header";
+import Home from "../Home/Home"; 
+import Portfolio from "../Portfolio/Portfolio";
+import About from "../About/About";
+import Login from "../Login/Login";
+import Header from "../Header/Header";
 import './App.css';
-import Register from "./Register";
-import StockDetail from "./StockDetail"
-import { AuthProvider } from "./AuthContext";
+import Register from "../Register/Register";
+import StockDetail from "../StockDetails/StockDetail"
+import Friends from "../Friends/Friends";
+import { AuthProvider } from "../Functions/AuthContext";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/stock/:symbol" element={<StockDetail />} />
+            <Route path="/friends" element={<Friends />}> </Route>
           </Routes>
         </div>
       </Router>

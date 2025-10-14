@@ -1,14 +1,30 @@
-import axios, { AxiosError } from "axios";
-import handleAxiosError from "./handleAxiosError";
+import axios from "axios"
+import handleTwelveDataError from "../Error/handleTwelveDataError";
 
-export default async function getStockNews(props: any) {
-
+export default async function getStockNews(props: any){
     try{
-      const result = await axios.get(`http://localhost:3000/api/stocks/GetStockNews/${props.symbol}`)
-      return result.data.news
+        const result = await axios.get(`http://localhost:3000/api/stocks/GetStockNews/${props.symbol}`)
+        console.log(result)
+
+        if(result.data.hasError){
+            handleTwelveDataError({
+                response: result.data,
+                setDisplayError: props.setDisplayError
+            });
+            return null;
+        }
+        else{
+            return result.data.data;
+        }
+
     }
     catch(error){
-      handleAxiosError(error)
+        props.setDisplayError({
+            display: true, 
+            title: "Couldn't reach the backend", 
+            bodyText: "Looks like our servers took a coffee break. Try again in a moment!", 
+            warning: false, 
+            buttonText: "Retry"})
+        return null;
     }
-    return null
 }

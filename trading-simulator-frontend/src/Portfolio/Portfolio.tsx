@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Portfolio.css";
-import Loading from './Loading';
-import { useAuth } from "./AuthContext";
-import QuickStats from "./PorfolioSections/QuickStats";
-import StocksTable from "./PorfolioSections/StocksTable";
-import getPortfolio from "./Functions/GetPortfolio";
-import handleAxiosError from "./Functions/handleAxiosError";
-import updateAllStocksInPortfolio from "./Functions/UpdateStocksInPortfolio";
-import getHistory from "./Functions/getHistory";
+import Loading from '../Loading/Loading';
+import { useAuth } from "../Functions/AuthContext";
+import QuickStats from "../PorfolioSections/QuickStats";
+import StocksTable from "../PorfolioSections/StocksTable";
+import getPortfolio from "../Functions/GetPortfolio";
+import handleAxiosError from "../Functions/handleAxiosError";
+import updateAllStocksInPortfolio from "../Functions/UpdateStocksInPortfolio";
+import getHistory from "../Functions/getHistory";
+import { FocusTrap } from 'focus-trap-react';
+import Error from "../Error/Error";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
@@ -25,6 +27,10 @@ const Portfolio = () => {
   const [Invested, setInvested] = useState<number | null>(null)
   const [PorfolioValue, setPorfolioValue] = useState<number | null>(null)
   const [Profit, setProfit] = useState<number | null>(null)
+  const [originalValues, setOriginalValues] = useState<any | null>(null)
+  const [FilteredSearch, setFilteredSearch] = useState<any | null>([])
+  const [displayError, setDisplayError] = useState<{display: boolean, warning: boolean, title: string, bodyText: string, buttonText: string}>({display: false, title: "", bodyText: "", warning: false, buttonText: ""});
+
 
   const Fetched = useRef(false)
 
@@ -55,12 +61,13 @@ const Portfolio = () => {
       Fetched.current = true;
       const updateAndFetch = async () => {
         await updateAllStocksInPortfolio({ user });
-        const result = await getPortfolio({ user });
+        const result = await getPortfolio({ user: user, setDisplayError: setDisplayError});
         setPortfolio(result);
         console.log("Portfolio Result: ", result)
         setInvested(result.totalInvested.toFixed(2))
         setPorfolioValue(result.currentValue.toFixed(2))
         setProfit(result.profitLoss.toFixed(2))
+        setOriginalValues({Invested: result.totalInvested.toFixed(2), PortfolioValue: result.currentValue.toFixed(2), Profit: result.profitLoss.toFixed(2)})
       };
 
       updateAndFetch();
@@ -160,7 +167,10 @@ const Portfolio = () => {
             setFilterHistory={setFilterHistory}
             setPortfolioValue={setPorfolioValue}
             setProfit={setProfit}
-            setInvested={setInvested}/>
+            setInvested={setInvested}
+            FilteredSearch={FilteredSearch}
+            originalValues={originalValues}
+            />
 
           {/* <CurrentBestStockTable CurrentBestStocks={CurrentBestStocks}/> */}
 
@@ -181,13 +191,21 @@ const Portfolio = () => {
             setModalVisibility={setModalVisibility} 
             setToDelete={setToDelete}
             ToDelete={ToDelete}
-            handleTrueDelete={handleTrueDelete}/>
+            handleTrueDelete={handleTrueDelete}
+            FilteredSearch={FilteredSearch}
+            setFilteredSearch={setFilteredSearch}
+            />
 
           {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div>
           <h2 className="PageTitle">Transaction History</h2>
           <div style={{width: "50vw"}} className="LineOne"></div>
           <div id="Space"></div> */}
-
+          {displayError.display && 
+            <FocusTrap>
+              <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
+                <Error setDisplayError={setDisplayError} warning={displayError.warning} title={displayError.title} bodyText={displayError.bodyText} buttonText={displayError.buttonText}/>
+              </div>
+            </FocusTrap>}
 
         </>
       ) : (

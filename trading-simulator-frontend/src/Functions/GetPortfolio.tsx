@@ -1,4 +1,6 @@
 import axios, { AxiosError } from "axios";
+import getStockImage from "./getStockImage";
+import getStockName from "./getStockName";
 
 export default async function getPortfolio(props: any) {
   const user = props.user;
@@ -19,17 +21,13 @@ export default async function getPortfolio(props: any) {
     const stocks = await Promise.all(
       portfolioData.stocks.map(async (stock: any) => {
         try {
-          const imageRes = await axios.get<{ symbol: string; image: string }>(
-            `http://localhost:3000/api/stocks/StockImage/${stock.symbol}`
-          );
-          const nameRes = await axios.get<string>(
-            `http://localhost:3000/api/stocks/GetStockName/${stock.symbol}`
-          );
+          const imageRes = await getStockImage({symbol: stock.symbol, setDisplayError: props.setDisplayError})
+          const nameRes = await await getStockName({symbol: stock.symbol, setDisplayError: props.setDisplayError});
 
           return {
             ...stock,
-            logo: imageRes.data.image || "defaultLogo.png",
-            name: nameRes.data || "Unknown",
+            logo: imageRes || "defaultLogo.png",
+            name: nameRes || "Unknown",
           };
         } catch (error) {
           console.error("Error fetching stock info:", error);

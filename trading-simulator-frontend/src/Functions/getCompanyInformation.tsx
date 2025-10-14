@@ -1,20 +1,21 @@
 import axios from "axios"
 import handleTwelveDataError from "../Error/handleTwelveDataError";
 
-export default async function getStockApiInfo(props: any){
+export default async function getCompanyInformation(props: any){
     try{
-        const result = await axios.get(`http://localhost:3000/api/stocks/GetStockQuoteInfo/${props.symbol}`)
+        console.log(props.symbol)
+        const result = await axios.get(`http://localhost:3000/api/stocks/GetCompanyDetails/${props.symbol}`)
         console.log(result)
 
         if(result.data.hasError){
             handleTwelveDataError({
-                response: result.data.quoteData,
+                response: result.data.profile,
                 setDisplayError: props.setDisplayError
             });
             return null;
         }
         else{
-            return result.data.quoteData.data;
+            return result.data.profile.data;
         }
 
     }

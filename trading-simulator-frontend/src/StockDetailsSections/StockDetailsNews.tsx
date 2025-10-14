@@ -9,7 +9,7 @@ export default function StockDetailsNews(props: any){
 
   useEffect(() => {
     const getNews = async () => {
-      let response = await getStockNews({symbol: props.symbol});
+      let response = await getStockNews({symbol: props.symbol, setDisplayError: props.setDisplayError});
       setNewsArray(response)
       console.log(response);
     }

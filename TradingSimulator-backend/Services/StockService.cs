@@ -51,61 +51,84 @@ namespace TradingSimulator_Backend.Services
             return localTime;
         }
 
-        public async Task<StockFullHistory?> GetFullStockHistory(string symbol){
+        public async Task<ApiResponse<StockFullHistory?>> GetFullStockHistory(string symbol){
 
             if(_StockFullHistoryCache.ContainsKey(symbol) && DateTime.Now - _StockFullHistoryCache[symbol].Timestamp < TimeSpan.FromMinutes(480)){
-                return _StockFullHistoryCache[symbol].History;
+                return new ApiResponse<StockFullHistory?>{
+                    Data = _StockFullHistoryCache[symbol].History,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
 
             var History = await FetchStockFullHistory(symbol);
 
-            _StockFullHistoryCache[symbol] = (History, DateTime.Now);
+            if(History != null && !History.HasError){
+                _StockFullHistoryCache[symbol] = (History.Data, DateTime.Now);
+            }
 
             return History;
         }
 
-        public async Task<decimal?> GetStockPriceAsync(string symbol)
+        public async Task<ApiResponse<decimal?>> GetStockPriceAsync(string symbol)
         {
             if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(480))
             {
-                return _stockCache[symbol].Price;
+                return new ApiResponse<decimal?>{
+                    Data = _stockCache[symbol].Price,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
 
-            var price = await FetchStockPriceFromApi(symbol);
+            var response = await FetchStockPriceFromApi(symbol);
 
-            _stockCache[symbol] = (price, DateTime.Now);
+            if(!response.HasError){
+                _stockCache[symbol] = (response.Data, DateTime.Now);
+            }
 
-            return price;
+            return response;
         }
 
-        public async Task<Dictionary<string, decimal?>> GetMultipleStockPricesAsync(List<string> symbols)
+        public async Task<Dictionary<string, ApiResponse<decimal?>>> GetMultipleStockPricesAsync(List<string> symbols)
         {
-            var stockPrices = new Dictionary<string, decimal?>();
+            var stockPrices = new Dictionary<string, ApiResponse<decimal?>>();
 
             foreach (var symbol in symbols)
             {
                 if (_stockCache.ContainsKey(symbol) && DateTime.Now - _stockCache[symbol].Timestamp < TimeSpan.FromMinutes(480))
                 {
-                    stockPrices[symbol] = _stockCache[symbol].Price; 
+                    stockPrices[symbol] = new ApiResponse<decimal?>
+                    {
+                        Data = _stockCache[symbol].Price,
+                        HasError = false,
+                        ErrorCode = null
+                    };
                 }
                 else
                 {
-                    var price = await FetchStockPriceFromApi(symbol);
-                    stockPrices[symbol] = price;
+                    var response = await FetchStockPriceFromApi(symbol);
+                    stockPrices[symbol] = response;
 
-                    // Cache the price and timestamp
-                    _stockCache[symbol] = (price, DateTime.Now);
+                    if (!response.HasError)
+                    {
+                        _stockCache[symbol] = (response.Data, DateTime.Now);
+                    }
                 }
             }
 
             return stockPrices;
         }
 
-        public async Task<string?> GetStockImage(string symbol)
+        public async Task<ApiResponse<string?>> GetStockImage(string symbol)
         {
             if (_stockImageCache.ContainsKey(symbol)){
                 Console.WriteLine($"Before: {_stockImageCache[symbol].Logo}");
-                return _stockImageCache[symbol].Logo;
+                return new ApiResponse<string?>{
+                    Data = _stockImageCache[symbol].Logo,
+                    HasError = false,
+                    ErrorCode = null  
+                };
             }
 
             var dbStock = await _context.StockLogoName.FindAsync(symbol);
@@ -113,17 +136,26 @@ namespace TradingSimulator_Backend.Services
             if (dbStock != null && !string.IsNullOrWhiteSpace(dbStock.Logo))
             {
                 Console.WriteLine($"Found {symbol} name in DB");
-                return dbStock.Logo;
+                return new ApiResponse<string?>{
+                    Data = dbStock.Logo,
+                    HasError = false,
+                    ErrorCode = null  
+                };
             }
 
-            var (StockImage, StockName) = await FetchLogoAndNameFromApi(symbol);
+            var result = await FetchLogoAndNameFromApi(symbol);
             
-            if (StockImage == null || string.IsNullOrWhiteSpace(StockImage)){
+            if (result.Data == null || string.IsNullOrWhiteSpace(result.Data.Value.Item1)){
                 Console.WriteLine($"No image found for {symbol}.");
+                return new ApiResponse<string?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = result.ErrorCode
+                };
             }
 
-            if (StockImage != null){
-                _stockImageCache[symbol] = (StockImage, StockName);
+            if (result.Data != null){
+                _stockImageCache[symbol] = (result.Data.Value.Item1, result.Data.Value.Item2);
                 dbStock = await _context.StockLogoName.FindAsync(symbol);
                 if (dbStock == null)
                     {
@@ -131,24 +163,32 @@ namespace TradingSimulator_Backend.Services
                         {
                             Symbol = symbol,
                             Name = null,
-                            Logo = StockImage
+                            Logo = result.Data.Value.Item1
                         };
                         _context.StockLogoName.Add(stock);
                     }
                     else
                     {
-                        dbStock.Logo = StockImage;
+                        dbStock.Logo = result.Data.Value.Item1;
                     }
                     await _context.SaveChangesAsync();
             }
 
-            return StockImage;
+            return new ApiResponse<string?>{
+                    Data = result.Data.Value.Item1,
+                    HasError = false,
+                    ErrorCode = result.ErrorCode
+            };
         }
 
-        public async Task<string?> ConvertSymbolToName(string symbol)
+        public async Task<ApiResponse<string?>?> ConvertSymbolToName(string symbol)
         {
             if(_stockApiInfoCache.ContainsKey(symbol)){
-                return _stockApiInfoCache[symbol].Info.Name;
+                return new ApiResponse<string?>{
+                    Data = _stockApiInfoCache[symbol].Info.Name,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
 
             var dbStock = await _context.StockLogoName.FindAsync(symbol);
@@ -156,38 +196,51 @@ namespace TradingSimulator_Backend.Services
             if (dbStock != null && !string.IsNullOrWhiteSpace(dbStock.Name))
                 {
                     Console.WriteLine($"Found {symbol} name in DB");
-                    return dbStock.Name;
+                    return new ApiResponse<string?>{
+                        Data = dbStock.Name,
+                        HasError = false,
+                        ErrorCode = null
+                    };
                 }
 
             var result = await FetchStockInfoFromApi(symbol);
 
-            if(result == null || string.IsNullOrWhiteSpace(result.Name)){
+            if(result.Data == null || string.IsNullOrWhiteSpace(result.Data?.Name)){
                 Console.WriteLine("Unable to find name, returning symbol");
-                return symbol;
+                return new ApiResponse<string?>{
+                    Data = symbol,
+                    HasError = true,
+                    ErrorCode = 404
+                };
             }
 
-            if(result != null){
-                Console.WriteLine($"Fetched {symbol} → Name: '{result.Name}'");
-                _stockApiInfoCache[symbol] = (result, DateTime.Now);
+            if(result.Data != null){
+                Console.WriteLine($"Fetched {symbol} → Name: '{result.Data?.Name}'");
+                _stockApiInfoCache[symbol] = (result.Data, DateTime.Now);
                 dbStock = await _context.StockLogoName.FindAsync(symbol);
                 if (dbStock == null)
                     {
                         var stock = new StockLogoName
                         {
                             Symbol = symbol,
-                            Name = result.Name,
+                            Name = result.Data?.Name,
                             Logo = null
                         };
                         _context.StockLogoName.Add(stock);
                     }
                     else
                     {
-                        dbStock.Name = result.Name;
+                        dbStock.Name = result.Data?.Name;
                     }
                     await _context.SaveChangesAsync();
             }
 
-            return result.Name;
+            return new ApiResponse<string?>{
+                Data = result.Data?.Name,
+                HasError = false,
+                ErrorCode = null
+            };
+            
         }
 
         // public async Task<(DateTime? LastUpdated, decimal? LowPrice, decimal? HighPrice, string? FiftyTwoWeekRange, decimal? ClosePrice, decimal? PercentChange)> GetQuickData(string symbol)
@@ -217,42 +270,43 @@ namespace TradingSimulator_Backend.Services
         //     return (TryParseDateTime(result.Datetime), result.Low, result.High, result.FiftyTwoWeek?.Range, result.Close, result.PercentChange);
         // }
 
-        public async Task<CompanyProfile?> GetStockCompanyProfile(string symbol){
+        public async Task<ApiResponse<CompanyProfile?>> GetStockCompanyProfile(string symbol){
             if(_CompanyDetailsCache.ContainsKey(symbol)){
                 var cachedData = _CompanyDetailsCache[symbol];
-                Console.WriteLine("Company Cache" , cachedData);
-                return cachedData;
+                return new ApiResponse<CompanyProfile?>{
+                    Data = cachedData,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
 
             var result = await FetchCompanyProfile(symbol);
 
-            if(result == null){
-                Console.WriteLine("Unable to find Company Profile");
+            if(result != null && !result.HasError){
+                _CompanyDetailsCache[symbol] = result.Data;
             }
 
-            _CompanyDetailsCache[symbol] = result;
             return result;
         }
 
-        public async Task<StockApiInfo?> FetchStockInfo(string symbol){
-
-//---------------------------
-        
+        public async Task<ApiResponse<StockApiInfo?>?> FetchStockInfo(string symbol){
 
             if (_stockApiInfoCache.ContainsKey(symbol) && (DateTime.Now - _stockApiInfoCache[symbol].Timestamp) < TimeSpan.FromMinutes(480))
             {
                 var cachedData = _stockApiInfoCache[symbol];
-                return cachedData.Info;
+                return new ApiResponse<StockApiInfo?>{
+                    Data = cachedData.Info,
+                    HasError = false,
+                    ErrorCode = null
+                };
+                
             }
 
             var result = await FetchStockInfoFromApi(symbol);
 
-            if (result == null){
-                Console.WriteLine("Unable To Find Info");
-                return null;
+            if(!result.HasError){
+                _stockApiInfoCache[symbol] = (result.Data, DateTime.Now);
             }
-
-            _stockApiInfoCache[symbol] = (result, DateTime.Now);
 
             return result;
 
@@ -271,12 +325,18 @@ namespace TradingSimulator_Backend.Services
 
 
 
-        private async Task<decimal?> FetchStockPriceFromApi(string symbol)
+        private async Task<ApiResponse<decimal?>> FetchStockPriceFromApi(string symbol)
         {
             var url = $"https://api.twelvedata.com/price?symbol={symbol}&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
-            if (!response.IsSuccessStatusCode) return null;
+            if (!response.IsSuccessStatusCode){
+                return new ApiResponse<decimal?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
+            }
 
             var json = await response.Content.ReadAsStringAsync();
 
@@ -284,22 +344,45 @@ namespace TradingSimulator_Backend.Services
 
             if (data["status"]?.ToString() == "error")
             {
+                int errorCode = data["code"]?.Value<int>() ?? -1;
+
                 Console.WriteLine($"API error for {symbol}: {json}");
-                return null;
+                return new ApiResponse<decimal?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = errorCode
+                };
             }
 
             try
             {
-                var stockData = JsonConvert.DeserializeObject<StockResponse>(json);
-                return stockData?.Price;
+                var price = data["price"]?.Value<decimal>() ?? 0;
+                return new ApiResponse<decimal?>{
+                    Data = price,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
             catch (JsonException)
             {
-                return null;
+                return new ApiResponse<decimal?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = -1
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error fetching stock for {symbol}: {ex.Message}");
+                return new ApiResponse<decimal?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = -2
+                };
             }
         }
 
-        private async Task<(string?, string?)> FetchLogoAndNameFromApi(string symbol)
+        private async Task<ApiResponse<(string?, string?)?>> FetchLogoAndNameFromApi(string symbol)
         {
             var encodedSymbol = Uri.EscapeDataString(symbol);
             var url = $"https://api.twelvedata.com/logo?symbol={symbol}&apikey={_apiKey}";
@@ -308,7 +391,11 @@ namespace TradingSimulator_Backend.Services
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"Error: {response.StatusCode}");
-                return (null, null);
+                return new ApiResponse<(string?, string?)?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -317,8 +404,15 @@ namespace TradingSimulator_Backend.Services
 
             if (data["status"]?.ToString() == "error")
             {
+                int errorCode = data["code"]?.Value<int>() ?? -1;
+
                 Console.WriteLine($"API error for {symbol}: {json}");
-                return (null, null);
+                return new ApiResponse<(string?, string?)?>
+                {
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = errorCode
+                };
             }
 
             string logo = data["logo_base"]?.ToString()
@@ -329,16 +423,24 @@ namespace TradingSimulator_Backend.Services
                         ?? data["meta"]?["symbol"]?.ToString()
                         ?? "Unknown";
 
-            return (logo, name);
+            return new ApiResponse<(string?, string?)?>{
+                    Data = (logo, name),
+                    HasError = false,
+                    ErrorCode = null
+                };
         }
 
-        private async Task<StockApiInfo?> FetchStockInfoFromApi(string symbol){
+        private async Task<ApiResponse<StockApiInfo?>?> FetchStockInfoFromApi(string symbol){
             var url = $"https://api.twelvedata.com/quote?symbol={symbol}&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
             if(!response.IsSuccessStatusCode){
                 Console.WriteLine($"Error: {response.StatusCode}");
-                return null;
+                return new ApiResponse<StockApiInfo?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -348,27 +450,46 @@ namespace TradingSimulator_Backend.Services
 
             if (data["status"]?.ToString() == "error")
             {
+                int errorCode = data["code"]?.Value<int>() ?? -1;
+
                 Console.WriteLine($"API error for {symbol}: {json}");
-                return null;
+                return new ApiResponse<StockApiInfo?>
+                {
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = errorCode
+                };
             }
 
             try{
                 var stockInfo = JsonConvert.DeserializeObject<StockApiInfo>(json);
 
-                return stockInfo;
+                return new ApiResponse<StockApiInfo?>{
+                    Data = stockInfo,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
             catch{
-                return null;
+                return new ApiResponse<StockApiInfo?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = -1
+                };
             }
         }
 
-        private async Task<CompanyProfile?> FetchCompanyProfile(string symbol){
+        private async Task<ApiResponse<CompanyProfile?>?> FetchCompanyProfile(string symbol){
             var url = $"https://api.twelvedata.com/profile?symbol={symbol}&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
             if(!response.IsSuccessStatusCode){
                 Console.WriteLine($"Error: {response.StatusCode}");
-                return null;
+                return new ApiResponse<CompanyProfile?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -378,45 +499,85 @@ namespace TradingSimulator_Backend.Services
 
             if (data["status"]?.ToString() == "error")
             {
+                int errorCode = data["code"]?.Value<int>() ?? -1;
+
                 Console.WriteLine($"API error for {symbol}: {json}");
-                return null;
+                
+                return new ApiResponse<CompanyProfile?>
+                {
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = errorCode
+                };
             }
 
             try{
                 var CompanyProfile = JsonConvert.DeserializeObject<CompanyProfile>(json);
-                return CompanyProfile;
+                return new ApiResponse<CompanyProfile?>{
+                    Data = CompanyProfile,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
             catch{
-                return null;
-            }
-            
+                return new ApiResponse<CompanyProfile?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = -1
+                };
+            }  
         }
 
-        private async Task<StockFullHistory?> FetchStockFullHistory(string symbol){
+        private async Task<ApiResponse<StockFullHistory?>> FetchStockFullHistory(string symbol){
             var url = $"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1day&outputsize=5000&apikey={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
             if(!response.IsSuccessStatusCode){
                 Console.WriteLine($"Error: {response.StatusCode}");
-                return null;
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-            var data = JObject.Parse(json);
-
-            if(data["status"]?.ToString() == "error"){
-                Console.WriteLine($"API error for {symbol}: {json}");
-                return null;
+                return new ApiResponse<StockFullHistory?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
             }
 
             try{
-                var StockHistory = JsonConvert.DeserializeObject<StockFullHistory>(json);
-                return StockHistory;
+                var json = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<TimeSeriesApiResponse>(json);
+
+                if(result?.Status == "error")
+                {
+                    Console.WriteLine($"API error for {symbol}: {json}");
+                    return new ApiResponse<StockFullHistory?>
+                    {
+                        Data = null,
+                        HasError = true,
+                        ErrorCode = result.Code ?? -1
+                    };
+                }
+
+                    var history = new StockFullHistory{
+                    Symbol = symbol,
+                    Interval = null,
+                    Currency = null,
+                    Values = result?.Values ?? new List<StockFullHistoryPoint>()
+                };
+
+                return new ApiResponse<StockFullHistory?>{
+                    Data = history,
+                    HasError = false,
+                    ErrorCode = null
+                };
+
             }
-            catch{
-                return null;
+            catch(Exception ex){
+                Console.WriteLine($"Deserialization error for {symbol}: {ex.Message}");
+                return new ApiResponse<StockFullHistory?>{
+                        Data = null,
+                        HasError = true,
+                        ErrorCode = -1
+                    };
             }
         }
-
     }
 }

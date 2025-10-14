@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import getPortfolio from "../Functions/GetPortfolio";
 import axios from "axios";
-import AiLoading from "../AiLoading";
+import AiLoading from "../Loading/AiLoading";
 
 export default function StockDetailsOwnedStocks(props: any){
     const [Portfolio, setPortfolio] = useState<any | null>(null);

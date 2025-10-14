@@ -1,0 +1,127 @@
+.UserFriendSearch{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.UserFriendSearch > .InputSection{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    height: 2.2rem;
+    margin-top: 1rem;
+    margin-bottom: 0.1rem;
+    width: 100%;
+}
+
+.UserFriendSearch > .InputSection > input{
+    height: 2.3rem;
+    width: 50%;
+    min-width: 15rem;
+    border-radius: 10rem;
+    margin: 0;
+    border: none;
+    outline: none;
+    /* margin-left: 5.1rem; */
+}
+
+.UserFriendSearch > .InputSection > button{
+    animation-name: BodyBackground;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    height: 2.1rem;
+    width: 5.1rem;
+    margin-left: -5.2rem;
+    border-radius: 5rem;
+    border: none;
+    outline: none;
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    transition: all 0.5s ease-in-out;
+}
+
+.UserFriendSearch > .InputSection > button:hover{
+    scale: 1.02;
+}
+
+.FriendsTitle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.FriendsTitle > h2{
+    margin: 0;
+}
+
+.FriendsTitle > div{
+    width: 20rem;
+    height: 0.3rem;
+    background-color: white;
+    border-radius: 5rem;
+}
+
+.UserFriendSuggestions{
+    animation-name: BodyBackgroundLight;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0.5rem;
+    margin: 1rem 0 0 0;
+    width: 50%;
+    min-width: 15rem;
+    box-shadow: 0px 0px 3px 0px #3e91444c;
+    border-radius: 2rem;
+
+}
+
+.UserFriendSuggestions > div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 0.3rem;
+    width: 100%;
+    border-radius: 1.5rem;
+}
+
+.UserFriendSuggestions > div:hover{
+    background-color: #1b3f25;
+}
+
+.UserFriendSuggestions > div > h3{
+    margin: 1rem 0 1rem 1rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.UserFriendSuggestions > div > button{
+    background-color: #00000000;
+    color: white;
+    border: 1px #45a049 solid;
+    font-size: 0.9rem;
+    font-family: Inter, sans-serif;
+    width: 15rem;
+    transition: all 0.5s ease-in-out;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    outline: none;
+    margin-right: 1rem;
+    width: 6rem;
+}
+
+.UserFriendSuggestions > div > button:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+}

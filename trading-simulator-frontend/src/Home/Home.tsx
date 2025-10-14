@@ -1,16 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../Functions/AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import Confetti from 'react-confetti'
 import { FocusTrap } from 'focus-trap-react';
-import getStockApiInfo from './Functions/getStockApiInfo';
-import { StockApiInfo, Suggestion} from './interfaces';
-import getStockLastUpdated from './Functions/getStockLastUpdated';
-import formatNumber from './Functions/FormatNumber';
-import buyStock from './Functions/buyStock';
-import Error from './Error/Error';
+import getStockApiInfo from '../Functions/getStockApiInfo';
+import { StockApiInfo, Suggestion} from '../Interfaces/interfaces';
+import getStockLastUpdated from '../Functions/getStockLastUpdated';
+import formatNumber from '../Functions/FormatNumber';
+import buyStock from '../Functions/buyStock';
+import Error from '../Error/Error';
+import getStockPrice from '../Functions/getStockPrice';
+import getStockImage from '../Functions/getStockImage';
+import getStockName from '../Functions/getStockName';
 
 type StockInfo = {
   symbol: string;
@@ -98,29 +101,29 @@ const Home: React.FC = () => {
     try {
       setError('');
       setFound(true)
-      const response = await axios.get<{ symbol: string; price: number }>(`http://localhost:3000/api/stocks/${symb}`);
-      setStockPrice(response.data.price);
+      const response = await getStockPrice({symbol: symb, setDisplayError: setDisplayError})
+      setStockPrice(response);
     } catch (err) {
-      setError('Stock Price not found');
+      setError('| Stock Price not found |');
       setFound(false);
       setStockPrice(null);
     }
     try{
-      const response2 = await axios.get<{ symbol: string; image: string }>(`http://localhost:3000/api/stocks/StockImage/${symb}`);
-      setStockLogo(response2.data.image);
+      const response2 = await getStockImage({symbol: symb, setDisplayError: setDisplayError})
+      setStockLogo(response2);
     } catch (err){
       setError(error + ' | Stock Logo not found |');
     }
     try{
-      const response3 = await axios.get<string>(`http://localhost:3000/api/stocks/GetStockName/${symb}`);
-      setStockName(response3.data);
+      const response3 = await getStockName({symbol: symb, setDisplayError: setDisplayError});
+      setStockName(response3);
     } catch (err){
       setError(error + ' | Stock Name not found');
       setFound(false);
     }
     try{
       if(stockSymbol){
-        const response4 = await getStockApiInfo(symb)
+        const response4 = await getStockApiInfo({symbol: symb, setDisplayError: setDisplayError});
         console.log(response4);
         setStockBasicData(response4);
       }

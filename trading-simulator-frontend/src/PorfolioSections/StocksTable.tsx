@@ -8,8 +8,9 @@ export default function StocksTable(props: any){
   // should look like this: [{Stock Symbol, Avg, []}]
   const [IndexExpanded, setIndexExpanded] = useState<number | null>(null)
   const [Portfolio, setPortfolio] = useState<any | null>([])
-  const [FilteredSearch, setFilteredSearch] = useState<any | null>([])
   const [LastUpdatedDictionary, setLastUpdatedDictionary] = useState<Map<string, Date> | null>(null)
+  const FilteredSearch = props.FilteredSearch
+  const setFilteredSearch = props.setFilteredSearch
 
 
   useEffect(() => {
@@ -61,7 +62,6 @@ export default function StocksTable(props: any){
       setFilteredSearch(Portfolio)
     }
     else{
-      console.log("LUD", LastUpdatedDictionary)
       setFilteredSearch(Portfolio.filter((stockAvg: { name: string; symbol: string;}) => {
         return ((stockAvg.name?.toUpperCase().includes(input) || stockAvg.symbol?.includes(input)))
       }))

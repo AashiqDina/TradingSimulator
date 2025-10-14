@@ -63,3 +63,9 @@ export interface FiftyTwoWeek {
     symbol: string;
     logo: string;
   }
+
+  export interface UserObj{
+    id: number;
+    profitLoss: number
+    username: string;
+  }

@@ -678,11 +678,13 @@ table tbody tr:last-child td:last-child {
   bottom: 1rem;
   background-color: #75ee7b44;
   width: 3rem;
-  border-radius: 10rem;
   padding: 1.2rem;
   font-size: 1.1rem;
   color: white;
   z-index: 100rem;
+  border: none;
+  border: 1px #45a04900 solid;
+  border-radius: 10rem;
 }
 
 .ViewMore:hover{

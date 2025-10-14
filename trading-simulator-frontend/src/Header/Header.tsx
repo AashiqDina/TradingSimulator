@@ -1,8 +1,8 @@
 import React, { useState } from "react"; 
 import { Link, useNavigate } from "react-router-dom"; 
 import "./Header.css";
-import { useAuth } from "./AuthContext";
-import Logo from "./Logo"
+import { useAuth } from "../Functions/AuthContext";
+import Logo from "../Logo/Logo"
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false); 
@@ -58,6 +58,13 @@ const Header: React.FC = () => {
                 About
               </Link>
             </li>
+            {user ? (
+              <li>
+                <Link role="button" to="/friends" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
+                Friends
+                </Link>
+            </li>
+            ) : <></>}
             {user ? (
               <li>
                 <Link role="button" to="/portfolio" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>

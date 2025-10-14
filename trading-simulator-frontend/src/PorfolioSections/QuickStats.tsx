@@ -25,10 +25,11 @@ export default function QuickStats(props: any){
     const [hoverValue, setHoverValue] = useState<string | null>(null);
     const [valueLineValues, setVLV] = useState<any[] | undefined>(undefined)
     const [investedLineValues, setILV] = useState<any[] | undefined>(undefined)
+    var canReset = true
 
     useEffect(() => {
         setGraphValues()
-    }, [props.History])
+    }, [props.History, props.FilteredSearch])
 
 useEffect(() => {
     if (!canvasRef.current || !valueLineValues || !investedLineValues) return;
@@ -98,12 +99,11 @@ useEffect(() => {
 
     return () => chartRef.current?.destroy();
 
-}, [valueLineValues, investedLineValues]);
+}, [valueLineValues, investedLineValues, props.FilteredSearch]);
 
     
 
     let History = props.History?.data || []
-    console.log("History Received: ", History)
 
     const setGraphValues = () => {
         var ILV: any[] | undefined = undefined
@@ -111,10 +111,18 @@ useEffect(() => {
 
 
         const investedByDate: Record<string, number> = {};
+        const allTransactions = props.FilteredSearch.flatMap((stock: { transactions: any; }) => stock.transactions);
 
         History.forEach((stockHistory: any) => {
+            var stock = undefined;
 
-            const stock = props.portfolio.stocks.find((s: any) => s.id == stockHistory.stockId);
+            if(allTransactions.length > 0){
+                stock = allTransactions.find((s: any) => s.id == stockHistory.stockId);
+            }
+            else{
+                stock = props.portfolio.stocks.find((s: any) => s.id == stockHistory.stockId);
+            }
+
 
             if (!stock || stockHistory.history.length === 0){
                 return;
@@ -132,15 +140,39 @@ useEffect(() => {
             return {...entry, invested: value}
         })
         setILV(ILV)
-        console.log("Array of Invested Amounts", ILV);
 
         const valueByDate: Record<string, number> = {};
 
-        History.forEach((stockHistory: any) => {
-            stockHistory.history.forEach((Entry: any) => {
-                valueByDate[Entry.timestamp.split("T")[0]] = (valueByDate[Entry.timestamp.split("T")[0]] || 0) + (Entry.price * Entry.quantity)
+
+        if(allTransactions.length > 0){
+            const totalProfit = allTransactions.reduce((sum: any, stock: { profitLoss: any; }) => sum + stock.profitLoss, 0);
+            const totalValue = allTransactions.reduce((sum: any, stock: { totalValue: any; }) => sum + stock.totalValue, 0);
+            const totalPurchase = allTransactions.reduce(
+            (sum: number, stock: { purchasePrice: number; quantity: number; }) => sum + stock.purchasePrice * stock.quantity,
+            0
+            );
+
+            props.setPortfolioValue(totalValue.toFixed(2))
+            props.setInvested(totalPurchase.toFixed(2))
+            props.setProfit(totalProfit.toFixed(2))
+
+            console.log("allt: ", allTransactions)
+            const filteredH = History.filter((hItem: { symbol: any; }) =>
+                allTransactions.some((tItem: { symbol: any; }) => tItem.symbol === hItem.symbol)
+                );
+            filteredH.forEach((stockHistory: any) => {
+                stockHistory.history.forEach((Entry: any) => {
+                    valueByDate[Entry.timestamp.split("T")[0]] = (valueByDate[Entry.timestamp.split("T")[0]] || 0) + (Entry.price * Entry.quantity)
+                })
             })
-        })
+        }
+        else{
+            History.forEach((stockHistory: any) => {
+                stockHistory.history.forEach((Entry: any) => {
+                    valueByDate[Entry.timestamp.split("T")[0]] = (valueByDate[Entry.timestamp.split("T")[0]] || 0) + (Entry.price * Entry.quantity)
+                })
+            })
+        }
 
         VLV = Object.entries(valueByDate).map(([date, value]) => ({ date, value })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const extendedILV = [...ILV];
@@ -181,7 +213,6 @@ useEffect(() => {
     //     ValueColour = "#bb1515";
     //   }
     // }
-
     
     return (
         <>

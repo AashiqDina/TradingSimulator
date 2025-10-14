@@ -26,18 +26,17 @@ namespace TradingSimulator_Backend.Controllers
         [HttpGet("{*symbol}")]
         public async Task<IActionResult> GetStockPrice(string symbol)
         {
-            var price = await _stockService.GetStockPriceAsync(symbol);
-            if (price == null) return NotFound("Stock not found");
+            var response = await _stockService.GetStockPriceAsync(symbol);
 
-            return Ok(new { Symbol = symbol, Price = price });
+            return Ok(new { Symbol = symbol, response = response });
         }
 
         [HttpGet("StockImage/{*symbol}")]
         public async Task<IActionResult> GetStockImage(string symbol)
         {
-            var img = await _stockService.GetStockImage(symbol);
-            if(img == null) return NotFound("Logo not found");
-            return Ok(new { Symbol = symbol, Image = img });
+            var response = await _stockService.GetStockImage(symbol);
+
+            return Ok(new { Symbol = symbol, Image = response });
         }
 
         [HttpGet("GetStockName/{*symbol}")]
@@ -148,11 +147,6 @@ namespace TradingSimulator_Backend.Controllers
 
         [HttpGet("GetCompanyDetails/{*symbol}")]
         public async Task<IActionResult> GetCompanyProfile(string symbol){
-            
-            if (string.IsNullOrEmpty(symbol)) 
-            {
-                return BadRequest("Symbol query is required.");
-            }
 
             var Profile = await _stockService.GetStockCompanyProfile(symbol);
 
@@ -163,15 +157,10 @@ namespace TradingSimulator_Backend.Controllers
 
         [HttpGet("GetStockNews/{*symbol}")]
         public async Task<IActionResult> getCompanyNews(string symbol){
-            if(string.IsNullOrEmpty(symbol)){
-                return BadRequest(symbol);
-            }
 
             var news = await _newsService.getCompanyNews(symbol);
 
-            return Ok(new {
-                news
-            });
+            return Ok(news);
         }
 
         [HttpGet("GetStockNewsLastUpdated/{*symbol}")]
@@ -213,19 +202,9 @@ namespace TradingSimulator_Backend.Controllers
         [HttpGet("GetStocksFullHistory/{*symbol}")]
         public async Task<ActionResult> GetStocksFullHistory(string symbol){
 
-            if (string.IsNullOrEmpty(symbol)){
-                return BadRequest("Symbol query is required.");
-            }
-
             var History = await _stockService.GetFullStockHistory(symbol);
 
-            if (History == null){
-                Console.WriteLine("No Data available");
-            }
-
-            return Ok(new {
-                History
-            });
+            return Ok(History);
         }
     }
 }

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import AiLoading from "../AiLoading"
+import AiLoading from "../Loading/AiLoading"
 import React from "react";
 
 export default function AiChat(props: any){

@@ -27,26 +27,27 @@ namespace TradingSimulator_Backend.Services
             return _CompanyNewsCache[symbol].Timestamp;
         }
 
-        public async Task<List<CompanyNews?>> getCompanyNews(string symbol){
+        public async Task<ApiResponse<List<CompanyNews?>?>> getCompanyNews(string symbol){
             if(_CompanyNewsCache.ContainsKey(symbol) && (DateTime.Now - _CompanyNewsCache[symbol].Timestamp < TimeSpan.FromMinutes(720))){
                 var cachedData = _CompanyNewsCache[symbol].CompNews;
                 Console.WriteLine("Company Cache", cachedData);
-                return cachedData;
+                return new ApiResponse<List<CompanyNews?>?>{
+                    Data = cachedData,
+                    HasError = false,
+                    ErrorCode = null
+                };
             }
 
             var result = await FetchCompanyNews(symbol);
 
-            if(result == null){
-                Console.WriteLine("Unable to find Company News");
-            }
-            else{
-                _CompanyNewsCache[symbol] = (result, DateTime.Now);
+            if(result != null && result.Data != null){
+                _CompanyNewsCache[symbol] = (result.Data, DateTime.Now);
             }
             
             return result;
         }
 
-        private async Task<List<CompanyNews?>> FetchCompanyNews(string symbol){
+        private async Task<ApiResponse<List<CompanyNews?>?>> FetchCompanyNews(string symbol){
             var from = DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-dd");
             var to = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
@@ -55,18 +56,31 @@ namespace TradingSimulator_Backend.Services
 
             if(!response.IsSuccessStatusCode){
                 Console.WriteLine($"Error: {response.StatusCode}");
-                return null;
+                return new ApiResponse<List<CompanyNews?>?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = (int)response.StatusCode
+                };
             }
 
             var json = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"Raw Company Profile API Response: {json}");
 
             try{
-                var CompanyNews = JsonConvert.DeserializeObject<List<CompanyNews>>(json);
-                return CompanyNews;
+                var companyNews = JsonConvert.DeserializeObject<List<CompanyNews>>(json);
+                return new ApiResponse<List<CompanyNews?>?>{
+                    Data = companyNews,
+                    HasError = false,
+                    ErrorCode = null
+                };
+    
             }
             catch{
-                return null;
+                return new ApiResponse<List<CompanyNews?>?>{
+                    Data = null,
+                    HasError = true,
+                    ErrorCode = -1
+                };
             }
 
         } 

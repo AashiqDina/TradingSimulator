@@ -41,11 +41,13 @@ export default function StockDetailsOverview(props: any){
 
     useEffect(() => {
         var StockHistory = async () => {
-            let GottenHistory = await GetStockHistory(props.symbol)
+            let GottenHistory = await GetStockHistory({symbol: props.symbol, setDisplayError: props.setDisplayError})
             console.log("Stock's History ", GottenHistory)
-            let Reverse = GottenHistory.reverse()
-            setHistory(Reverse)
-            setFullHistory(Reverse)
+            if(GottenHistory){
+                let Reverse = GottenHistory.reverse()
+                setHistory(Reverse)
+                setFullHistory(Reverse)
+            }
         }
         StockHistory()
     }, [])

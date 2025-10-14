@@ -6,6 +6,6 @@ using TradingSimulator_Backend.Models;
 
 public interface INewsService
 {
-    Task<List<CompanyNews?>> getCompanyNews(string symbol);
+    Task<ApiResponse<List<CompanyNews?>>> getCompanyNews(string symbol);
     DateTime getCompanyNewsLastUpdated(string symbol);
 }

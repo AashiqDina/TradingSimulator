@@ -11,7 +11,7 @@ export default function StockDetails(props: any){
     useEffect(() => {
       const getStockData = async() => {
         try{
-          let data = await getStockApiInfo(props.symbol)
+          let data = await getStockApiInfo({symbol: props.symbol, setDisplayError: props.setDisplayError})
           console.log(data)
           props.setStockBasicData(data)
         }

@@ -17,11 +17,27 @@ public class UserController : ControllerBase
         _context = context;
     }
 
-    // GET: api/users
+    // GET: api/user
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
         return await _context.Users.ToListAsync();
+    }
+
+    // GET: api/user/List
+    [HttpGet("List")]
+    public async Task<ActionResult<IEnumerable<User>>> GetUsersList()
+    {
+        var users = await _context.Users
+        .Select(u => new UserObj
+        {
+            Id = u.Id,
+            Username = u.Username,
+            ProfitLoss = u.ProfitLoss
+        })
+        .ToListAsync();
+
+        return Ok(users);
     }
 
     // GET: api/users/{id}

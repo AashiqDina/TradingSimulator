@@ -608,7 +608,7 @@ a{
     .Selector > button{
         width: 6rem;
         font-size: 0.85rem;
-        padding: 0rem;
+	    padding: 0rem 0.5rem 0 0.5rem;
     }
 
     .CompanyInfoDisplayed{

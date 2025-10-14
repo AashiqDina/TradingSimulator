@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { CompanyProfile } from "../interfaces";
-import AiLoading from "../AiLoading";
+import { CompanyProfile } from "../Interfaces/interfaces";
+import AiLoading from "../Loading/AiLoading";
+import getCompanyInformation from "../Functions/getCompanyInformation";
 
 export default function CompanyInformation(props: any){
     const StockCompanyDetails = props.StockCompanyDetails
@@ -10,9 +11,9 @@ export default function CompanyInformation(props: any){
   useEffect(() => {
     async function GetCompanyDetailsfromApi(){
       if(props.DisplayedData == "CompanyInformation" && StockCompanyDetails == null){
-        const response = await axios.get<{profile: CompanyProfile}>(`http://localhost:3000/api/stocks/GetCompanyDetails/${props.symbol}`);
-        console.log("Company Details:", response.data)
-        props.setCompanyDetails(response.data.profile)
+        const response = await getCompanyInformation({symbol: props.symbol, setDisplayError: props.setDisplayError});
+        console.log("Company Details:", response)
+        props.setCompanyDetails(response)
       }
     }
     GetCompanyDetailsfromApi()
