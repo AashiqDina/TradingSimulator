@@ -1,4 +1,4 @@
-.BarContainer{
+.BarContainerAi{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,7 +9,7 @@
     height: 15vh;
 }
 
-.BarA{
+.BarAAi{
     background-color: #bb1515;
     width: 1rem;
     height: 3rem;
@@ -23,7 +23,7 @@
     z-index: -1;
 }
 
-.BarB{
+.BarBAi{
     background-color: #45a049;
     width: 1rem;
     height: 4rem;
@@ -36,7 +36,7 @@
     z-index: -1;
 }
 
-.BarC{
+.BarCAi{
     background-color: #bb1515;
     width: 1rem;
     height: 5rem;
@@ -50,7 +50,7 @@
     z-index: -1;
 }
 
-.BarD{
+.BarDAi{
     background-color: #45a049;
     width: 1rem;
     height: 6rem;
@@ -64,7 +64,7 @@
     z-index: -1;
 }
 
-.BarE{
+.BarEAi{
     background-color: #45a049;
     width: 1rem;
     height: 5rem;

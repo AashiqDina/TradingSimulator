@@ -22,7 +22,8 @@ namespace TradingSimulator_Backend.Services
         private static ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)> _stockApiInfoCache = new ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)>();
         private static ConcurrentDictionary<string, CompanyProfile?> _CompanyDetailsCache = new ConcurrentDictionary<string, CompanyProfile?>();
         private static ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)> _StockFullHistoryCache = new ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)>();
-
+        private static (ConcurrentDictionary<string, int>, DateTime) TrendingMap = (new ConcurrentDictionary<string, int>, DateTime Timestamp)
+        private static (ConcurrentDictionary<string, int> Map, DateTime Timestamp) TrendingMap = (new ConcurrentDictionary<string, int>(), DateTime.UtcNow);
 
         
         public StockService(HttpClient httpClient, AppDbContext appDbContext)

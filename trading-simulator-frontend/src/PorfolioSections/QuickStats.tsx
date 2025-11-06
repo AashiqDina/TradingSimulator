@@ -112,6 +112,7 @@ useEffect(() => {
 
         const investedByDate: Record<string, number> = {};
         const allTransactions = props.FilteredSearch.flatMap((stock: { transactions: any; }) => stock.transactions);
+        console.log("Hiry", History)
 
         History.forEach((stockHistory: any) => {
             var stock = undefined;
@@ -196,6 +197,7 @@ useEffect(() => {
 
         setILV(extendedILV);
         setVLV(VLV);
+        console.log("VLV: ", VLV)
         console.log("Array of Values Amounts", VLV);
     }
 

@@ -5,9 +5,10 @@ namespace TradingSimulator_Backend.Models
         public int Id { get; set; }
         public required string Username { get; set; }
         public required string Password { get; set; }
-        public int InvestedAmount { get; set;}
-        public int CurrentValue { get; set; }
-        public int ProfitLoss { get; set; }
+        public decimal InvestedAmount { get; set;}
+        public decimal CurrentValue { get; set; }
+        public decimal ProfitLoss { get; set; }
 
+        public Friends? Friends { get; set; }
     }
 }

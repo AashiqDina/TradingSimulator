@@ -289,11 +289,15 @@ const Home: React.FC = () => {
             </div>
           </>
         )}
+        {(stockFound == null) && <article>
+          <h2>Trending Stocks</h2>
+        </article>
+
+        }
 
        </section>
       {user ? (
         <>
-      
           {isModalOpen && !displayError.display && (
             <FocusTrap>
               <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">

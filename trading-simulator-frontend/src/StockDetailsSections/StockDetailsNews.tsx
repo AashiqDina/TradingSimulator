@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react"
 import getStockNews from "../Functions/getStockNews"
 import "./StockDetailsNews.css"
+import Loading from "../Loading/Loading"
 
 export default function StockDetailsNews(props: any){
 
   const [NewsArray, setNewsArray] = useState<any | null>(null)
   const [amountNewsDisplay, setAmountNewsDisplay] = useState<number>(5)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const getNews = async () => {
       let response = await getStockNews({symbol: props.symbol, setDisplayError: props.setDisplayError});
       setNewsArray(response)
+      setLoading(false)
       console.log(response);
     }
     getNews()
@@ -18,7 +21,7 @@ export default function StockDetailsNews(props: any){
 
   return(
     <>
-    <section>
+    {!loading && <section>
       <article className="ArticleCollection">
         {NewsArray?.slice(0, amountNewsDisplay).map((article: any, index: number) => {
             return(
@@ -43,6 +46,7 @@ export default function StockDetailsNews(props: any){
         })
         }
       </article>
+
       <article className="MoreNewsArticles">
         {amountNewsDisplay < NewsArray?.length ?
         <button className="SeeMoreNews" onClick={() => {setAmountNewsDisplay(amountNewsDisplay+5)}}>
@@ -51,7 +55,9 @@ export default function StockDetailsNews(props: any){
         <h2>No more Articles.</h2>
         }
       </article>
-    </section>
+    </section>}
+
+    { loading && <Loading/>}
     </>
   )
 }

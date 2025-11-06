@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import "./Portfolio.css";
+import "../Portfolio/Portfolio.css";
 import Loading from '../Loading/Loading';
 import { useAuth } from "../Functions/AuthContext";
 import QuickStats from "../PorfolioSections/QuickStats";
@@ -11,11 +11,12 @@ import updateAllStocksInPortfolio from "../Functions/UpdateStocksInPortfolio";
 import getHistory from "../Functions/getHistory";
 import { FocusTrap } from 'focus-trap-react';
 import Error from "../Error/Error";
+import { useParams } from "react-router-dom";
 
 // Learnt how important it is to make my application modular from the beginning
 // and will be keeping this im mind while working on the ewst of this project
 const Portfolio = () => {
-  const { user } = useAuth();
+  const { user, username } = useParams();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [ToDelete, setToDelete] = useState<{stock: number | null, name: string | null, logo: string | null}>({stock: null, name: null, logo: null});
   const [ModalVisible, setModalVisibility] = useState(false);
@@ -40,35 +41,19 @@ const Portfolio = () => {
     setModalVisibility(true);
   }
 
-  const handleTrueDelete = async () => {
-    if(ToDelete.name == null || ToDelete.logo == null){
-      return
-    }
-
-    try {
-      const response = await axios.delete(`http://localhost:3000/api/portfolio/${user?.id}/stocks/delete/${ToDelete.stock}`)
-      console.log("Successfully Deleted: ", response)
-      setToReload(true)
-      setToDelete({stock: null, name: null, logo: null})
-      setModalVisibility(false)
-    } catch (error) {
-      handleAxiosError(error)
-    }
-  }
-
   useEffect(() => {
-    if ((user?.id && !Fetched.current)) {
+    if ((user && !Fetched.current)) {
       Fetched.current = true;
       const updateAndFetch = async () => {
-        const updateResponse = await updateAllStocksInPortfolio({ user });
+        const updateResponse = await updateAllStocksInPortfolio({ user: {id: user} });
         console.log("Update Response: " , updateResponse)
-        const result = await getPortfolio({ user: user, setDisplayError: setDisplayError});
+        const result = await getPortfolio({ user: {id: user}, setDisplayError: setDisplayError});
         setPortfolio(result);
         console.log("Portfolio Result: ", result)
-        setInvested(result.totalInvested.toFixed(2))
-        setPorfolioValue(result.currentValue.toFixed(2))
-        setProfit(result.profitLoss.toFixed(2))
-        setOriginalValues({Invested: result.totalInvested.toFixed(2), PortfolioValue: result.currentValue.toFixed(2), Profit: result.profitLoss.toFixed(2)})
+        setInvested(result?.totalInvested?.toFixed(2))
+        setPorfolioValue(result?.currentValue?.toFixed(2))
+        setProfit(result?.profitLoss?.toFixed(2))
+        setOriginalValues({Invested: result?.totalInvested?.toFixed(2), PortfolioValue: result?.currentValue?.toFixed(2), Profit: result?.profitLoss?.toFixed(2)})
       };
 
       updateAndFetch();
@@ -76,9 +61,9 @@ const Portfolio = () => {
   }, [user]);
   
   useEffect(() => { // Fetch the History
-    if (user?.id) {
+    if (user) {
       const updateAndFetch = async () => {
-        let id = user?.id
+        let id = user
         const History = await getHistory({ id, FilterHistory });
         setStockHistory(History)
       };
@@ -86,17 +71,6 @@ const Portfolio = () => {
       updateAndFetch();
     }
   }, [user, FilterHistory]);
-
-  useEffect(() => { // Reset after delete
-    if(ToDelete.name == null && ToReload && ToDelete.logo == null){
-      const FetchPortfolioData = async () => {
-        setToReload(false)
-        const result = await getPortfolio({ user });
-        setPortfolio(result);
-      }
-      FetchPortfolioData();
-    }
-  }, [ToDelete, ToReload])
 
   useEffect(() => { // Filter for Portfolio Table
     if (FilteredOption !== "") {
@@ -137,7 +111,7 @@ const Portfolio = () => {
           <section className="PortfolioPageHeader">
             <article className="PortfolioPageTitle">
               
-              <h2 className="PageTitle">{user != null ? user.username + "'s" : "My"} Portfolio</h2>
+              <h2 className="PageTitle">{user != null ? username + "'s" : "My"} Portfolio</h2>
               <div className="LineOne"></div>
             </article>
             <article className="PortfolioSummary">
@@ -193,10 +167,9 @@ const Portfolio = () => {
             setModalVisibility={setModalVisibility} 
             setToDelete={setToDelete}
             ToDelete={ToDelete}
-            handleTrueDelete={handleTrueDelete}
             FilteredSearch={FilteredSearch}
             setFilteredSearch={setFilteredSearch}
-            otherUser={false}
+            otherUser={true}
             />
 
           {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div>

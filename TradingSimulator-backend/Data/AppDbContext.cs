@@ -14,6 +14,7 @@ namespace TradingSimulator_Backend.Data
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<StockLogoName> StockLogoName { get; set;}
         public DbSet<StockHistory> StockHistory { get; set;}
+        public DbSet<Friends> Friends { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,7 +22,7 @@ namespace TradingSimulator_Backend.Data
                 .HasOne(p => p.User)
                 .WithOne()
                 .HasForeignKey<Portfolio>(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Deletes Portfolio if User is deleted
+                .OnDelete(DeleteBehavior.Cascade); // Deletes Portfolio if User is Deleted
 
             modelBuilder.Entity<StockLogoName>()
                 .HasKey(s => s.Symbol);
@@ -37,6 +38,18 @@ namespace TradingSimulator_Backend.Data
                 .WithMany(p => p.Stocks)
                 .HasForeignKey(s => s.PortfolioId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Friends>(f =>
+            {
+                f.HasOne(f => f.User)
+                .WithOne()
+                .HasForeignKey<Friends>(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                f.OwnsMany(f => f.SentRequests);
+                f.OwnsMany(f => f.ReceivedRequests);
+                f.OwnsMany(f => f.FriendsList);
+            });
         }
         
     }

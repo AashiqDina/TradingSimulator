@@ -34,6 +34,8 @@ public class PortfolioController : ControllerBase
             return NotFound("Portfolio not found.");
         }
 
+
+
         return Ok(portfolio);
     }
 
@@ -124,6 +126,7 @@ public class PortfolioController : ControllerBase
     public async Task<IActionResult> UpdateStocksInPortfolio(int userId)
     {
         var portfolio = await _context.Portfolios
+                                    .Include(p => p.User)
                                     .Include(p => p.Stocks)
                                     .FirstOrDefaultAsync(p => p.UserId == userId);
 
@@ -140,45 +143,51 @@ public class PortfolioController : ControllerBase
         {
             if (stockPrices.TryGetValue(stock.Symbol, out var stockPrice))
             {
-                // Only update if the API call was successful and Data is not null
                 if (!stockPrice.HasError && stockPrice.Data.HasValue)
                 {
                     stock.CurrentPrice = stockPrice.Data.Value;
 
-                    var today = DateTime.UtcNow.Date;
-                    var tomorrow = today.AddDays(1);
+                    var utcToday = DateTime.UtcNow.Date;
+                    var utcTomorrow = utcToday.AddDays(1);
 
                     var existingHistory = await _context.StockHistory
-                        .FirstOrDefaultAsync(h => h.StockId == stock.Id && h.Timestamp >= today && h.Timestamp < tomorrow);
+                        .FirstOrDefaultAsync(h => 
+                            h.StockId == stock.Id && 
+                            h.Timestamp >= utcToday && 
+                            h.Timestamp < utcTomorrow);
 
                     if (existingHistory == null)
                     {
-                        var history = new StockHistory
+                        _context.StockHistory.Add(new StockHistory
                         {
                             StockId = stock.Id,
                             Timestamp = DateTime.UtcNow,
                             Price = stockPrice.Data.Value,
                             Quantity = stock.Quantity
-                        };
-
-                        _context.StockHistory.Add(history);
+                        });
                     }
                     else
                     {
-                        Console.WriteLine($"Before update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
-
                         existingHistory.Price = stockPrice.Data.Value;
                         existingHistory.Quantity = stock.Quantity;
                         existingHistory.Timestamp = DateTime.UtcNow;
-
-                        Console.WriteLine($"After update: Price={existingHistory.Price}, Qty={existingHistory.Quantity}, Time={existingHistory.Timestamp}");
                     }
+
                 }
                 else
                 {
                     Console.WriteLine($"Skipping update for {stock.Symbol} due to API error or missing data.");
                 }
             }
+        }
+
+        await _context.SaveChangesAsync();
+
+        if (portfolio.User != null)
+        {
+            portfolio.User.InvestedAmount = portfolio.TotalInvested;
+            portfolio.User.CurrentValue = portfolio.CurrentValue;
+            portfolio.User.ProfitLoss = portfolio.ProfitLoss;
         }
 
         await _context.SaveChangesAsync();
@@ -269,6 +278,8 @@ public class PortfolioController : ControllerBase
                         .ToList();
                 }
 
+                Console.WriteLine("DaHistory:" + filtered);
+
                 return new
                 {
                     StockId = stock.Id,
@@ -279,5 +290,35 @@ public class PortfolioController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpDelete("{userId}/stocks/history/today")]
+    public async Task<IActionResult> DeleteTodaysHistory(int userId)
+    {
+        var portfolio = await _context.Portfolios
+            .Include(p => p.Stocks)
+            .FirstOrDefaultAsync(p => p.UserId == userId);
+
+        if (portfolio == null)
+            return NotFound("Portfolio not found.");
+
+        var utcToday = DateTime.UtcNow.Date;
+        var utcTomorrow = utcToday.AddDays(1);
+
+        var stockIds = portfolio.Stocks.Select(s => s.Id).ToList();
+
+        var historiesToDelete = await _context.StockHistory
+            .Where(h => stockIds.Contains(h.StockId) && h.Timestamp >= utcToday && h.Timestamp < utcTomorrow)
+            .ToListAsync();
+
+        _context.StockHistory.RemoveRange(historiesToDelete);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            DeletedCount = historiesToDelete.Count,
+            Message = $"Deleted {historiesToDelete.Count} history records for {utcToday:yyyy-MM-dd}"
+        });
+    }
+
 
 }

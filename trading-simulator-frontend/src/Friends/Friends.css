@@ -17,6 +17,15 @@
     width: 100%;
 }
 
+.UserFriendSearch > .InputSection > input:focus{
+    scale: 1.01;
+}
+
+.UserFriendSearch > .InputSection > input:focus + button{
+    scale: 1.01;
+    margin-left: -5rem;
+}
+
 .UserFriendSearch > .InputSection > input{
     height: 2.3rem;
     width: 50%;
@@ -25,7 +34,7 @@
     margin: 0;
     border: none;
     outline: none;
-    /* margin-left: 5.1rem; */
+    transition: all 0.5s ease-in-out;
 }
 
 .UserFriendSearch > .InputSection > button{
@@ -42,6 +51,7 @@
     font-family: Inter, sans-serif;
     font-weight: 600;
     transition: all 0.5s ease-in-out;
+    z-index: 10;
 }
 
 .UserFriendSearch > .InputSection > button:hover{
@@ -61,7 +71,7 @@
 }
 
 .FriendsTitle > div{
-    width: 20rem;
+    width: 28%;
     height: 0.3rem;
     background-color: white;
     border-radius: 5rem;
@@ -105,7 +115,7 @@
     font-weight: 500;
 }
 
-.UserFriendSuggestions > div > button{
+.UserFriendSuggestions > div > button, .UserFriendSuggestions > div > div > button{
     background-color: #00000000;
     color: white;
     border: 1px #45a049 solid;
@@ -120,8 +130,185 @@
     width: 6rem;
 }
 
-.UserFriendSuggestions > div > button:hover{
+.UserFriendSuggestions > div > button:hover, .UserFriendSuggestions > div > div > button:hover{
     border: 1px #45a049 solid;
     background-color: #45a0497f;
     box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.UserFriendSuggestions > div > div{
+    width: 15rem;
+}
+
+.FriendRequestsList{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.FriendRequestsList > article{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 70%;
+    transition: all 0.5s ease-in-out;
+    border-bottom: 0px #45a04900 solid;
+    border-radius: 2rem;
+}
+
+.FriendRequestsList > article:hover{
+    border-bottom: 1px #45a049 solid;
+    box-shadow: 0px 8px 12px 0px #3e91444c;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+}
+
+.FriendRequestsList > article > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 1rem;
+    width: 15rem;
+}
+
+.FriendRequestsList > article > h3{
+    margin: 0;
+    font-weight: 300;
+    padding: 0.8rem 0 0.8rem 0;
+}
+
+.FriendRequestsList > article > h4{
+    margin: 0;
+    font-weight: 300;
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.FriendRequestsList > article > div > h4, .UserFriendSuggestions > div > div > h4{
+    margin: 0 1rem 0 0;
+    font-weight: 300;
+    padding: 1rem 0 1rem 0;
+    color: rgba(230, 230, 230, 0.925);
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+.FriendRequestsList > article > div > button{
+    background-color: #00000000;
+    color: white;
+    border: 1px #45a049 solid;
+    font-size: 0.9rem;
+    font-family: Inter, sans-serif;
+    width: 15rem;
+    transition: all 0.5s ease-in-out;
+    padding: 0.5rem;
+    border-radius: 2rem;
+    outline: none;
+    margin-right: 1rem;
+    width: 6rem;
+}
+
+.FriendRequestsList > article > div > button:hover{
+    border: 1px #45a049 solid;
+    background-color: #45a0497f;
+    box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.FriendsList{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.FriendsList > article{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 60%;
+    transition: all 0.5s ease-in-out;
+    border-radius: 2rem;
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.FriendsList > article:hover{
+    border-bottom: 1px #45a049 solid;
+    box-shadow: 0px 8px 12px 0px #3e91444c;
+    padding: 0.6rem 0.5rem 0.6rem 1rem;
+    cursor: pointer;
+}
+
+.FriendsList > article > h3{
+    margin: 0;
+    font-weight: 300;
+    color: rgba(230, 230, 230, 0.925);
+    font-size: 1.2rem;
+    text-align: right;
+}
+
+.FriendsList > h3{
+    font-weight: 100;
+    font-size: 1.4rem;
+}
+
+.FriendNameAndProfit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.1rem;
+}
+
+.FriendNameAndProfit > h3, .FriendNameAndProfit > p{
+    margin: 0.2rem;
+    font-family: Inter, sans-serif;
+}
+
+.FriendNameAndProfit > h3{
+    font-weight: 300;
+    width: 5rem;
+    text-align: left;
+}
+
+.FriendNameAndProfit > p{
+    font-size: 0.95rem;
+    font-weight: 350;
+}
+
+.DeleteButtonContainer{
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.5s ease-in;
+}
+
+.FriendsList > article:hover .DeleteButtonContainer{
+    opacity: 1;
+    pointer-events: all;
+    scale: 1.15;
+}
+
+.FriendsList > article:hover .plAndDeleteContainer > p{
+    opacity: 0;
+    margin: 0;
+}
+
+.FriendsList > article:hover .FriendNameAndProfit{
+    font-size: 1.1rem;
+    text-shadow: #45a049 1px 0 5px;
+
+}
+
+.plAndDeleteContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plAndDeleteContainer > p{
+    margin: 0;
+    transition: all 0.5s ease-in-out;
 }

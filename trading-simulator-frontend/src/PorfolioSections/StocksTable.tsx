@@ -108,7 +108,7 @@ export default function StocksTable(props: any){
                     <React.Fragment key={index}>                    
                     <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
                       <td className="tdLogo"><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
-                      <td className="tdCompanies"><div><div><h3>{stockAvg.name}</h3><span>Quantity: {stockAvg.totalShares}</span></div></div></td>
+                      <td className="tdCompanies"><div><div><h3>{stockAvg.name}</h3><span>Quantity: {Math.round(stockAvg.totalShares*100)/100}</span></div></div></td>
                       <td className="tdBoughtPrice"> £{stockAvg.totalCost.toFixed(2)}</td>
                       <td className="tdCurrentValue"><div>£{stockAvg.currentWorth.toFixed(2)}<span className={"LastUpdatedStockTableValue"}>Last Updated: {LastUpdatedDictionary?.get(stockAvg.symbol)
                           ? LastUpdatedDictionary.get(stockAvg.symbol)!.toLocaleString(undefined, {
@@ -138,14 +138,14 @@ export default function StocksTable(props: any){
                         <td className="tdBoughtPrice">£{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
                         <td className="tdCurrentValue">£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
                         <td className="tdProfit"><div><div>£{((stock.currentPrice - stock.purchasePrice)*stock.quantity).toFixed(2)}<span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></div></div></td>
-                        <td className="DeleteButton">
+                        {!props.otherUser && <td className="DeleteButton">
                           <div className="CrossContainer" onClick={() => {
                             props.handleDelete(index, stock, stockAvg.name, stockAvg.logo)
                           }}>
                             <div className="Cross1"></div>
                             <div className="Cross2"></div>
                           </div>
-                        </td>
+                        </td>}
 
                       </tr>
                     ))}

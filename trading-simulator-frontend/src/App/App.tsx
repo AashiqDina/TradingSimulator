@@ -9,6 +9,7 @@ import './App.css';
 import Register from "../Register/Register";
 import StockDetail from "../StockDetails/StockDetail"
 import Friends from "../Friends/Friends";
+import UserPortfolio from "../Friends/UserPortfolio"
 import { AuthProvider } from "../Functions/AuthContext";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/stock/:symbol" element={<StockDetail />} />
             <Route path="/friends" element={<Friends />}> </Route>
+            <Route path="/user/:user/:username" element={<UserPortfolio/>}></Route>
           </Routes>
         </div>
       </Router>

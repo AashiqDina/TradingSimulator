@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TradingSimulator_Backend.Data;
 
@@ -10,9 +11,11 @@ using TradingSimulator_Backend.Data;
 namespace TradingSimulator_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251014220941_AddFriendsRelation")]
+    partial class AddFriendsRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -155,6 +158,39 @@ namespace TradingSimulator_Backend.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("UserObj", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FriendsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FriendsId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FriendsId2")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("ProfitLoss")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FriendsId");
+
+                    b.HasIndex("FriendsId1");
+
+                    b.HasIndex("FriendsId2");
+
+                    b.ToTable("UserObj");
+                });
+
             modelBuilder.Entity("Portfolio", b =>
                 {
                     b.HasOne("TradingSimulator_Backend.Models.User", "User")
@@ -200,85 +236,22 @@ namespace TradingSimulator_Backend.Migrations
                         .WithOne("Friends")
                         .HasForeignKey("TradingSimulator_Backend.Models.Friends", "UserId1");
 
-                    b.OwnsMany("UserObj", "FriendsList", b1 =>
-                        {
-                            b1.Property<int>("FriendsId")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<decimal>("ProfitLoss")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Username")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("FriendsId", "Id");
-
-                            b1.ToTable("Friends_FriendsList");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FriendsId");
-                        });
-
-                    b.OwnsMany("UserObj", "ReceivedRequests", b1 =>
-                        {
-                            b1.Property<int>("FriendsId")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<decimal>("ProfitLoss")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Username")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("FriendsId", "Id");
-
-                            b1.ToTable("Friends_ReceivedRequests");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FriendsId");
-                        });
-
-                    b.OwnsMany("UserObj", "SentRequests", b1 =>
-                        {
-                            b1.Property<int>("FriendsId")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<decimal>("ProfitLoss")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Username")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("FriendsId", "Id");
-
-                            b1.ToTable("Friends_SentRequests");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FriendsId");
-                        });
-
-                    b.Navigation("FriendsList");
-
-                    b.Navigation("ReceivedRequests");
-
-                    b.Navigation("SentRequests");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserObj", b =>
+                {
+                    b.HasOne("TradingSimulator_Backend.Models.Friends", null)
+                        .WithMany("FriendsList")
+                        .HasForeignKey("FriendsId");
+
+                    b.HasOne("TradingSimulator_Backend.Models.Friends", null)
+                        .WithMany("ReceivedRequests")
+                        .HasForeignKey("FriendsId1");
+
+                    b.HasOne("TradingSimulator_Backend.Models.Friends", null)
+                        .WithMany("SentRequests")
+                        .HasForeignKey("FriendsId2");
                 });
 
             modelBuilder.Entity("Portfolio", b =>
@@ -289,6 +262,15 @@ namespace TradingSimulator_Backend.Migrations
             modelBuilder.Entity("Stock", b =>
                 {
                     b.Navigation("History");
+                });
+
+            modelBuilder.Entity("TradingSimulator_Backend.Models.Friends", b =>
+                {
+                    b.Navigation("FriendsList");
+
+                    b.Navigation("ReceivedRequests");
+
+                    b.Navigation("SentRequests");
                 });
 
             modelBuilder.Entity("TradingSimulator_Backend.Models.User", b =>

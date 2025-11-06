@@ -6,7 +6,7 @@ export default function updateAllStocksInPortfolio(props: any){
     const UpdateAllStocksInPortfolio = async () => {
         if (!user?.id) {
           console.error("User ID is not available");
-          return;
+          return false;
         }
       
         try {
@@ -15,10 +15,12 @@ export default function updateAllStocksInPortfolio(props: any){
           );
       
           console.log("Stocks updated:", response.data);
+          return true
         } catch (error) {
           handleAxiosError(error);
+          return false
         }
       };
 
-    UpdateAllStocksInPortfolio()
+    return UpdateAllStocksInPortfolio()
 }
