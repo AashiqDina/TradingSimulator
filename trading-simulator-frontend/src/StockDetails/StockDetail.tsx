@@ -156,13 +156,19 @@ const StockDetail: React.FC = () => {
         <header className='TitleBox'>
           <section>
             <img className='TitleLogo' src={stockLogo} alt={`Stock Logo for ${StockName}`} />
-            <h1 className='Title'>{StockName}</h1>
-            <span className='StockSymbol'>{stockSymbol}</span>
+              <article className='StockDetailsPrice'>
+                <div className='MiniNameSymbolSection'>
+                  <h1 className='StockDetailsTitle'>{StockName}</h1>
+                  <span className='StockSymbol'>{stockSymbol}</span>
+                </div>
+                {/* <div className='TitleLogo'></div> */}
+                <h2>£{stockPrice?.toFixed(2)}</h2>
+              </article>
           </section>
           <section className='CompleteSelector'>
-            <button className='BuyStockButton' aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy Stock</button>
             <section className='SectionSection'>
               <article className='Selector'>
+                <button className='BuyStockButton' aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy Stock</button>
                 <button aria-pressed={DisplayedData === "Overview"} aria-label="View overview" onClick={() => SwitchSection("Overview")} className={"Overview" + (DisplayedData == "Overview" ? "Selected" : "")}>Overview</button>
                 <button aria-pressed={DisplayedData === "CompanyInformation"} aria-label="View company information" onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>About</button>
                 <button aria-pressed={DisplayedData === "StockData"} aria-label="View stock data" onClick={() => SwitchSection("StockData")} className={"StockData" + (DisplayedData == "StockData" ? "Selected" : "")}>Stock Data</button>

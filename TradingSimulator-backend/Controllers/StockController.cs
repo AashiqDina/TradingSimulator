@@ -84,16 +84,35 @@ namespace TradingSimulator_Backend.Controllers
         }
 
         [HttpGet("GetAllStockLastUpdated")]
-        public IActionResult GetAllStockLastUpdated(){
+        public IActionResult GetAllStockLastUpdated()
+        {
 
             var data = _stockService.GetAllLastUpdated();
 
-            if(data == null){
+            if (data == null)
+            {
                 Console.WriteLine("No data available");
             }
 
-            return Ok(new {
+            return Ok(new
+            {
                 data
+            });
+        }
+
+        [HttpGet("GetTrendingStocks")]
+        public IActionResult GetTrendingStocks(){
+
+            string[] trendingStocks = _stockService.getTrendingList();
+
+            if (trendingStocks == null)
+            {
+                Console.WriteLine("An Error has occured");
+                return BadRequest("An Unknown Error has occured");
+            }
+
+            return Ok(new{
+                trendingStocks
             });
         }
 
@@ -156,10 +175,18 @@ namespace TradingSimulator_Backend.Controllers
         }
 
         [HttpGet("GetStockNews/{*symbol}")]
-        public async Task<IActionResult> getCompanyNews(string symbol){
+        public async Task<IActionResult> getCompanyNews(string symbol)
+        {
 
             var news = await _newsService.getCompanyNews(symbol);
 
+            return Ok(news);
+        }
+
+        [HttpGet("GetMarketNews")]
+        public async Task<IActionResult> getMarketNews()
+        {
+            var news = await _newsService.getMarketNews();
             return Ok(news);
         }
 

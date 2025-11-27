@@ -13,7 +13,7 @@ using TradingSimulator_Backend.Services;
 public class PortfolioController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly IStockService _stockService; // Use IStockService instead of StockService directly
+    private readonly IStockService _stockService; 
 
     public PortfolioController(AppDbContext context, IStockService stockService)
     {
@@ -98,6 +98,8 @@ public class PortfolioController : ControllerBase
                 ErrorCode = response.ErrorCode
             });
         }
+
+        _stockService.updateTrendingMap(request.Symbol);
 
         var stockPrice = response.Data.Value;
 

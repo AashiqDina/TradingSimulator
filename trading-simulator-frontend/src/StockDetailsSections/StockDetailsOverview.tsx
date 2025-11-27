@@ -238,6 +238,10 @@ export default function StockDetailsOverview(props: any){
             <article  aria-live="polite" aria-label={`Stock graph for ${props.StockName}`} className='StocksGraph'>
                 {/* <h2>{props.StockName} Graph</h2> */}
                 <div className="StockGraphValues">
+                    <div>
+                        {graphDate != "Hover to see value" ? <h3>Date</h3> : undefined}
+                        <h2>{graphDate}</h2>
+                    </div>
                     {OpenValue && <div>
                         <h3>Open</h3>
                         <h2>{OpenValue}</h2>
@@ -246,10 +250,6 @@ export default function StockDetailsOverview(props: any){
                         <h3>Close</h3>
                         <h2>{CloseValue}</h2>
                     </div>}
-                    <div>
-                        {graphDate != "Hover to see value" ? <h3>Date</h3> : undefined}
-                        <h2>{graphDate}</h2>
-                    </div>
                     {volume && <div>
                         <h3>Volume</h3>
                         <h2>{volume}</h2>

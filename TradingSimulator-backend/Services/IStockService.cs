@@ -17,4 +17,6 @@ public interface IStockService
     DateTime GetStockLastUpdated(string symbol);
     DateTime GetStockInfoLastUpdated(string symbol);
     Task<ApiResponse<StockFullHistory?>?> GetFullStockHistory(string symbol);
+    string[] getTrendingList();
+    void updateTrendingMap(string symbol);
 }

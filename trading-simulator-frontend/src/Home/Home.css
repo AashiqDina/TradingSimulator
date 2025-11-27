@@ -28,14 +28,15 @@
     border-radius: 10rem;
     min-width: 20%;
     max-width: 80%;
-    height: 2.7rem;
-    font-size: 1rem;
+    height: 3.2rem;
+    font-size: 1.1rem;
     font-family: Inter, sans-serif;;
-    font-weight: 600;
+    font-weight: 500;
     box-shadow: 0px 0px 20px 0px #3e91444c;
     transition: all 0.4s ease-in-out;
-    background-color: rgb(255, 255, 255);
-    color: #000000;
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px #45a049 solid;
+    color: #ffffff;
     margin: 0;
 }
 
@@ -50,15 +51,15 @@
     animation-duration: 15s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
-    border-radius: 10rem;
-    height: 2.3rem;
-    width: 14rem;
-    margin-left: -14.2rem;
+    border-radius: 1rem 10rem 10rem 1rem;
+    height: 2.9rem;
+    width: 13.1rem;
+    margin-left: -13.2rem;
     font-size: 1.2rem;
     font-family: Inter, sans-serif;
-    font-weight: 600;
+    font-weight: 450;
     text-align: center;
-    box-shadow: 0px 0px 10px 0px #3e91444c;
+    /* box-shadow: 0px 0px 10px 0px #3e91444c; */
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.5s ease-in-out;
@@ -68,13 +69,44 @@
   box-shadow: 0px 0px 10px 5px #3e91444c;
   border: 1px #45a049 solid;
   color: #9dcfa0;
-  scale: 1.02;
 }
 
 button:active{
     border: 1px #45a049 solid;
     background-color: #45a0497f;
     transition: all 0s ease-in-out;
+}
+
+.NewsTitleSectionTitle{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.HomeNewsSectionTitle{
+  width: 80%;
+}
+
+.NewsTitleSection > section > article > h2{
+  text-align: start;
+  font-weight: 300;
+  margin: 1rem 1rem 1rem 0rem;
+}
+
+.SomethingSectionTitle{
+  width: 39%;
+}
+
+.NewsTitleSection{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SomethingSection{
+  width: 39%;
+  height: 10rem;
 }
 
 @media (max-width: 600px) {
@@ -387,7 +419,7 @@ button:active{
     gap: 0.5rem;
     z-index: 10000;
     position: fixed;
-    top: 13rem;
+    top: 13.3rem;
     margin-top: -1.5rem;
     min-width: 20%;
     max-width: 80%;
@@ -446,6 +478,168 @@ button:active{
     flex-direction: column;
     width: 100%;
     gap: 1rem;
+  }
+
+  .CompleteTrendingBody{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .TrendingStocksSectionTitle{
+    width: 92%;
+  }
+
+  .TrendingStocksSection{
+    width: 100%;
+  }
+  
+  .TrendingStocksCarouselContainer {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .TrendingStocksCarouselTrack{
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    animation: Scroll 60s linear infinite;
+    height: 7rem;
+  }
+
+  .TrendingStocksCarouselTrack2{
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    animation: Scroll2 60s linear infinite;
+    height: 7rem;
+  }
+
+  .TrendingStocksSectionTitle > h2{
+    margin-top: 5rem;
+    text-align: left;
+    font-weight: 300;
+    margin-bottom: 0rem;
+  }
+
+  .TrendingStockDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+    border: 1px #45a049 solid;
+    border-radius: 2rem;
+    padding: 1rem;
+    white-space: nowrap;
+    font-size: 24px;
+    cursor: pointer;
+    height: 80%;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .TrendingStockDiv:hover{
+    box-shadow: 0px 0px 10px #45a049;
+    scale: 1.01
+  }
+
+  .TrendingStockDiv > img{
+    width: 4rem;
+    border-radius: 0.8rem;
+  }
+
+  .TrendingStockDiv > h2{
+    margin: 0;
+    font-family: Inter, sans-serif;
+    font-weight: 350;
+  }
+
+  .MotherBody{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .MotherBody > section{
+    width: 87%;
+  }
+
+  
+.MotherBody2{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.HomeNewsSection{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 88%;
+  gap: 1rem;
+}
+
+  .CompleteMarketNews{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .CompleteMarketNews:hover{
+    scale: 1.01;
+  }
+
+  .marketNewsContainer{
+    width: 100%;
+  }
+
+  .marketNewsHeader{
+    width: 100%;
+  }
+
+  .marketNewsImage > img{
+    width: 12.5rem;
+    height: fit-content;
+    border-radius: 0.6rem;
+    float: left;
+    margin: 0rem 0.5rem 0rem 0.5rem;
+  }
+
+  .marketNewsHeader > h3{
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: left;
+  }
+
+  .marketNewsBody > p{
+    text-align: left;
+    font-weight: 350;
+    margin: 0.7rem 1rem 0 0;
+  }
+
+
+
+  .marketNewsFooter{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .marketNewsFooter > p{
+    margin: 0.5rem 0 0 0;
+    font-weight: 200;
   }
 
   @media (max-width: 900px) {
@@ -618,3 +812,21 @@ button:active{
       width: 90%;
     }
   }
+
+@keyframes Scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes Scroll2 {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}

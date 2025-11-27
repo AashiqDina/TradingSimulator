@@ -22,14 +22,71 @@ namespace TradingSimulator_Backend.Services
         private static ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)> _stockApiInfoCache = new ConcurrentDictionary<string, (StockApiInfo? Info, DateTime Timestamp)>();
         private static ConcurrentDictionary<string, CompanyProfile?> _CompanyDetailsCache = new ConcurrentDictionary<string, CompanyProfile?>();
         private static ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)> _StockFullHistoryCache = new ConcurrentDictionary<string, (StockFullHistory? History, DateTime Timestamp)>();
-        private static (ConcurrentDictionary<string, int>, DateTime) TrendingMap = (new ConcurrentDictionary<string, int>, DateTime Timestamp)
         private static (ConcurrentDictionary<string, int> Map, DateTime Timestamp) TrendingMap = (new ConcurrentDictionary<string, int>(), DateTime.UtcNow);
+        public static string[] TrendingList = new string[] { "AAPL", "MSFT", "GOOG", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "JPM" };
 
-        
         public StockService(HttpClient httpClient, AppDbContext appDbContext)
         {
             _httpClient = httpClient;
             _context = appDbContext;
+        }
+
+        public string[] getTrendingList(){
+            return TrendingList;
+        }
+
+        public void updateTrendingMap(string symbol)
+        {
+            if (DateTime.UtcNow.Date > TrendingMap.Timestamp.Date)
+            {
+                TrendingMap.Map.Clear();
+                TrendingMap = (TrendingMap.Map, DateTime.UtcNow);
+                TrendingList = new string[] { "AAPL", "MSFT", "GOOG", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "JPM" };
+            }
+            if (TrendingMap.Map.ContainsKey(symbol))
+            {
+                TrendingMap.Map[symbol]++;
+                updateTrendingList(symbol);
+            }
+            else
+            {
+                TrendingMap.Map[symbol] = 1;
+                updateTrendingList(symbol);
+            }
+        }
+
+        public static void updateTrendingList(string symbol){
+
+            if (TrendingList.Contains(symbol)){
+                return;
+            }
+
+            for (int i = 0; i < TrendingList.Length; i++)
+            {
+                if (!TrendingMap.Map.ContainsKey(TrendingList[i]))
+                {
+                    TrendingList[i] = symbol;
+                    return;
+                }
+            }
+            
+            int smallestCount = int.MaxValue;
+            int smallestStock = -1;
+
+
+            for (int i = 0; i < TrendingList.Length; i++)
+            {
+
+                int count = TrendingMap.Map[TrendingList[i]];
+
+                if (count < smallestCount)
+                {
+                    smallestCount = count;
+                    smallestStock = i;
+                }
+            }
+
+            TrendingList[smallestStock] = symbol;
         }
 
         public Dictionary<string, DateTime> GetAllLastUpdated()
