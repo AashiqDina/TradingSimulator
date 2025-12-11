@@ -110,7 +110,6 @@ const Portfolio = () => {
         <>
           <section className="PortfolioPageHeader">
             <article className="PortfolioPageTitle">
-              
               <h2 className="PageTitle">{user != null ? username + "'s" : "My"} Portfolio</h2>
               <div className="LineOne"></div>
             </article>

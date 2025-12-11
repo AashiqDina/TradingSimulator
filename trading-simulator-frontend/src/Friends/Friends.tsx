@@ -119,8 +119,8 @@ export default function Friends(){
         <>
             {!loading && <section ref={wrapperRef} className="UserFriendSearch">
                 <article className='InputSection'>
-                    <input placeholder='Search a name... (e.g. AashiqD)' type="text" onClick={() => setDisplaySuggestions(true)} onChange={(e) => {setInput(e.target.value); setRecommendations(e.target.value.toLowerCase())}}/>
-                    <button>Search</button>
+                    <input aria-label='Search for a friend' placeholder='Search a name... (e.g. AashiqD)' type="text" onClick={() => setDisplaySuggestions(true)} onChange={(e) => {setInput(e.target.value); setRecommendations(e.target.value.toLowerCase())}}/>
+                    <button aria-label='Search'>Search</button>
                 </article>
                 {(displaySuggestions) && (searchList.length > 0) && (input.length > 0) && <article className='UserFriendSuggestions'>
                     {searchList.map((OtherUser) => {
@@ -145,8 +145,8 @@ export default function Friends(){
                             <div key={OtherUser.id}>
                               <h3>{OtherUser.username}</h3>
                               <div>
-                                <button onClick={() => {HandleAcceptFriendRequest(OtherUser.id)}}>Accept</button>
-                                <button onClick={() => {HandleDeclineFriendRequest(OtherUser.id)}}>Decline</button>
+                                <button aria-label={`Accept ${OtherUser.username}'s Friend Request`} onClick={() => {HandleAcceptFriendRequest(OtherUser.id)}}>Accept</button>
+                                <button aria-label={`Decline ${OtherUser.username}'s Friend Request`} onClick={() => {HandleDeclineFriendRequest(OtherUser.id)}}>Decline</button>
                               </div>
                             </div>)
                         }
@@ -163,7 +163,7 @@ export default function Friends(){
                           return (
                           <div key={OtherUser.id}>
                               <h3>{OtherUser.username}</h3>
-                              <button onClick={() => {sendFriendRequest(OtherUser.id)}}>Add Friend</button>
+                              <button aria-label={`Send ${OtherUser.username} a Friend Request`} onClick={() => {sendFriendRequest(OtherUser.id)}}>Add Friend</button>
                           </div>)
                         }
                       }})}
@@ -183,12 +183,12 @@ export default function Friends(){
                   <div className='plAndDeleteContainer'>
                     <p style={friend.profitLoss < 0 ? {color: "rgba(200, 25, 25, 1)"} : {color: "rgb(69, 160, 73)"}}>{friend.profitLoss < 0 ? "-" : "+"}£{(Math.abs(friend.profitLoss)).toFixed(2)}</p>
                     <div className='DeleteButtonContainer'>
-                      <div className='DeleteButton'>
-                        <div className="CrossContainer" onClick={(e) => {e.stopPropagation(); setDeleteFriendModal({id: friend.id, username: friend.username, profitLoss: friend.profitLoss})}}>
+                      <button aria-label={`Remove ${friend.username} as a friend`} className='DeleteButton' onClick={(e) => {e.stopPropagation(); setDeleteFriendModal({id: friend.id, username: friend.username, profitLoss: friend.profitLoss})}}>
+                        <div className="CrossContainer">
                           <div className="Cross1"></div>
                           <div className="Cross2"></div>
                         </div>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -206,8 +206,8 @@ export default function Friends(){
                 <article key={index}>
                   <h3>{FriendRequest.username}</h3>
                   <div>
-                    <button onClick={() => {HandleAcceptFriendRequest(FriendRequest.id)}}>Accept</button>
-                    <button onClick={() => {HandleDeclineFriendRequest(FriendRequest.id)}}>Decline</button>
+                    <button aria-label={`Accept ${FriendRequest.username}'s Friend Request`} onClick={() => {HandleAcceptFriendRequest(FriendRequest.id)}}>Accept</button>
+                    <button aria-label={`Decline ${FriendRequest.username}'s Friend Request`} onClick={() => {HandleDeclineFriendRequest(FriendRequest.id)}}>Decline</button>
                   </div>
                 </article>
               ))}
@@ -224,12 +224,10 @@ export default function Friends(){
               <div className="ModalContent">
                 <h2>Are you sure you want to remove {DeleteFriendModal.username}?</h2>
                 <div>
-                 
               </div>
-
                 <div className="ModalFooter">
-                  <button className="" onClick={() => {setDeleteFriendModal(null)}}>Cancel</button>
-                  <button className="" onClick={() => {HandleDeleteFriend(DeleteFriendModal.id); setDeleteFriendModal(null)}}>Remove</button>
+                  <button aria-label="Cancel" className="" onClick={() => {setDeleteFriendModal(null)}}>Cancel</button>
+                  <button aria-label={`Remove ${DeleteFriendModal.username}`} className="" onClick={() => {HandleDeleteFriend(DeleteFriendModal.id); setDeleteFriendModal(null)}}>Remove</button>
                 </div>
               </div>
             </div>

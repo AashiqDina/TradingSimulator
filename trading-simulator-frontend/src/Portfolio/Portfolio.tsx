@@ -174,13 +174,6 @@ const Portfolio = () => {
             originalValues={originalValues}
             />
 
-          {/* <CurrentBestStockTable CurrentBestStocks={CurrentBestStocks}/> */}
-
-          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button className="ViewMore">          
-            <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
-            <div className={`ArrowTwo ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div></button>
-          </a>
-
           <div id="Space"></div>
           <div id="Space"></div>
           <div id="ToJump"></div>
@@ -198,6 +191,11 @@ const Portfolio = () => {
             setFilteredSearch={setFilteredSearch}
             otherUser={false}
             />
+
+          <a href={JumpTo} onClick={() => setJumpTo(JumpTo == "#ToJump" ? "#Top" : "#ToJump")}><button aria-label="Jump Down to the stock table" className="ViewMore">          
+            <div className={`ArrowOne ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div>
+            <div className={`ArrowTwo ${JumpTo == "#ToJump" ? "Top" : ""}`} ></div></button>
+          </a>
 
           {/* <div style={{width: "90vw", marginTop: "4rem"}} className="LineOne"></div>
           <h2 className="PageTitle">Transaction History</h2>

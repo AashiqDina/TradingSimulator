@@ -2,6 +2,8 @@ import { FocusTrap } from 'focus-trap-react';
 import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
+import { Today } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
 
 export default function StocksTable(props: any){
 
@@ -9,14 +11,16 @@ export default function StocksTable(props: any){
   const [IndexExpanded, setIndexExpanded] = useState<number | null>(null)
   const [Portfolio, setPortfolio] = useState<any | null>([])
   const [LastUpdatedDictionary, setLastUpdatedDictionary] = useState<Map<string, Date> | null>(null)
+  const [overviewBanner, setOverviewBanner] = useState<{GreatestProfit: {Company: string, Logo: string, Value: number} | null, GreatestLoss: {Company: string, Logo: string, Value: number} | null, LifeTimeGrowth: number | null}>({GreatestProfit: null, GreatestLoss: null, LifeTimeGrowth: null})
   const FilteredSearch = props.FilteredSearch
   const setFilteredSearch = props.setFilteredSearch
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     let OriginaList = props.portfolio.stocks
     let map = new Map()
 
+    console.log("This Test: ")
 
     for (let i = 0; i< OriginaList.length; i++){
       if (map.has(OriginaList[i].symbol)) {
@@ -38,10 +42,15 @@ export default function StocksTable(props: any){
       }
     }
 
+
+
     const Portfolio = Array.from(map.values()).map(Stock => ({
       ...Stock,
       avgBuyPrice: Stock.totalCost / Stock.totalShares,
+      profitPercent: (Stock.currentWorth / Stock.totalCost - 1) * 100
     }));
+
+    QuickStat(Portfolio)
     setPortfolio(Portfolio)
     setFilteredSearch(Portfolio)
   }, [props.portfolio.stocks, props.StockNameArray, props.StockLogoArray])
@@ -57,14 +66,47 @@ export default function StocksTable(props: any){
   }, [Portfolio])
 
 
+  function QuickStat(Portfolio: any){
+
+    if(Portfolio.length > 0){
+      let GreatestProfit = {Company: Portfolio[0].name, Logo: Portfolio[0].logo, Value: Portfolio[0].profitPercent}
+      let GreatestLoss = {Company: Portfolio[0].name, Logo: Portfolio[0].logo, Value: Portfolio[0].profitPercent}
+      let TotalCost = Portfolio[0].totalCost
+      let TotalValue = Portfolio[0].currentWorth
+
+
+      for(let i = 1; i<Portfolio.length; i++){
+        let Value = Portfolio[i].profitPercent
+        TotalCost += Portfolio[i].totalCost
+        TotalValue += Portfolio[i].currentWorth
+
+        if(Value > GreatestProfit.Value){
+          GreatestProfit = {Company: Portfolio[i].name, Logo: Portfolio[i].logo, Value: Value}
+        }
+        if(Value < GreatestLoss.Value){
+          GreatestLoss = {Company: Portfolio[i].name, Logo: Portfolio[i].logo, Value: Value}
+        }
+
+      }
+
+      setOverviewBanner({GreatestProfit: GreatestProfit, GreatestLoss: GreatestLoss, LifeTimeGrowth: (TotalValue/TotalCost-1)*100})
+    }
+    else{
+      setOverviewBanner({GreatestProfit: {Company: "None", Logo: "None", Value: 0}, GreatestLoss: {Company: "None", Logo: "None", Value: 0}, LifeTimeGrowth: 0})
+    }
+  }
+
   function inputFilter(input: string){
     if(input == ""){
       setFilteredSearch(Portfolio)
+      QuickStat(Portfolio)
     }
     else{
-      setFilteredSearch(Portfolio.filter((stockAvg: { name: string; symbol: string;}) => {
+      let FilteredResult = Portfolio.filter((stockAvg: { name: string; symbol: string;}) => {
         return ((stockAvg.name?.toUpperCase().includes(input) || stockAvg.symbol?.includes(input)))
-      }))
+      })
+      setFilteredSearch(FilteredResult)
+      QuickStat(FilteredResult)
     }
   }
 
@@ -75,9 +117,11 @@ export default function StocksTable(props: any){
             <h2 className="PageTitleHoldings">Holdings</h2>
             <div style={{width: "25%", margin: 0}} className="LineOne"></div>
           </article>
-        <article className="Filter">
-            <input type="text" onChange={(e) => inputFilter(e.target.value.toUpperCase())} placeholder="Enter stock symbol/name (e.g, AAPL, Apple)"/>
-            <select name="" id="" onChange={(e) => props.setFilteredOption(e.target.value)}>
+
+          
+          <article className="Filter">
+            <input  aria-label="Enter a stock name or symbol to fiter your stocks" type="text" onChange={(e) => inputFilter(e.target.value.toUpperCase())} placeholder="Enter stock symbol/name (e.g, AAPL, Apple)"/>
+            <select aria-label="Sort your stocks" name="" id="" onChange={(e) => props.setFilteredOption(e.target.value)}>
               <option value="">Sort by</option>
               <option value="Oldest">Oldest</option>
               <option value="Newest">Newest</option>
@@ -88,6 +132,64 @@ export default function StocksTable(props: any){
             </select>
             {/* <button onClick={props.FilterSearch}>Submit</button> */}
           </article>
+
+          { overviewBanner.GreatestProfit?.Company != "None" && <article className='QuickPerformance'>
+            {/* <div className='QuickPerformanceCarouselContainer'>
+              <div className='QuickPerformance'>
+                <div className='set'>
+<div>Best Performer: <div><img src={overviewBanner.GreatestProfit?.Logo ? overviewBanner.GreatestProfit?.Logo : ""} alt="Greatest Profit Logo" /> {overviewBanner.GreatestProfit?.Company}</div> <p style={overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? "+" : ""}{overviewBanner.GreatestProfit?.Value != null ? overviewBanner.GreatestProfit?.Value.toFixed(2) : undefined}%</p></div>
+                  <div>Worst Performer: <div><img src={overviewBanner.GreatestLoss?.Logo ? overviewBanner.GreatestLoss?.Logo : ""} alt="Greatest Loss Logo" /> {overviewBanner.GreatestLoss?.Company}</div> <p style={overviewBanner.GreatestLoss?.Value && overviewBanner.GreatestLoss?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.GreatestLoss?.Value != null ? overviewBanner.GreatestLoss?.Value.toFixed(2) : undefined}%</p></div>
+                  <div>Lifetime Growth: {(overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? "+" : "")}<p style={overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.LifeTimeGrowth != null ? overviewBanner.LifeTimeGrowth.toFixed(2) : ""}%</p></div>
+                </div>
+                <div className='set'>
+                  <div>Best Performer: <div><img src={overviewBanner.GreatestProfit?.Logo ? overviewBanner.GreatestProfit?.Logo : ""} alt="Greatest Profit Logo" /> {overviewBanner.GreatestProfit?.Company}</div> <p style={overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? "+" : ""}{overviewBanner.GreatestProfit?.Value != null ? overviewBanner.GreatestProfit?.Value.toFixed(2) : undefined}%</p></div>
+                  <div>Worst Performer: <div><img src={overviewBanner.GreatestLoss?.Logo ? overviewBanner.GreatestLoss?.Logo : ""} alt="Greatest Loss Logo" /> {overviewBanner.GreatestLoss?.Company}</div> <p style={overviewBanner.GreatestLoss?.Value && overviewBanner.GreatestLoss?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.GreatestLoss?.Value != null ? overviewBanner.GreatestLoss?.Value.toFixed(2) : undefined}%</p></div>
+                  <div>Lifetime Growth: {(overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? "+" : "")}<p style={overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21);"}}>{overviewBanner.LifeTimeGrowth != null ? overviewBanner.LifeTimeGrowth.toFixed(2) : ""}%</p></div>
+                </div>
+              </div>
+            </div> */}
+
+              <div className='BestPerformerCard'>
+              <div>
+                <h3>Best Performer</h3>
+              </div>
+              <div className='CardStock'>
+                <img src={overviewBanner.GreatestProfit?.Logo ? overviewBanner.GreatestProfit?.Logo : ""} alt="Logo" /> 
+                <h4>{overviewBanner.GreatestProfit?.Company}</h4>
+              </div>
+              <p style={overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21)"}}>
+                {overviewBanner.GreatestProfit?.Value && overviewBanner.GreatestProfit?.Value > 0 ? "▲ +" : "▼ "}
+                {overviewBanner.GreatestProfit?.Value != null ? overviewBanner.GreatestProfit?.Value.toFixed(2) : undefined}%
+              </p>
+            </div>
+
+            <div className='WorstPerformerCard'>
+              <div>
+                <h3>Worst Performer</h3>
+              </div>
+              <div className='CardStock'>
+                <img src={overviewBanner.GreatestLoss?.Logo ? overviewBanner.GreatestLoss?.Logo : ""} alt="Logo" /> 
+                <h4>{overviewBanner.GreatestLoss?.Company}</h4>
+              </div>
+              <p style={overviewBanner.GreatestLoss?.Value != null && overviewBanner.GreatestLoss?.Value > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21)"}}>
+                {overviewBanner.GreatestLoss?.Value && overviewBanner.GreatestLoss?.Value > 0 ? "▲ +" : "▼ "}
+                {overviewBanner.GreatestLoss?.Value != null ? overviewBanner.GreatestLoss?.Value.toFixed(2) : undefined}%
+              </p>  
+            </div>
+
+            {/* <div className='LifeTimeGrowth'>
+              <div>
+                <h3>LifeTime Growth</h3>
+              </div>
+              <div>
+                {(overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? "+" : "")}
+                <p style={overviewBanner.LifeTimeGrowth != null && overviewBanner.LifeTimeGrowth > 0 ? {color: "#45a049"} : {color: "rgb(187, 21, 21)"}}>
+                  {overviewBanner.LifeTimeGrowth != null ? overviewBanner.LifeTimeGrowth.toFixed(2) : ""}%
+                </p>
+              </div>
+            </div> */}
+          </article>}
+
 
           <article className="StocksTable">
             <table className="Table" style={{transition: "all 0.6s ease-in-out"}}>
@@ -107,9 +209,9 @@ export default function StocksTable(props: any){
                   {FilteredSearch.map((stockAvg: any, index: number) => (
                     <React.Fragment key={index}>                    
                     <tr onClick={() => IndexExpanded == index ? setIndexExpanded(null) : setIndexExpanded(index)} style={{cursor: "pointer",transition: "all 0.6s ease-in-out"}}>
-                      <td className="tdLogo"><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></td>
-                      <td className="tdCompanies"><div><div><h3>{stockAvg.name}</h3><span>Quantity: {Math.round(stockAvg.totalShares*100)/100}</span></div></div></td>
-                      <td className="tdBoughtPrice"> £{stockAvg.totalCost.toFixed(2)}</td>
+                      <td className="tdLogo"><button aria-label='Visit Stock Details Page' onClick={ () => {navigate(`/stock/${encodeURIComponent(String(stockAvg.symbol ?? ''))}`)}} className='tdLogoButton'><img className="StockLogos" src={stockAvg.logo} alt="Stock Logo" /></button></td>
+                      <td className="tdCompanies"><div><div><button aria-label='Expand Stock to see individual stocks bought'><h3>{stockAvg.name}</h3><span>Quantity: {Math.round(stockAvg.totalShares*100)/100}</span></button></div></div></td>
+                      <td className="tdBoughtPrice"><div>£{stockAvg.totalCost.toFixed(2)}<span>Average: £{stockAvg.avgBuyPrice.toFixed(2)}</span></div></td>
                       <td className="tdCurrentValue"><div>£{stockAvg.currentWorth.toFixed(2)}<span className={"LastUpdatedStockTableValue"}>Last Updated: {LastUpdatedDictionary?.get(stockAvg.symbol)
                           ? LastUpdatedDictionary.get(stockAvg.symbol)!.toLocaleString(undefined, {
                               hour: '2-digit',
@@ -135,16 +237,16 @@ export default function StocksTable(props: any){
                           </div>
                         </td>
                         <td className="tdCompanies" ><div><div><p style={{fontWeight: 400}}>{stockAvg.name}</p><span>Quantity: {stock.quantity}</span></div></div></td>
-                        <td className="tdBoughtPrice">£{(stock.purchasePrice * stock.quantity).toFixed(2)}</td>
+                        <td className="tdBoughtPrice"><div><div><p style={{fontWeight: 400}}>£{(stock.purchasePrice* stock.quantity).toFixed(2)}</p><span>Each: {stock.purchasePrice.toFixed(2)}</span></div></div></td>
                         <td className="tdCurrentValue">£{(stock.quantity * stock.currentPrice).toFixed(2)}</td>
                         <td className="tdProfit"><div><div>£{((stock.currentPrice - stock.purchasePrice)*stock.quantity).toFixed(2)}<span style={{color: (((((stock.currentPrice/stock.purchasePrice)*100)-100) >= 0) ? "#45a049" : "#bb1515")}}>{((((stock.currentPrice/stock.purchasePrice)*100)-100) > 0) ? "+" : null}{(((stock.currentPrice/stock.purchasePrice)*100)-100).toFixed(1)}%</span></div></div></td>
                         {!props.otherUser && <td className="DeleteButton">
-                          <div className="CrossContainer" onClick={() => {
+                          <button aria-label='DeleteStock' className="CrossContainer" onClick={() => {
                             props.handleDelete(index, stock, stockAvg.name, stockAvg.logo)
                           }}>
                             <div className="Cross1"></div>
                             <div className="Cross2"></div>
-                          </div>
+                          </button>
                         </td>}
 
                       </tr>
@@ -188,11 +290,11 @@ export default function StocksTable(props: any){
               </div>
 
                 <div className="ModalFooter">
-                  <button className="" onClick={() => {
+                  <button aria-label='Cancel?' className="" onClick={() => {
                     props.setModalVisibility(false);
                     props.setToDelete({stock: null, name: null, logo: null});
                   }}>Cancel</button>
-                  <button className="" onClick={props.handleTrueDelete}>Delete</button>
+                  <button aria-label='Delete Stock?' className="" onClick={props.handleTrueDelete}>Delete</button>
                 </div>
               </div>
             </div>

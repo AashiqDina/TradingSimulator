@@ -260,15 +260,15 @@ export default function StockDetailsOverview(props: any){
                     </div>}
                 </div>
                 <div className="StockIndivdualGraph">
-                    <canvas ref={canvasRef}></canvas>
+                    <canvas ref={canvasRef} tabIndex={0} role="img" aria-label="A line chart showing the stock's performance over time"></canvas>
                 </div>
                 <div className="StockGraphButtonCollection">
-                    <button className="w" onClick={() => {setRange("Week")}} style={range == "Week" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Week</button>
-                    <button className="m" onClick={() => {setRange("Month")}} style={range == "Month" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Month</button>
-                    <button className="threem" onClick={() => {setRange("ThreeMonths")}} style={range == "ThreeMonths" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>3-Months</button>
-                    <button className="y" onClick={() => {setRange("Year")}} style={range == "Year" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Year</button>
-                    <button className="threey" onClick={() => {setRange("ThreeYears")}} style={range == "ThreeYears" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>3-Years</button>
-                    <button className="a" onClick={() => {setRange("All")}} style={range == "All" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>All Time</button>
+                    <button aria-label="filter to the last week" className="w" onClick={() => {setRange("Week")}} style={range == "Week" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Week</button>
+                    <button aria-label="filter to the last month" className="m" onClick={() => {setRange("Month")}} style={range == "Month" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Month</button>
+                    <button aria-label="filter to the last three months" className="threem" onClick={() => {setRange("ThreeMonths")}} style={range == "ThreeMonths" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>3-Months</button>
+                    <button aria-label="filter to the last year" className="y" onClick={() => {setRange("Year")}} style={range == "Year" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>Year</button>
+                    <button aria-label="filter to the last three years" className="threey" onClick={() => {setRange("ThreeYears")}} style={range == "ThreeYears" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>3-Years</button>
+                    <button aria-label="filter to all time" className="a" onClick={() => {setRange("All")}} style={range == "All" ? {backgroundColor: "rgb(76, 175, 80)"} : undefined}>All Time</button>
                 </div>
             </article>
         </>

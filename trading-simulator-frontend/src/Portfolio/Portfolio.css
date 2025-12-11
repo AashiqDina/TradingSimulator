@@ -6,6 +6,18 @@ html{
   scroll-behavior: smooth;
 }
 
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .portfolio-page {
     min-height: 100vh;
     padding: 20px;
@@ -43,11 +55,21 @@ html{
     width: 17rem;
   }
 
+  .tdLogoButton, .tdLogoButton:hover{
+    background: none;
+    border: none;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .tdLogoButton:hover{
+    scale: 1.1;
+  }
+
   .PortfolioSummary > div > h4{
     font-size: 1.4rem;
     color: rgb(194, 200, 196);
     font-family: Inter, sans-serif;
-    font-weight: 600;
+    font-weight: 350;
     transition: all 0.5s ease-in-out;
     margin-bottom: 0.5rem;
     transition: all 0.5s ease-in-out;
@@ -73,7 +95,7 @@ html{
     font-size: 1.6rem;
     color: rgb(194, 200, 196);
     font-family: Inter, sans-serif;
-    font-weight: 600;
+    font-weight: 450;
     transition: all 0.5s ease-in-out;
     margin-bottom: 0.5rem;
     transition: all 0.5s ease-in-out;
@@ -84,7 +106,7 @@ html{
     color: white;
     font-family: Inter, sans-serif;
     margin: 0;
-    font-weight: 400;
+    font-weight: 350;
     transition: all 0.5s ease-in-out;
   }
 
@@ -105,16 +127,16 @@ html{
   font-size: 2rem;
   margin: 0;
   margin-top: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   font-family: Inter, sans-serif;
-  font-weight: 500;
+  font-weight: 350;
 }
 
 .PageTitleHoldings{
   font-size: 2rem;
   margin: 0;
   font-family: Inter, sans-serif;
-  font-weight: 500;
+  font-weight: 350;
 }
 
 .genericFlexRow{
@@ -131,7 +153,7 @@ html{
   align-items: center;
   top: 5rem;
   background-color: white;
-  height: 4px;
+  height: 2px;
   width: 40vw;
   margin: 0 auto;
   border-radius: 10rem;
@@ -377,16 +399,19 @@ table tbody tr:last-child td:last-child {
   padding: 1rem 1rem 1rem 0.3rem
 }
 
-.tdCurrentValue > div{
+.tdCurrentValue > div, .tdBoughtPrice > div{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.tdCurrentValue > div > span{
-  font-weight: 300;
-  font-size: 1rem;
+.tdCurrentValue > div > span, .tdBoughtPrice > div > span{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 250;
+  font-size: 0.9rem;
 }
 
 .StockLogos{
@@ -400,33 +425,61 @@ table tbody tr:last-child td:last-child {
   justify-content: flex-start;
 }
 
-.tdCompanies > div > div{
+.tdBoughtPrice > div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.tdCompanies > div > div > button, .tdCompanies > div > div{
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
+  background: none;
+  border: none;
+}
+
+.tdBoughtPrice > div > div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   gap: 2px;
 }
 
-.tdCompanies > div > div > h3, .tdCompanies > div > div > p{
+.tdCompanies > div > div > button > h3, .tdCompanies > div > div > h3{
+  font-size: 1.2rem;
+}
+
+.tdCompanies > div > div > button > h3, .tdCompanies > div > div > h3, .tdCompanies > div > div > p, .tdBoughtPrice > div > div > button > h3, .tdBoughtPrice > div > div > p{
   font-family: Inter, sans-serif;
   margin: 0;
   font-weight: 500;
   text-align: left;
 }
 
-.tdCompanies > div > div > span{
+.tdCompanies > div > div > button > span, .tdCompanies > div > div > span{
   font-family: Inter, sans-serif;
   margin: 0;
   font-weight: 300;
   font-size: 1rem;
 }
 
-.tdCompanies > div > div > span{
+.tdBoughtPrice > div > div > span{
+  font-family: Inter, sans-serif;
+  margin: 0;
+  font-weight: 250;
+  font-size: 0.9rem;
+}
+
+.tdCompanies > div > div > button> span{
   font-family: Inter, sans-serif;
   margin: 0;
   font-weight: 300;
   font-size: 1rem;
+  text-align: left;
 }
 
 .tdProfit > div{
@@ -463,7 +516,7 @@ table tbody tr:last-child td:last-child {
     font-size: 1rem;
     padding: 0 0 0 0.5rem;
   }
-  .tdCurrentValue > div > span{
+  .tdCurrentValue > div > span, .tdBoughtPrice > div > span, .tdBoughtPrice > div > div > span{
     font-size: 0.8rem;
   }
 
@@ -571,7 +624,7 @@ table tbody tr:last-child td:last-child {
     font-size: 0.8rem;
     padding: 0 0 0 0.5rem;
   }
-  .tdCurrentValue > div > span{
+  .tdCurrentValue > div > span, .tdBoughtPrice > div > span, .tdBoughtPrice > div > div > span{
     font-size: 0.7rem;
   }
   .tdCompanies > div > div > span{
@@ -730,7 +783,9 @@ table tbody tr:last-child td:last-child {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1;
+  background: none;
+  border: none;
 }
 
 .Cross1{
@@ -811,7 +866,7 @@ table tbody tr:last-child td:last-child {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -899,7 +954,143 @@ table tbody tr:last-child td:last-child {
   margin: 0;
 }
 
+.StockDetailsTitle{
+  text-align: left;
+}
+
+.QuickPerformanceCarouselContainer {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.QuickPerformance{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+  margin: 0rem 1rem 1rem 1rem;
+  transition: all 0.5s ease-in-out;
+}
+
+.QuickPerformance > div, .QuickPerformance > div > div{
+  display: flex;
+  flex-direction: row;
+  gap: 0rem;
+}
+
+.QuickPerformance > div > p, .QuickPerformance > div > div > p{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0
+}
+
+.QuickPerformance > div > div > h3{
+  font-size: 1.1rem;
+  font-weight: 450;
+  width: max-content;
+}
+
+.QuickPerformance > div > .CardStock > h4{
+  font-size: 1.2rem;
+  font-weight: 300;
+  margin: 0;
+  text-align: left;
+  width: max-content;
+}
+
+.QuickPerformance > div > .CardStock{
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 0.4rem;
+}
+
+.QuickPerformance > div > .CardStock > img{
+  width: 3rem;
+  border-radius: 0.8rem;
+}
+
+@media (max-width: 970px) {
+  .QuickPerformance{
+    gap: 2rem;
+  }
+
+  .QuickPerformance > div > div > h3{
+    font-size: 1rem;
+    font-weight: 450;
+  }
+
+  .QuickPerformance > div > .CardStock > h4{
+    font-size: 1rem;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .QuickPerformance > div > .CardStock{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 0.4rem;
+  }
+
+  .QuickPerformance > div > .CardStock > img{
+    width: 2.5rem;
+    border-radius: 0.8rem;
+  }
+
+}
+
+
+
 @media (max-width: 850px) {
+
+  .QuickPerformance{
+    gap: 0.8rem;
+  }
+
+  
+  .QuickPerformance > div > div > h3{
+    font-size: 1rem;
+    font-weight: 450;
+  }
+
+  .QuickPerformance > div > .CardStock > h4{
+    font-size: rem;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .QuickPerformance > div > .CardStock{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 0.4rem;
+  }
+
+  .QuickPerformance > div > .CardStock > img{
+    width: 2rem;
+    border-radius: 0.5rem;
+  }
+
+  
+  .QuickPerformance > div > p, .QuickPerformance > div > div > p{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-size: 0.8rem;
+  }
+
   .PageTitle{
     font-size: 2rem;
     margin-top: 1.5rem
@@ -917,14 +1108,15 @@ table tbody tr:last-child td:last-child {
     font-size: 1.4rem;
     color: rgb(194, 200, 196);
     font-family: Inter, sans-serif;
-    font-weight: 600;
+    font-weight: 450;
   }
+
 
   .PortfolioSummary > .PortfolioSummaryCenter > h4{
     font-family: Inter, sans-serif;
     font-size: 1.7rem;
     margin: 0;
-    font-weight: 400;
+    font-weight: 350;
   }
 
   .FilterGraph > article > button{
@@ -948,6 +1140,11 @@ table tbody tr:last-child td:last-child {
 }
 
 @media (max-width: 608px) {
+
+  .QuickPerformance{
+    gap: 0.5rem;
+  }
+
   .PageTitle{
     font-size: 2rem;
     margin-top: 1.5rem
@@ -960,9 +1157,6 @@ table tbody tr:last-child td:last-child {
   }
   .FilterGraph > article{
     gap: 0.8rem
-  }
-  .FilterGraph > article > button{
-    font-size: 1rem;
   }
 
   .PortfolioSummary > div > h3{
@@ -994,6 +1188,93 @@ table tbody tr:last-child td:last-child {
     font-size: 1.7rem;
   }
   
+}
+
+@media (max-width: 550px) {
+
+  .QuickPerformance{
+    gap: 0rem;
+  }
+
+
+  .QuickPerformance > div > div > h3{
+    font-size: 0.8rem;
+    font-weight: 450;
+  }
+
+  .QuickPerformance > div > .CardStock > h4{
+    font-size: 0.9rem;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .QuickPerformance > div > p, .QuickPerformance > div > div > p{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-size: 0.7rem;
+  }
+
+  .QuickPerformance > div > .CardStock{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.4rem;
+  }
+
+  .QuickPerformance > div > .CardStock > img{
+    width: 1.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .FilterGraph > article > button{
+    position: relative;
+    font-size: 0rem;
+    width: 3.5rem;
+  }
+
+  .FilterGraph > article > button:hover{
+    position: relative;
+    font-size: 0rem;
+  }
+
+  .FilterGraph > article > .m::after{
+    font-size: 1rem;
+    content: "M";
+  }
+
+  .FilterGraph > article > .y::after{
+    font-size: 1rem;
+    content: "Y";
+  }
+
+    .FilterGraph > article > .w::after{
+    font-size: 1rem;
+    content: "W";
+  }
+
+    .FilterGraph > article > .a::after{
+    font-size: 1rem;
+    content: "All";
+  }
+}
+
+@media (max-width: 464px) {
+  .PortfolioSummary{
+    margin-top: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .PortfolioSummary > div > h3 {
+    margin-top: 0rem;
+  }
+
+  .PortfolioSummary > div > h4{
+    margin-top: 0rem;
+  }
 }
 
 @keyframes DeleteButtonAnimation {

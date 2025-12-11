@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import getStockNews from "../Functions/getStockNews"
 import "./StockDetailsNews.css"
-import Loading from "../Loading/Loading"
+import AiLoading from "../Loading/AiLoading"
 
 export default function StockDetailsNews(props: any){
 
@@ -52,12 +52,12 @@ export default function StockDetailsNews(props: any){
         <button className="SeeMoreNews" onClick={() => {setAmountNewsDisplay(amountNewsDisplay+5)}}>
           View More
         </button> : 
-        <h2>No more Articles.</h2>
+        NewsArray?.length == 0 ? <h2>No Articles</h2> :<h2>No more Articles.</h2>
         }
       </article>
     </section>}
 
-    { loading && <Loading/>}
+    { loading && <AiLoading/>}
     </>
   )
 }

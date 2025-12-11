@@ -18,27 +18,18 @@ export default function StockDetailsOwnedStocks(props: any){
     const GetData = useCallback( async() => {
         const result = await getPortfolio({ user });
         let FilteredStocks = []
-    
-        let currentValue = 0;
-        let profitLoss = 0;
-        let totalInvested = 0;
 
         console.log(result)
         if(result && result.stocks){
-          console.log("In")
           setPortfolio(result)
       
         for(let i = 0; i<(result.stocks.length); i++){
           if(result.stocks[i].symbol == props.symbol){
             console.log(i)
             FilteredStocks.push(result.stocks[i]);
-            currentValue += result.stocks[i].totalValue;
-            profitLoss += result.stocks[i].profitLoss;
-            totalInvested += result.stocks[i].purchasePrice * result.stocks[i].quantity;
             }
           }
-          console.log(FilteredStocks)
-          setFilteredPortfolio({currentValue: currentValue, id: result.id, profitLoss: profitLoss, stocks: FilteredStocks, totalInvested: totalInvested, user: result.user, userId: result.userId})
+          setFilteredPortfolio({currentValue: undefined, id: result.id, profitLoss: undefined, stocks: FilteredStocks, totalInvested: undefined, user: result.user, userId: result.userId})
           setLoading(false)
         }
     }, [user, props.symbol])

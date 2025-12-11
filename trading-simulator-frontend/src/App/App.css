@@ -5,7 +5,8 @@ body {
   animation-iteration-count: infinite;
   animation-direction: alternate;
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: Inter, sans-serif;
+
 }
 
 .App {

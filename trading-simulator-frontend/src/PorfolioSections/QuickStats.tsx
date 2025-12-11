@@ -13,11 +13,6 @@ import { useRef, useEffect, useState } from "react";
 
 ChartJS.register(LineElement, LineController, PointElement, LinearScale, TimeScale, Tooltip, Legend, CategoryScale);
 
-type InvestedPoint = {
-    date: string;
-    invested: number;
-}
-
 export default function QuickStats(props: any){
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -201,33 +196,25 @@ useEffect(() => {
         console.log("Array of Values Amounts", VLV);
     }
 
-    // let ProfitColour = "#45a049";
-    // let ProfitLossTitle = "Profit";
-    // let ValueColour = "#45a049";
-  
-    // if (props.portfolio) {
-    //   if (props.portfolio.profitLoss < 0) {
-    //     ProfitColour = "#bb1515";
-    //     ProfitLossTitle = "Loss";
-    //   }
-  
-    //   if (props.portfolio.currentValue < props.portfolio.totalInvested) {
-    //     ValueColour = "#bb1515";
-    //   }
+    // function leaveGraphRefresh(){
+    //     setHoverValue(null)
+    //     props.setPortfolioValue(props.originalValues.PortfolioValue)
+    //     props.setInvested(props.originalValues.Invested)
+    //     props.setProfit(props.originalValues.Profit)
     // }
     
     return (
         <>
             <section className="StocksAverageGraph">
                 <h2>{hoverValue ? `${hoverValue.toLocaleString()}` : "Hover to see value"}</h2>
-                <canvas ref={canvasRef}></canvas>
+                <canvas ref={canvasRef} tabIndex={0} role="img" aria-label="A line chart showing your portfolio's performance over time"></canvas>
             </section>
             <section className="FilterGraph">
                 <article>
-                    <button style={props.FilterHistory == "week" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("week")}>Week</button>
-                    <button style={props.FilterHistory == "month" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("month")}>Month</button>
-                    <button style={props.FilterHistory == "year" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("year")}>Year</button>
-                    <button style={props.FilterHistory == "all" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("all")}>All</button>
+                    <button aria-label="Fitler graph to this week" className="w" style={props.FilterHistory == "week" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("week")}>Week</button>
+                    <button aria-label="Fitler graph to this month" className="m" style={props.FilterHistory == "month" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("month")}>Month</button>
+                    <button aria-label="Fitler graph to this year" className="y" style={props.FilterHistory == "year" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("year")}>Year</button>
+                    <button aria-label="Fitler graph to this all time" className="a" style={props.FilterHistory == "all" ? {backgroundColor: "#4CAF50"} : {}} onClick={() => props.setFilterHistory("all")}>All</button>
                 </article>
             </section>
 

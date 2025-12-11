@@ -75,6 +75,7 @@ const Login = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="UsernameInputLogin"
+            aria-label="Enter Username"
             aria-required="true"
             required
           />
@@ -88,6 +89,7 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="PasswordInputLogin"
+            aria-label="Enter Password"
             aria-invalid={error ? "true" : "false"}
             aria-required="true"
             required
@@ -97,7 +99,7 @@ const Login = () => {
       </form>
       {error && <p role="alert" className="ErrorType">{error}</p>}
       <p className="noAccount">Don't have an account?</p>
-      <a aria-label="Go to registration page" href="/register" className="noAccountRegister">Register</a>
+      <a aria-label="Go to registration page to create an account" href="/register" className="noAccountRegister">Register</a>
     </div>
   );
 };

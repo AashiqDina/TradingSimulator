@@ -1,7 +1,7 @@
 import React, { useState } from "react"; 
 import { Link, useNavigate } from "react-router-dom"; 
 import "./Header.css";
-import { useAuth } from "../Functions/AuthContext";
+import { useAuth} from "../Functions/AuthContext";
 import Logo from "../Logo/Logo"
 
 const Header: React.FC = () => {
@@ -29,53 +29,42 @@ const Header: React.FC = () => {
   return ( 
     <header id="Top" className="Header">
 
-        <div  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleMenu(); }} aria-label="Click to open Menu" aria-expanded={menuOpen ? "true" : "false"} className={`Header-menu ${menuOpen ? "Open" : ""}`} onClick={toggleMenu}>
+        <button tabIndex={0} aria-label="Open Menu" aria-expanded={menuOpen ? "true" : "false"} className={`Header-menu ${menuOpen ? "Open" : ""}`} onClick={toggleMenu}>
           <div className={`Hamburger1 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger2 ${menuOpen ? "Open" : ""}`} ></div>
           <div className={`Hamburger3 ${menuOpen ? "Open" : ""}`} ></div>
-        </div>
+        </button>
 
-        <h1 role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/")}} className="Header-logo" onClick={() => handleLink("/")}>
-            <Logo/>
-        </h1>
-        {user ? (
-          <p role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/portfolio")}} aria-label="Click here to visit your portfolio" className="HeaderUsername" onClick={() => handleLink("/portfolio")}>{user.username}</p>
-        ) : (
-            <img role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/login")}} src="/UserIcon.png" alt="Icon for a user that is not logged in" className="UserIcon" onClick={() => handleLink("/login")} />
-        )}
-
-
-      
         <nav aria-label="Menu" className="DropdownMenu" onMouseLeave={MouseLeave} style={!menuOpen ? {zIndex: -10000, opacity: 0, borderRadius: '0 7rem 7rem 0', pointerEvents: "none"}: {zIndex: 100000, opacity: 1}}>
           <ul>
             <li>
-              <Link role="button" to="/" tabIndex={menuOpen ? 0 : -1}  onClick={toggleMenu}>
+             <button aria-label="Home Page" tabIndex={menuOpen ? 0 : -1} onClick={() => {toggleMenu(); navigate("/");}}>
                 Home
-              </Link>
+              </button>
             </li>
             <li>
-              <Link role="button" to="/about" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
+              <button aria-label="About Page" tabIndex={menuOpen ? 0 : -1} onClick={() => {toggleMenu(); navigate("/about");}}>
                 About
-              </Link>
+              </button>
             </li>
             {user ? (
               <li>
-                <Link role="button" to="/friends" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
+                <button aria-label="Friends Page" tabIndex={menuOpen ? 0 : -1} onClick={() => {toggleMenu(); navigate("/friends");}}>
                 Friends
-                </Link>
+                </button>
             </li>
             ) : <></>}
             {user ? (
               <li>
-                <Link role="button" to="/portfolio" tabIndex={menuOpen ? 0 : -1} onClick={toggleMenu}>
+                <button aria-label="Portfolio Page" tabIndex={menuOpen ? 0 : -1} onClick={() => {toggleMenu(); navigate("/portfolio");}}>
                 Portfolio
-                </Link>
+                </button>
             </li>
             ) : <></>}
             {user ? (
               <>
                 <li>
-                  <button className="LogoutButton" tabIndex={menuOpen ? 0 : -1} onClick={handleLogout}>Logout</button>
+                  <button aria-label="Logout Button" className="LogoutButton" tabIndex={menuOpen ? 0 : -1} onClick={handleLogout}>Logout</button>
                 </li>
               </>
             ) : (
@@ -83,11 +72,22 @@ const Header: React.FC = () => {
             )}
             {!user ? (
               <li style={{marginTop: "0.5rem"}}>
-                <Link role="button" to="/login" tabIndex={menuOpen ? 0 : -1} className="LogoutButton" style={{fontSize: "1.1rem"}} onClick={toggleMenu}>Login</Link>
+                <button aria-label="Login Button" role="button" onClick={() => {toggleMenu(); navigate("/login");}} tabIndex={menuOpen ? 0 : -1} className="LogoutButton" style={{fontSize: "1.1rem"}}>Login</button>
               </li>
             ) : <></>}
           </ul>
         </nav>
+
+        <button aria-label="Home Page" className="Header-logo" onClick={() => handleLink("/")}>
+            <Logo/>
+        </button>
+        {user ? (
+          <button role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/portfolio")}} aria-label="Click here to visit your portfolio" className="HeaderUsername" onClick={() => handleLink("/portfolio")}>{user.username}</button>
+        ) : (
+            <button aria-label="Login Button" className="Header-logo" onClick={() => handleLink("/login")} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLink("/login")}}><img src="/UserIcon.png" alt="Icon for a user that is not logged in" className="UserIcon" /></button>
+        )}
+      
+        
     </header>
   );
 };

@@ -17,7 +17,7 @@ export default function Error(props: any){
                     </div>
                     <div className="WarningPopUpButton">
                         <div >
-                            <button onClick={() => {props.setDisplayError({display: false, title: "", bodyText: "", warning: false, buttonText: ""})}}>{props.buttonText}</button>
+                            <button aria-label="Warning Understood Confirmation" onClick={() => {props.setDisplayError({display: false, title: "", bodyText: "", warning: false, buttonText: ""})}}>{props.buttonText}</button>
                         </div>
                     </div>
                 </div>

@@ -52,7 +52,7 @@
     padding-right: 0.5rem;
 }
 
-.NewsArticle:hover{
+.NewsArticle:hover, .NewsArticle:focus{
     background-color: #45a0491a;
     box-shadow: none;
     scale: 1.01;
@@ -103,7 +103,6 @@
 .SeeMoreNews{
     background-color: #00000000;
     color: white;
-    outline: none;
     border-radius: 5rem;
     border: 1px #45a049 solid;
     /* padding: 1rem 0.1rem 1rem 0.1rem; */

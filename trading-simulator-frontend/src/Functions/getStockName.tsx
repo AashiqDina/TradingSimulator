@@ -1,7 +1,7 @@
 import axios from "axios"
 import handleTwelveDataError from "../Error/handleTwelveDataError";
 
-export default async function getCompanyInformation(props: any){
+export default async function getStockName(props: any){
     try{
         const result = await axios.get(`http://localhost:3000/api/stocks/GetStockName/${props.symbol}`)
         console.log(result)
@@ -11,7 +11,7 @@ export default async function getCompanyInformation(props: any){
                 response: result.data,
                 setDisplayError: props.setDisplayError
             });
-            return result.data;
+            return result.data.data;
         }
         else{
             return result.data.data;
@@ -21,7 +21,7 @@ export default async function getCompanyInformation(props: any){
     catch(error){
         props.setDisplayError({
             display: true, 
-            title: "Couldn't reach the backend", 
+            title: "Couldn't reach the backend to get the stock name", 
             bodyText: "Looks like our servers took a coffee break. Try again in a moment!", 
             warning: false, 
             buttonText: "Retry"})

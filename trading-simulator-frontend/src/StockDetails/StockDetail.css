@@ -17,11 +17,13 @@ a{
     text-align: center;
 }
 
+.StockDetailsTitle > span{
+    margin-left: 1rem;
+}
 
 .Selector > .BuyStockButton{
     background-color: #00000000;
     color: white;
-    outline: none;
     border-radius: 5rem;
     border: 1px #ffffff solid;
     font-family: Inter, sans-serif;
@@ -32,6 +34,19 @@ a{
 .Selector > .BuyStockButton:hover{
     background-color: #45a0491f;
     box-shadow: 0px 0px 10px 1px #3e91444c;
+}
+
+.ToBuyContent > header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.ToBuyContent > header > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -123,7 +138,6 @@ a{
 .Selector > button{
     background-color: #00000000;
     color: white;
-    outline: none;
     border-radius: 5rem;
     border: 1px #45a049 solid;
     /* padding: 1rem 0.1rem 1rem 0.1rem; */
@@ -603,6 +617,7 @@ a{
 }
 
 .StockDetailsTitle{
+    text-align: left;
     margin: 0;
 }
 
@@ -639,7 +654,6 @@ a{
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 0;
     }
     .CompleteSelector{
         justify-content: center;
@@ -694,6 +708,19 @@ a{
 }
 
 @media (max-width: 600px) {
+
+    .StockData{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .OpenMarketArticle, .CloseMarketArticle{
+        width: 80%;
+    }
+
+
     .TitleBox{
         margin: 0;
     }
@@ -738,6 +765,36 @@ a{
     }
 }
 
+@media (max-width: 420px) {
+
+    .StockDataMainRight > .genericFlexRow > h4{
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .StockDataMainRight > .genericFlexRow > h5{
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin: 0.8rem 0rem 0.8rem 0;
+    }
+
+    .StockDataMainRight > .genericFlexRow > .ClosePrevClose > h4{
+        margin: 0.8rem 0rem 0.8rem 0;
+    }
+
+    .StockDataMainRight > .genericFlexRow > .ClosePrevClose > h6{
+        font-size: 0.75rem;
+        margin: 0.8rem 0rem 0.8rem 0;
+    }
+
+    .StockDataMainRight > .genericFlexRow > .ClosePrevClose > h5{
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin: 0.8rem 0rem 0.8rem 0;
+    }
+
+}
+
 @media (max-width: 400px) {
     .TitleBox{
         display: flex;
@@ -772,7 +829,9 @@ a{
     }
 
     .TitleLogo{
-        width: 60px;
+        width: 3rem;
+        border-radius: 1rem;
+        margin-right: 0.5rem;
     }
 
     .TitleBox > section > h1{
@@ -780,8 +839,13 @@ a{
         transition: all 0.5s ease-in-out;
     }
 
-    .StockSymbol{
-        font-size: 1.5rem;
+    .StockDetailsTitle > span{
+        font-size: 1rem;
+        margin-left: 0.5rem;
+    }
+
+    .StockDetailsPrice > h2{
+        font-size: 1.2rem;
     }
 
     .CompanyInfoDisplayed .CompInfoTable{
@@ -811,6 +875,17 @@ a{
         font-family: Inter, sans-serif;
         font-size: 1.2rem;
         font-weight: 300;
+    }
+
+    .StockDetailsTitle{
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    .StockDetailsPrice {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
     }
 }
 

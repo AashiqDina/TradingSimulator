@@ -5,8 +5,6 @@ import './StockDetail.css';
 import { StockApiInfo, CompanyProfile } from "../Interfaces/interfaces";
 import { useAuth } from "../Functions/AuthContext";
 import { StocksAI } from '../StocksAI/StocksAI';
-import AiLoading from '../Loading/AiLoading';
-import getStockApiInfo from '../Functions/getStockApiInfo';
 import CompanyInformation from '../StockDetailsSections/StockDetailsCompanyInformation'
 import StockDetails from '../StockDetailsSections/StockDetailsStockData'
 import StockDetailsOwnedStocks from '../StockDetailsSections/StockDetailsOwnedStocks';
@@ -29,6 +27,7 @@ interface AxiosErrorType {
 const StockDetail: React.FC = () => {
     const { user } = useAuth();
     const { symbol } = useParams();
+    const [WinWidth, setWinWidth] = useState(window.innerWidth);
     const stockSymbol = decodeURIComponent(symbol ?? '');
     const [StockName, setStockName] = useState("Unknown")
     const [stockLogo, setStockLogo] = useState<string>('');
@@ -47,11 +46,15 @@ const StockDetail: React.FC = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const [displayError, setDisplayError] = useState<{display: boolean, warning: boolean, title: string, bodyText: string, buttonText: string}>({display: false, title: "", bodyText: "", warning: false, buttonText: ""});
     
-
-
     useEffect(() => {
         GetData()
     }, [])
+
+    useEffect(() => {
+      const handleResize = () => setWinWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const GetData = async() => {
         try{
@@ -154,25 +157,24 @@ const StockDetail: React.FC = () => {
         recycle={false}
       />}
         <header className='TitleBox'>
-          <section>
-            <img className='TitleLogo' src={stockLogo} alt={`Stock Logo for ${StockName}`} />
-              <article className='StockDetailsPrice'>
+          <section style={StockName.length > 18 && WinWidth < 600 ? {justifyContent: "center"} : undefined}>
+            <img className='TitleLogo' src={stockLogo} alt={`Logo`} />
+              <article className='StockDetailsPrice' style={StockName.length > 18 && WinWidth < 600 ? {alignItems: "center"} : undefined}>
                 <div className='MiniNameSymbolSection'>
-                  <h1 className='StockDetailsTitle'>{StockName}</h1>
-                  <span className='StockSymbol'>{stockSymbol}</span>
+                  <h1 className='StockDetailsTitle' style={StockName.length > 18 && WinWidth < 600 ? {textAlign: "center"} : undefined} >{StockName}<span className='StockSymbol'>{stockSymbol}</span></h1>
                 </div>
                 {/* <div className='TitleLogo'></div> */}
-                <h2>£{stockPrice?.toFixed(2)}</h2>
+                <h2 style={StockName.length > 18 ? {marginTop: "0.5rem"} : undefined}>£{stockPrice?.toFixed(2)}</h2>
               </article>
           </section>
           <section className='CompleteSelector'>
             <section className='SectionSection'>
               <article className='Selector'>
-                <button className='BuyStockButton' aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy Stock</button>
+                {user && <button className='BuyStockButton' aria-label='Buy Stock' onClick={() => setIsModalOpen(true)}>Buy Stock</button>}
                 <button aria-pressed={DisplayedData === "Overview"} aria-label="View overview" onClick={() => SwitchSection("Overview")} className={"Overview" + (DisplayedData == "Overview" ? "Selected" : "")}>Overview</button>
                 <button aria-pressed={DisplayedData === "CompanyInformation"} aria-label="View company information" onClick={() => SwitchSection("CompanyInformation")} className={"CompanyInformation" + (DisplayedData == "CompanyInformation" ? "Selected" : "")}>About</button>
                 <button aria-pressed={DisplayedData === "StockData"} aria-label="View stock data" onClick={() => SwitchSection("StockData")} className={"StockData" + (DisplayedData == "StockData" ? "Selected" : "")}>Stock Data</button>
-                <button aria-pressed={DisplayedData === "OwnedStocks"} aria-label="View owned stocks" onClick={() => SwitchSection("OwnedStocks")} className={"OwnedStocks" + (DisplayedData == "OwnedStocks" ? "Selected" : "")}>Owned Stocks</button>
+                {user && <button aria-pressed={DisplayedData === "OwnedStocks"} aria-label="View owned stocks" onClick={() => SwitchSection("OwnedStocks")} className={"OwnedStocks" + (DisplayedData == "OwnedStocks" ? "Selected" : "")}>Owned Stocks</button>}
                 <button aria-pressed={DisplayedData === "News"} aria-label="View stock related news" onClick={() => SwitchSection("News")} className={"News" + (DisplayedData == "News" ? "Selected" : "")}>News</button>
                 <button aria-pressed={DisplayedData === "AIAssistant"} aria-label="View AI assistant" onClick={() => SwitchSection("AIAssistant")} className={"AIAssistant" + (DisplayedData == "AIAssistant" ? "Selected" : "")}>AI Assistant</button>
               </article>
@@ -186,20 +188,19 @@ const StockDetail: React.FC = () => {
                 (DisplayedData == "Overview") && <StockDetailsOverview StockName={StockName} symbol={stockSymbol} setDisplayError={setDisplayError}/>
               }
               {
-                  (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails} setCompanyDetails={setCompanyDetails} DisplayedData={DisplayedData} symbol={stockSymbol} setDisplayError={setDisplayError}/>
+                (DisplayedData == "CompanyInformation") && <CompanyInformation StockCompanyDetails={StockCompanyDetails} setCompanyDetails={setCompanyDetails} DisplayedData={DisplayedData} symbol={stockSymbol} setDisplayError={setDisplayError}/>
               }
               {
-                  (DisplayedData == "StockData") && <StockDetails symbol={stockSymbol} setStockBasicData={setStockBasicData} BasicStockData={BasicStockData} stockPrice={stockPrice} setDisplayError={setDisplayError}/>
-
+                (DisplayedData == "StockData") && <StockDetails symbol={stockSymbol} setStockBasicData={setStockBasicData} BasicStockData={BasicStockData} stockPrice={stockPrice} setDisplayError={setDisplayError}/>
               }      
               {
-                  (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={stockSymbol}/>
+                (DisplayedData == "OwnedStocks") && <StockDetailsOwnedStocks user={user} symbol={stockSymbol}/>
               } 
               {
-                  (DisplayedData == "News") && <StockDetailsNews symbol={stockSymbol} setDisplayError={setDisplayError}/>
+                (DisplayedData == "News") && <StockDetailsNews symbol={stockSymbol} setDisplayError={setDisplayError}/>
               } 
               {
-                  (DisplayedData == "AIAssistant") && <AiChat setSearchInput={setSearchInput} HandleAiResponse={HandleAiResponse} AIAssistantSearchInput={AIAssistantSearchInput} AiResponses={AiResponses} UserPrompts={UserPrompts}/>
+                (DisplayedData == "AIAssistant") && <AiChat setSearchInput={setSearchInput} HandleAiResponse={HandleAiResponse} AIAssistantSearchInput={AIAssistantSearchInput} AiResponses={AiResponses} UserPrompts={UserPrompts}/>
               }         
             </div>
         </section>
@@ -209,48 +210,54 @@ const StockDetail: React.FC = () => {
                 <div className="ToBuyContent">
                   <header>
                     <div className='BuyStockTitle'>
-                      <h2>Buy</h2>
-                      <img className='StockLogo' style={{margin: "0 -0.5rem 0 0", width: "2.5rem"}} src={stockLogo} alt="Stock Logo" />
-                      <h2>{StockName}</h2>
+                      <h2>Purchase {StockName} <span className='StockSymbol'>{stockSymbol}</span></h2>
+                    </div>
+                    <div className='BuyStockLogo'>
+                      <img className='StockLogo' style={{margin: "0"}} src={stockLogo} alt="Logo" />
                     </div>
                   </header>
-                  <div className='toBuyBody'>
-                    <label htmlFor="quantity">Quantity:</label>
-                    <input                         
-                        aria-label="Enter the quantity here."
-                        id="quantity"
-                        type="number"
-                        value={quantity}
-                        onChange={(e) => {setQuantity(e.target.value); setCost((String(Number(e.target.value)*(stockPrice || 0))))}}
-                        className="QuantityInput"
-                        onBlur={() => {
-                          if (quantity === "" || Number(quantity) < 1) {
-                            setQuantity("0")
-                          }
-                          if (cost) setCost(Number(cost).toFixed(2));
-                          if (quantity) setQuantity(Number(quantity).toFixed(2));
-                        }}/>
-                    <label htmlFor="cost">Total Cost:</label>
-                    <input                         
-                        aria-label="Price"
-                        id="cost"
-                        type="number"
-                        value={(cost || String(Number(quantity)*(stockPrice || 0)))}
-                        onChange={(e) => {
-                          let q = (Number(e.target.value)/(stockPrice || 0))
-                          setQuantity(String(q)); 
-                          setCost(String(Number(q)*(stockPrice || 0)))}}
-                        className="QuantityInput"
-                        onBlur={() => {
-                          if (cost) setCost(Number(cost).toFixed(2));
-                          if (quantity) setQuantity(Number(quantity).toFixed(2));
-                        }}
-                        /> 
-                  </div>
-                  <footer className="ToBuyFooter">
-                      <button onClick={() => setIsModalOpen(false)}>Cancel</button>
-                      <button onClick={handleBuyStock}>Confirm Purchase</button>
-                  </footer>
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleBuyStock();
+                    }}>
+                    <div className='toBuyBody'>
+                      <label htmlFor="quantity">Number of Shares:</label>
+                      <input                         
+                          aria-label="Enter the quantity here (or leave it blank if you wish to spend a specific amount)"
+                          id="quantity"
+                          type="number"
+                          value={quantity}
+                          onChange={(e) => {setQuantity(e.target.value); setCost((String(Number(e.target.value)*(stockPrice || 0))))}}
+                          className="QuantityInput"
+                          onBlur={() => {
+                            if (quantity === "" || Number(quantity) < 1) {
+                              setQuantity("0")
+                            }
+                            if (cost) setCost(Number(cost).toFixed(2));
+                            if (quantity) setQuantity(Number(quantity).toFixed(2));
+                          }}/>
+                      <label htmlFor="cost">Estimated Cost:</label>
+                      <input                         
+                          aria-label="Enter the Price here (or leave it blank if you wish to buy a specific amount of stocks)"
+                          id="cost"
+                          type="number"
+                          value={(cost || String(Number(quantity)*(stockPrice || 0)))}
+                          onChange={(e) => {
+                            let q = (Number(e.target.value)/(stockPrice || 0))
+                            setQuantity(String(q)); 
+                            setCost(String(Number(q)*(stockPrice || 0)))}}
+                          className="QuantityInput"
+                          onBlur={() => {
+                            if (cost) setCost(Number(cost).toFixed(2));
+                            if (quantity) setQuantity(Number(quantity).toFixed(2));
+                          }}
+                          /> 
+                    </div>
+                    <footer className="ToBuyFooter">
+                        <button type='button' onClick={() => setIsModalOpen(false)}>Cancel</button>
+                        <button type='submit'>Confirm Purchase</button>
+                    </footer>
+                  </form>
                 </div>
               </div>
             </FocusTrap>

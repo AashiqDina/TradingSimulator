@@ -1,3 +1,5 @@
+
+
 .Header {
     display: flex;
     justify-content: space-between;
@@ -9,6 +11,7 @@
     padding: 0.5rem 1rem;
     position: relative;
     height: 100%;
+    margin-top: 1rem;
   }
 
   .Logo{
@@ -26,18 +29,14 @@
     cursor: pointer;
     font-family: Inter, sans-serif;
     font-weight: 500;
+    background: none;
+    border: none;
+    width: fit-content;
   }
   
   .Header-logo a {
     text-decoration: none;
     color: white;
-  }
-
-  .Header-logo > img{
-    position: relative;
-    bottom: 0.4rem;
-    width: 1.7rem;
-    height: auto;
   }
   
   .Header-user {
@@ -55,9 +54,22 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 30px;
+    width: 36px;
     height: 24px;
     cursor: pointer;
+    border: none;
+    background: none;
+  }
+
+  .Header-menu:hover, .Header-logo:hover, .HeaderUsername:hover{
+    background: none;
+  }
+
+  .Header-menu:focus-visible, .Header-logo:focus, .Header-logo:focus-visible, .HeaderUsername:focus, .HeaderUsername:focus-visible{
+    background: none;
+    border: none;
+    /* outline: none; */
+    border-radius: 0.5rem;
   }
 
   
@@ -79,7 +91,7 @@
   }
   
   .Hamburger3.Open{
-    transform: translateY(-10px) translateX(13px) rotate(-45deg);
+    transform: translateY(-8px) translateX(11px) rotate(-45deg);
     width: 70%;
   }
   
@@ -131,12 +143,24 @@
 
   }
 
+  .DropdownMenu > ul > li > button{
+    background: none;
+    width: fit-content;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: 100;
+  }
+
   .HeaderUsername{
     color: white;
     cursor: pointer;
     font-size: 1.2rem;
     font-family: Inter, sans-serif;;
     font-weight: 500;
+    width: fit-content;
+    background: none;
+    border: none;
+    text-align: right;
   }
 
   @media (max-width: 600px) {
@@ -173,7 +197,7 @@
     background-color: rgba(255, 255, 255, 0.009);
   }
 
-  .LogoutButton{
+  .DropdownMenu > ul > li > .LogoutButton{
     border-radius: 10rem;
     padding: 0.9rem;
     padding-left: 1.4rem;
@@ -189,12 +213,12 @@
     box-shadow: 0px 0px 10px 1px #3e91444c;
   }
 
-  .LogoutButton:hover{
+  .DropdownMenu > ul > li > .LogoutButton:hover{
     border: 1px #45a049 solid;
     background-color: #45a0497f;
   }
 
-  .LogoutButton:focus{
+  .DropdownMenu > ul > li > .LogoutButton:focus{
     background-color: #e2e2e2;
     color: #45a049;
   }

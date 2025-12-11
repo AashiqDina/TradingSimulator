@@ -15,47 +15,59 @@
     margin-top: 1rem;
     margin-bottom: 0.1rem;
     width: 100%;
+    
 }
 
-.UserFriendSearch > .InputSection > input:focus{
+/* .UserFriendSearch > .InputSection > input:focus{
     scale: 1.01;
 }
 
 .UserFriendSearch > .InputSection > input:focus + button{
     scale: 1.01;
     margin-left: -5rem;
-}
+} */
 
 .UserFriendSearch > .InputSection > input{
-    height: 2.3rem;
-    width: 50%;
-    min-width: 15rem;
-    border-radius: 10rem;
-    margin: 0;
-    border: none;
-    outline: none;
-    transition: all 0.5s ease-in-out;
+	outline: none;
+	border: none;
+	border-radius: 10rem;
+	min-width: 15rem;
+	max-width: 50%;
+	height: 2.5rem;
+	font-size: 0.8rem;
+	font-family: Inter, sans-serif;
+	font-weight: 500;
+	box-shadow: 0px 0px 20px 0px #3e91444c;
+	transition: all 0.4s ease-in-out;
+	background-color: rgba(255, 255, 255, 0);
+	border: 1px #45a049 solid;
+	color: #ffffff;
+	margin: 0;
 }
 
 .UserFriendSearch > .InputSection > button{
-    animation-name: BodyBackground;
-    animation-duration: 15s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    height: 2.1rem;
-    width: 5.1rem;
-    margin-left: -5.2rem;
-    border-radius: 5rem;
-    border: none;
-    outline: none;
-    font-family: Inter, sans-serif;
-    font-weight: 600;
-    transition: all 0.5s ease-in-out;
-    z-index: 10;
+  border: 1px #45a04900 solid;
+  animation-name: BodyBackground;
+  animation-duration: 15s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  border-radius: 1rem 10rem 10rem 1rem;
+  height: 2.2rem;
+  width: 8rem;
+  margin-left: -8.2rem;
+  font-size: 0.9rem;
+  font-family: Inter, sans-serif;
+  font-weight: 450;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.5s ease-in-out;
 }
 
 .UserFriendSearch > .InputSection > button:hover{
-    scale: 1.02;
+    box-shadow: 0px 0px 10px 5px #3e91444c;
+    border: 1px #45a049 solid;
+    color: #9dcfa0;
 }
 
 .FriendsTitle{
@@ -68,13 +80,16 @@
 
 .FriendsTitle > h2{
     margin: 0;
+    font-weight: 300;
 }
 
 .FriendsTitle > div{
     width: 28%;
     height: 0.3rem;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     border-radius: 5rem;
+    border: 1px solid #3e9144;
+    transition: all 0.5s ease-in-out;
 }
 
 .UserFriendSuggestions{
@@ -82,6 +97,8 @@
     animation-duration: 15s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+    position: fixed;
+    top: 9rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,7 +109,6 @@
     min-width: 15rem;
     box-shadow: 0px 0px 3px 0px #3e91444c;
     border-radius: 2rem;
-
 }
 
 .UserFriendSuggestions > div{
@@ -112,7 +128,7 @@
 .UserFriendSuggestions > div > h3{
     margin: 1rem 0 1rem 1rem;
     font-size: 1.3rem;
-    font-weight: 500;
+    font-weight: 350;
 }
 
 .UserFriendSuggestions > div > button, .UserFriendSuggestions > div > div > button{
@@ -229,7 +245,7 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
-    width: 60%;
+    width: 70%;
     transition: all 0.5s ease-in-out;
     border-radius: 2rem;
     padding: 0.5rem 0 0.5rem 0;
@@ -283,6 +299,14 @@
     opacity: 0;
     pointer-events: none;
     transition: all 0.5s ease-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.DeleteButtonContainer > button{
+    background: none;
+    border: none;
 }
 
 .FriendsList > article:hover .DeleteButtonContainer{
@@ -311,4 +335,19 @@
 .plAndDeleteContainer > p{
     margin: 0;
     transition: all 0.5s ease-in-out;
+}
+
+@media (max-width: 700px) {
+
+    .FriendsList{
+        margin-top: 1rem;
+    }
+
+    .FriendsTitle > div{
+        width: 20%;
+    }
+
+    .FriendsList > article:hover{
+        padding: 0.2rem 0.7rem 0.2rem 0.7rem;
+    }
 }

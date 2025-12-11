@@ -95,6 +95,8 @@ function Register() {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
             className="UsernameInput"
+            aria-label="input chosen username"
+            aria-required
             required
           />
         </div>
@@ -107,6 +109,8 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             className="PasswordInput"
+            aria-label="input chosen password"
+            aria-required
             required
           />
         </div>
@@ -119,13 +123,15 @@ function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm your password"
             className="ConfirmPasswordInput"
+            aria-label="confirm chosen password"
+            aria-required
             required
           />
         </div>
 
         {error && <p role="alert" className="RegisterError">{error}</p>}
 
-        <button className="SubmitButton" type="submit">Register</button>
+        <button aria-label="Submit and Create account" className="SubmitButton" type="submit">Register</button>
       </form>
       <p className="noAccount">
         Already have an account?

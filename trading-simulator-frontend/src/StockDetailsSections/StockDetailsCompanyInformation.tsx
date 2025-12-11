@@ -19,7 +19,7 @@ export default function CompanyInformation(props: any){
     GetCompanyDetailsfromApi()
   }, [props.DisplayedData])
 
-  const Loading = props.DisplayedData == "CompanyInformation" && !StockCompanyDetails;
+  const loading = props.DisplayedData == "CompanyInformation" && !StockCompanyDetails;
   let modArray = undefined
   if(StockCompanyDetails){
     modArray = StockCompanyDetails.description.slice(0, 250)
@@ -43,7 +43,7 @@ export default function CompanyInformation(props: any){
 
       return (
       <>
-      {!Loading || StockCompanyDetails == null ? <article className='CompanyInfoDisplayed'>
+      {!loading || StockCompanyDetails == null ? <article className='CompanyInfoDisplayed'>
         <div className="Desc">
             {StockCompanyDetails && <h2>Description</h2>}
             {StockCompanyDetails ? (

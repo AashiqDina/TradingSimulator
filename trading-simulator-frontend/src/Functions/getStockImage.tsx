@@ -21,7 +21,7 @@ export default async function getStockImage(props: any){
     catch(error){
         props.setDisplayError({
             display: true, 
-            title: "Couldn't reach the backend", 
+            title: "Couldn't reach the backend to get the stock's image", 
             bodyText: "Looks like our servers took a coffee break. Try again in a moment!", 
             warning: false, 
             buttonText: "Retry"})

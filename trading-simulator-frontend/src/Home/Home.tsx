@@ -3,20 +3,13 @@ import { useAuth } from '../Functions/AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import Confetti from 'react-confetti'
 import { FocusTrap } from 'focus-trap-react';
-import getStockApiInfo from '../Functions/getStockApiInfo';
-import { StockApiInfo, Suggestion} from '../Interfaces/interfaces';
-import getStockLastUpdated from '../Functions/getStockLastUpdated';
-import formatNumber from '../Functions/FormatNumber';
-import buyStock from '../Functions/buyStock';
 import Error from '../Error/Error';
 import getStockPrice from '../Functions/getStockPrice';
-import getStockImage from '../Functions/getStockImage';
-import getStockName from '../Functions/getStockName';
 import getTrendingStocks from '../Functions/getTrendingStocks';
 import Loading from '../Loading/Loading';
 import getMarketNews from '../Functions/getMarketNews';
+import SponsoredAd from '../Ads/SponsoredAd';
 
 type StockInfo = {
   symbol: string;
@@ -50,6 +43,8 @@ const Home: React.FC = () => {
   const [displayError, setDisplayError] = useState<{display: boolean, warning: boolean, title: string, bodyText: string, buttonText: string}>({display: false, title: "", bodyText: "", warning: false, buttonText: ""});
   const [trendingStocksList, setTrendingStocksList] = useState<string[]>([])
   const [marketNews, setMarketNews] = useState<any[] | null>(null)
+  const [marketNewsIndex, setMarketNewsIndex] = useState<{index: number, direction: string}>({index: 0, direction: "left"})
+  const MarketNewsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
 
@@ -95,20 +90,53 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  const searchStock = async (symbol: string) => {
-
-    // get stockPrice
-    // if no error continue
-    // otherwise display cant find the stock
-
-
-    if(symbol == ""){
-      navigate(`/stock/${encodeURIComponent(String(stockSymbol ?? ''))}`)
+  useEffect(() => {
+    MarketNewsRef.current.forEach((el) => {
+    if(!el){
+      return
+    };
+    if(marketNewsIndex.direction == "left"){
+      el.classList.remove("newsAnimateLeft");
+      void el.offsetWidth;
+      el.classList.add("newsAnimateLeft");
     }
     else{
-      navigate(`/stock/${encodeURIComponent(String(symbol ?? ''))}`)
+      el.classList.remove("newsAnimateRight");
+      void el.offsetWidth;
+      el.classList.add("newsAnimateRight");
+    }
+  });
+  }, [marketNewsIndex])
+
+  const searchStock = async (symbol: string) => {
+
+    var stockPrice = undefined
+
+    if(symbol == ""){
+      stockPrice = await getStockPrice({symbol: stockSymbol, setDisplayError: setDisplayError})
+    }
+    else{
+      stockPrice = await getStockPrice({symbol: symbol, setDisplayError: setDisplayError})
     }
 
+    console.log("Here: ", stockPrice)
+
+    if(stockPrice != null){
+      if(symbol == ""){
+        navigate(`/stock/${encodeURIComponent(String(stockSymbol ?? ''))}`)
+      }
+      else{
+        navigate(`/stock/${encodeURIComponent(String(symbol ?? ''))}`)
+      }
+    }
+    else{
+      setDisplayError({
+            display: true, 
+            title: "Hmm… couldn’t find that stock.", 
+            bodyText: "Please double-check that the symbol you entered is correct.", 
+            warning: false, 
+            buttonText: "Retry"})
+    }
   };
 
   function getNameImage(theSymbol: string){
@@ -128,10 +156,14 @@ const Home: React.FC = () => {
       setSuggestions([])
     }
     
-    console.log(stockList)
+    console.log("stock list: ", stockList, " and string: ", symbol)
     if(stockList){
     const matches = (Object.entries(stockList) as [string, { symbol: string; logo: string }][])
-            .filter(([name]) => name.toLowerCase().startsWith(symbol.toLowerCase()))
+            .filter(([name, data]) => {
+              return(
+                name.toLowerCase().startsWith(symbol.toLowerCase()) || data.symbol.toLowerCase().startsWith(symbol)
+              )
+            })
             .slice(0, 5)
             .map(([name, stock]) => ({
               name,
@@ -140,8 +172,17 @@ const Home: React.FC = () => {
             }));
 
     setSuggestions(matches);
-    console.log("Suggestions ",matches)
+    console.log("Suggestions ", matches)
    }
+  }
+
+  function newsLeft(){
+    marketNewsIndex.index == 0 ? setMarketNewsIndex({index: 97, direction: "left"}) : setMarketNewsIndex({index: marketNewsIndex.index-3, direction: "left"})
+
+  }
+
+  function newsRight(){
+    marketNewsIndex.index >= 97 ? setMarketNewsIndex({index: 0, direction: "right"}) : setMarketNewsIndex({index: marketNewsIndex.index+3, direction: "right"})
   }
 
   return (
@@ -167,14 +208,14 @@ const Home: React.FC = () => {
                 }
               }}
               />
-            <button className='StockSearchButton' onClick={() => {searchStock("")}}>Search</button>
+            <button aria-label={`Search for ${stockSymbol}`} className='StockSearchButton' onClick={() => {searchStock("")}}>Search</button>
           </section>
           {displaySuggestions && suggestions.length != 0 && stockSymbol.length > 0 && <section className='SearchSuggestions'>
              {suggestions.map((suggestion, index) => {
               return (
                 <button key={index} onClick={() => {searchStock(suggestion.symbol)}} style={(suggestions.length == 1) ? {margin: "0.5rem 0.5rem 0.5rem 0.5rem"} : (index == suggestions.length-1) ? {margin: "0rem 0.5rem 0.5rem 0.5rem"} : (index == 0) ? {margin: "0.5rem 0.5rem 0rem 0.5rem"} : {}}>
-                  <img src={suggestion.logo} alt={`${suggestion.name[0].toUpperCase()}`} />
-                  <h4>{suggestion.name}</h4>
+                  <img src={suggestion.logo} alt="" />
+                  <h4>{suggestion.name}<span className='suggestionSymbol'>{suggestion.symbol}</span></h4>
                 </button>
             )
             })}
@@ -200,10 +241,10 @@ const Home: React.FC = () => {
                 trendingStocksList.map((stock, index) => {
                   const data = getNameImage(stock)
                   return (
-                    <div className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
-                      <img src={data?.logo} alt={data?.name} />
+                    <button className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
+                      <img src={data?.logo} alt="" />
                       <h2>{data?.name}</h2>
-                    </div>
+                    </button>
                   )
                 })
               }
@@ -212,7 +253,7 @@ const Home: React.FC = () => {
                   const data = getNameImage(stock)
                   return (
                     <div className='TrendingStockDiv' key={stock + index} onClick={() => searchStock(stock)}>
-                      <img src={data?.logo} alt={data?.name} />
+                      <img src={data?.logo} alt="" />
                       <h2>{data?.name}</h2>
                     </div>
                   )
@@ -231,18 +272,27 @@ const Home: React.FC = () => {
           <section className='HomeNewsSectionTitle'>
             <article>
               <h2>Today's News</h2>
+              <div className='newsArrowContainer'>
+                <button className='newsArrowTriangleContainer' onClick={() => {newsLeft()}}>
+                  <div className='newsLeftArrow'></div>
+                </button>
+                <button className='newsArrowTriangleContainer' onClick={() => {newsRight()}}>
+                  <div className='newsRightArrow'></div>
+                </button>
+              </div>
             </article>
           </section>
       </section>
       <section className='MotherBody2'>
           <article className='HomeNewsSection'>
+            {false && <SponsoredAd></SponsoredAd>} {/* Doesnt work unless I have a domain, didnt know about that until after all of this*/}
             {
               (marketNews != null) ? 
-                [marketNews[0], marketNews[1], marketNews[2]].map((news) => {
+                [marketNews[marketNewsIndex.index], marketNews[marketNewsIndex.index+1], marketNews[marketNewsIndex.index+2]].map((news, index) => {
                   return (
-                    <a href={news.url} className='CompleteMarketNews'>
+                    <a href={news.url} aria-label={`Read news: ${news.headline}`} className='CompleteMarketNews' key={news.url} style={{animationDelay: `${index * 0.1}s`}} ref={(el) => {if (el) MarketNewsRef.current[index] = el;}}>
                       <div className='marketNewsImage'>
-                        <img src={news.image} alt="" />
+                        <img src={news.image} alt={news.source + " image"} />
                       </div>
                       <div className='marketNewsContainer'>
                         <div className='marketNewsHeader'>
