@@ -1,6 +1,12 @@
 # Trading Simulator – Frontend (Old Version)
 
-This is the **older version** of the Trading Simulator project, designed to provide a basic virtual stock trading experience. The frontend and backend are separate projects, with the backend running on **SQLite** and serving a REST API that the frontend consumes.
+
+
+**Note:** This is the **older version** of the Trading Simulator project.  
+For the latest frontend with full React, TypeScript, and deployed version, visit:  
+- **Live Demo:** [https://aashiqdina.github.io/trading-sim/](https://aashiqdina.github.io/trading-sim/)  
+- **Frontend GitHub Repo:** [https://github.com/AashiqDina/trading-sim](https://github.com/AashiqDina/trading-sim)
+- **Backend GitHub Repo:** private
 
 ---
 
