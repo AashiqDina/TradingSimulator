@@ -226,10 +226,10 @@ const Home: React.FC = () => {
       </section>
       <section className='MotherBody'>
       <section className='CompleteTrendingBody'>
-        {(trendingStocksList.length > 0) && <article className='TrendingStocksSectionTitle'>
+        {(trendingStocksList && trendingStocksList.length > 0) && <article className='TrendingStocksSectionTitle'>
           <h2>Trending Stocks</h2>
         </article>}
-        {(trendingStocksList.length > 0) ? <article className='TrendingStocksSection'>
+        {(trendingStocksList && trendingStocksList.length > 0) ? <article className='TrendingStocksSection'>
           <div className='TrendingStocksCarouselContainer'>
             <div className='TrendingStocksCarouselTrack'>
               {
