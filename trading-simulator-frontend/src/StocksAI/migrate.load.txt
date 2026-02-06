@@ -1,0 +1,15 @@
+LOAD DATABASE
+     FROM sqlite:///mnt/c/Users/Aashi/MyDatabase.db
+     INTO postgresql://aashiq_user:aashiqdina123@localhost:5432/trading_sim
+
+ WITH include no drop, 
+      data only,
+      prefetch rows = 10000
+
+ ALTER SCHEMA 'main' RENAME TO 'public'
+
+ CAST type integer to numeric drop default drop not null using integer-to-numeric;
+
+ -- Optional: disable FK checks
+ BEFORE LOAD DO $$ SET session_replication_role = replica; $$;
+ AFTER LOAD DO $$ SET session_replication_role = DEFAULT; $$;

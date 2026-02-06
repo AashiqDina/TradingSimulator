@@ -15,7 +15,7 @@ namespace TradingSimulator_Backend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _context;
-        private readonly string _apiKey = "";
+        private readonly string _apiKey = "apiKey";
         
         private static ConcurrentDictionary<string, (decimal? Price, DateTime Timestamp)> _stockCache = new ConcurrentDictionary<string, (decimal? Price, DateTime Timestamp)>();
         private static ConcurrentDictionary<string, (string? Logo, string? Name)> _stockImageCache = new ConcurrentDictionary<string, (string? Logo, string? Name)>();

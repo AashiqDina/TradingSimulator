@@ -10,6 +10,7 @@ import getTrendingStocks from '../Functions/getTrendingStocks';
 import Loading from '../Loading/Loading';
 import getMarketNews from '../Functions/getMarketNews';
 import SponsoredAd from '../Ads/SponsoredAd';
+import AiLoading from "../Loading/AiLoading"
 
 type StockInfo = {
   symbol: string;
@@ -44,6 +45,8 @@ const Home: React.FC = () => {
   const [trendingStocksList, setTrendingStocksList] = useState<string[]>([])
   const [marketNews, setMarketNews] = useState<any[] | null>(null)
   const [marketNewsIndex, setMarketNewsIndex] = useState<{index: number, direction: string}>({index: 0, direction: "left"})
+  const [WinWidth, setWinWidth] = useState(window.innerWidth);
+  const [isLoading, setIsLoading] = useState(true)
   const MarketNewsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +54,6 @@ const Home: React.FC = () => {
   useEffect(() => {
       const getMap = async () => {
         const map = await axios.get(`http://localhost:3000/api/stocks/GetStockList`)
-        console.log(map.data)
         setStockList(map.data)
       };
   
@@ -71,8 +73,8 @@ const Home: React.FC = () => {
   useEffect(() => {
     const getTrendingList = async () => {
       const trendingStocks =  await getTrendingStocks({setDisplayError: setDisplayError});
-      console.log(trendingStocks)
       setTrendingStocksList(trendingStocks);
+      setIsLoading(false)
     }
     getTrendingList();
   },[]);
@@ -108,6 +110,12 @@ const Home: React.FC = () => {
   });
   }, [marketNewsIndex])
 
+  useEffect(() => {
+    const handleResize = () => setWinWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const searchStock = async (symbol: string) => {
 
     var stockPrice = undefined
@@ -119,8 +127,6 @@ const Home: React.FC = () => {
       stockPrice = await getStockPrice({symbol: symbol, setDisplayError: setDisplayError})
     }
 
-    console.log("Here: ", stockPrice)
-
     if(stockPrice != null){
       if(symbol == ""){
         navigate(`/stock/${encodeURIComponent(String(stockSymbol ?? ''))}`)
@@ -128,14 +134,6 @@ const Home: React.FC = () => {
       else{
         navigate(`/stock/${encodeURIComponent(String(symbol ?? ''))}`)
       }
-    }
-    else{
-      setDisplayError({
-            display: true, 
-            title: "Hmm… couldn’t find that stock.", 
-            bodyText: "Please double-check that the symbol you entered is correct.", 
-            warning: false, 
-            buttonText: "Retry"})
     }
   };
 
@@ -156,7 +154,6 @@ const Home: React.FC = () => {
       setSuggestions([])
     }
     
-    console.log("stock list: ", stockList, " and string: ", symbol)
     if(stockList){
     const matches = (Object.entries(stockList) as [string, { symbol: string; logo: string }][])
             .filter(([name, data]) => {
@@ -172,7 +169,6 @@ const Home: React.FC = () => {
             }));
 
     setSuggestions(matches);
-    console.log("Suggestions ", matches)
    }
   }
 
@@ -210,15 +206,14 @@ const Home: React.FC = () => {
               />
             <button aria-label={`Search for ${stockSymbol}`} className='StockSearchButton' onClick={() => {searchStock("")}}>Search</button>
           </section>
-          {displaySuggestions && suggestions.length != 0 && stockSymbol.length > 0 && <section className='SearchSuggestions'>
-             {suggestions.map((suggestion, index) => {
-              return (
-                <button key={index} onClick={() => {searchStock(suggestion.symbol)}} style={(suggestions.length == 1) ? {margin: "0.5rem 0.5rem 0.5rem 0.5rem"} : (index == suggestions.length-1) ? {margin: "0rem 0.5rem 0.5rem 0.5rem"} : (index == 0) ? {margin: "0.5rem 0.5rem 0rem 0.5rem"} : {}}>
+          {displaySuggestions && suggestions && suggestions.length !== 0 && stockSymbol.length > 0 && <section className='SearchSuggestions'>
+             {suggestions.map((suggestion, index) => 
+                suggestion.symbol ? (
+                <button key={suggestion.symbol} onClick={() => {searchStock(suggestion.symbol)}} style={(suggestions.length == 1) ? {margin: "0.5rem 0.5rem 0.5rem 0.5rem"} : (index == suggestions.length-1) ? {margin: "0rem 0.5rem 0.5rem 0.5rem"} : (index == 0) ? {margin: "0.5rem 0.5rem 0rem 0.5rem"} : {}}>
                   <img src={suggestion.logo} alt="" />
                   <h4>{suggestion.name}<span className='suggestionSymbol'>{suggestion.symbol}</span></h4>
-                </button>
-            )
-            })}
+                </button>) : (<AiLoading/>)
+                )}
           </section>}
         </section>
         {/* {(
@@ -231,43 +226,75 @@ const Home: React.FC = () => {
       </section>
       <section className='MotherBody'>
       <section className='CompleteTrendingBody'>
-        {(trendingStocksList.length != 0) && <article className='TrendingStocksSectionTitle'>
+        {(trendingStocksList.length > 0) && <article className='TrendingStocksSectionTitle'>
           <h2>Trending Stocks</h2>
         </article>}
-        {(trendingStocksList.length != 0) && <article className='TrendingStocksSection'>
+        {(trendingStocksList.length > 0) ? <article className='TrendingStocksSection'>
           <div className='TrendingStocksCarouselContainer'>
             <div className='TrendingStocksCarouselTrack'>
               {
                 trendingStocksList.map((stock, index) => {
                   const data = getNameImage(stock)
+                  if(!(trendingStocksList.length > 0 && stockList)){
+                    return (
+                      <button className='TrendingStockDiv' key={stock}>
+                        { WinWidth > 600 ? <Loading scale={0.2} marginBottom={-0.3}/> : <Loading scale={0.1} marginBottom={-0.4}/>}
+                      </button>
+                    )
+                  }
+                  if(!data){
+                    return (
+                      <button className='TrendingStockDiv' key={stock}>
+                        <img src={process.env.PUBLIC_URL + "/Error.svg"} alt="ERROR SYMBOL" />
+                        <h2>Error - No Stock Found</h2>
+                      </button>
+                    )
+                  }
                   return (
                     <button className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
                       <img src={data?.logo} alt="" />
                       <h2>{data?.name}</h2>
                     </button>
-                  )
+                   )
                 })
               }
               {
                 trendingStocksList.map((stock, index) => {
                   const data = getNameImage(stock)
+                  if(!(trendingStocksList.length > 0 && stockList)){
+                    return (
+                      <button className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
+                        { WinWidth > 600 ? <Loading scale={0.2} marginBottom={-0.3}/> : <Loading scale={0.1} marginBottom={-0.4}/>}
+                      </button>
+                    )
+                  }
+                  if(!data){
+                    return (
+                      <button className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
+                        <img src={process.env.PUBLIC_URL + "/Error.svg"} alt="ERROR SYMBOL" />
+                        <h2>Error - No Stock Found</h2>
+                      </button>
+                    )
+                  }
                   return (
-                    <div className='TrendingStockDiv' key={stock + index} onClick={() => searchStock(stock)}>
+                    <button className='TrendingStockDiv' key={stock} onClick={() => {searchStock(stock);}}>
                       <img src={data?.logo} alt="" />
                       <h2>{data?.name}</h2>
-                    </div>
-                  )
+                    </button>
+                   )
                 })
               }
             </div>
           </div>
-        </article>}
-
-        {(trendingStocksList.length == 0) && <article className='TrendingStocksSection'>
+        </article> :
+        isLoading ? <article className='TrendingStocksSection'>
           <Loading/>
-        </article>}
+        </article> :
+        <h3 className='NoNewsFoundHeading'>No Stocks Current Trending</h3>        
+        }
       </section>
       </section>
+      <>
       <section className='NewsTitleSection'>
           <section className='HomeNewsSectionTitle'>
             <article>
@@ -284,26 +311,32 @@ const Home: React.FC = () => {
           </section>
       </section>
       <section className='MotherBody2'>
-          <article className='HomeNewsSection'>
+          <article className='HomeNewsSection' style={((marketNews == null && trendingStocksList.length != 0) || (marketNews?.length == 0)) ? {justifyContent: 'center'} : undefined}>
             {false && <SponsoredAd></SponsoredAd>} {/* Doesnt work unless I have a domain, didnt know about that until after all of this*/}
             {
+              (marketNews == null && trendingStocksList.length != 0) ?
+                <Loading top={8} height={46} marginBottom={-1}/>
+              :
+              (marketNews && marketNews.length == 0) ? <h3 className='NoNewsFoundHeading'>No News Found</h3> :
               (marketNews != null) ? 
-                [marketNews[marketNewsIndex.index], marketNews[marketNewsIndex.index+1], marketNews[marketNewsIndex.index+2]].map((news, index) => {
+                marketNews.slice(marketNewsIndex.index, marketNewsIndex.index + 3).map((news, index) => {
+                  console.log(news)
                   return (
-                    <a href={news.url} aria-label={`Read news: ${news.headline}`} className='CompleteMarketNews' key={news.url} style={{animationDelay: `${index * 0.1}s`}} ref={(el) => {if (el) MarketNewsRef.current[index] = el;}}>
+                    <a href={news.url || "brokenURL"} aria-label={`Read news: ${news.headline || "brokenHeadline"}`} className='CompleteMarketNews' key={news.url || index} style={{animationDelay: `${index * 0.1}s`}} ref={(el) => {if (el) MarketNewsRef.current[index] = el;}}>
                       <div className='marketNewsImage'>
-                        <img src={news.image} alt={news.source + " image"} />
+                        {WinWidth > 600 && <img src={news.image || "brokenSource"} alt={news.source + " image" || "brokenSource"} />}
                       </div>
-                      <div className='marketNewsContainer'>
-                        <div className='marketNewsHeader'>
-                          <h3>{news.headline}</h3>
+                      <div className={WinWidth > 600 ? 'marketNewsContainer' : 'marketNewsContainerMobile'}>
+                        <div className={WinWidth > 600 ? 'marketNewsHeader' : 'marketNewsHeaderMobile'}>
+                          {WinWidth < 600 && <img className='newsImageInHeader' src={news.image || "brokenSource"} alt={news.source + " image"} />}
+                          <h3>{news.headline || "brokenHeadline"}</h3>
                         </div>
                         <div className='marketNewsBody'>
-                          <p>{news.summary}</p>
+                          <p>{news.summary || "brokenSummary"}</p>
                         </div>
                         <div className='marketNewsFooter'>
-                          <p>Source: <span>{news.source}</span></p>
-                          <p>{new Date(news.datetime * 1000).toLocaleString("en-GB", {
+                          <p>Source: <span>{news.source || "brokenSource"}</span></p>
+                          <p>{new Date(news.datetime * 1000 || "0000000").toLocaleString("en-GB", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "2-digit",
@@ -319,6 +352,7 @@ const Home: React.FC = () => {
             }
           </article>
       </section>
+      </>
         {displayError.display && 
         <FocusTrap>
           <div className="ToBuyModal" aria-labelledby="BuyStockTile" role='dialog' aria-modal="true">
@@ -330,3 +364,5 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+

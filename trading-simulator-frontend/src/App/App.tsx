@@ -1,5 +1,4 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "../Home/Home"; 
 import Portfolio from "../Portfolio/Portfolio";
 import About from "../About/About";
@@ -15,7 +14,6 @@ import { AuthProvider } from "../Functions/AuthContext";
 function App() {
   return (
     <AuthProvider>
-      <Router>
         <div className="App">
           <Header />
           <Routes>
@@ -29,9 +27,9 @@ function App() {
             <Route path="/user/:user/:username" element={<UserPortfolio/>}></Route>
           </Routes>
         </div>
-      </Router>
     </AuthProvider>
   );
 }
+
 
 export default App;

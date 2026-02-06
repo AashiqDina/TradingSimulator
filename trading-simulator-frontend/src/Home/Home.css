@@ -54,7 +54,7 @@
     border-radius: 1rem 10rem 10rem 1rem;
     height: 2.85rem;
     width: 13.05rem;
-    margin-left: -13.2rem;
+    margin-left: -13.24rem;
     font-size: 1.2rem;
     font-family: Inter, sans-serif;
     font-weight: 450;
@@ -111,10 +111,10 @@ button:active{
 
 @media (max-width: 600px) {
   .StockSearchInput{
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   .StockSearchButton{
-    font-size: 1rem;
+    font-size: 0.9rem;
     width: 6rem;
     margin-left: -6.1rem;
   }
@@ -597,6 +597,7 @@ button:active{
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2rem;
 }
 
 .HomeNewsSection{
@@ -615,6 +616,7 @@ button:active{
     flex-direction: row;
     width: 100%;
     animation: growThenSmall 1s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
 
   .CompleteMarketNews:hover{
@@ -629,16 +631,28 @@ button:active{
     width: 100%;
   }
 
+  .marketNewsHeaderMobile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .newsImageInHeader{
+    width: 6rem;
+    border-radius: 0.4rem;
+  }
+
   .marketNewsImage > img{
     width: 12.5rem;
-    height: fit-content;
+    height: auto;
     border-radius: 0.6rem;
     float: left;
     margin: 0rem 0.5rem 0rem 0.5rem;
     transition: all 0.5s ease-in-out;
   }
 
-  .marketNewsHeader > h3{
+  .marketNewsHeader > h3, .marketNewsHeaderMobile > h3{
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
@@ -723,11 +737,17 @@ button:active{
   }
 
   .newsAnimateLeft{
-    animation: newsGoRight 0.5s ease-in-out;
+    animation: newsGoRight 0.3s ease-in-out;
   }
 
   .newsAnimateRight{
-    animation: newsGoLeft 0.5s ease-in-out;
+    animation: newsGoLeft 0.3s ease-in-out;
+  }
+
+  .NoNewsFoundHeading{
+    font-size: 2rem;
+    font-weight: 400;
+    font-family: Inter, sans-serif;
   }
 
   @media (max-width: 900px) {
@@ -780,7 +800,7 @@ button:active{
   }
 
   @media (max-width: 800px) {
-    .marketNewsHeader > h3{
+    .marketNewsHeader > h3, .marketNewsHeaderMobile > h3{
         font-size: 1rem;
     }
 
@@ -809,6 +829,11 @@ button:active{
 
 
     @media (max-width: 600px) {
+
+    .StockSearchButton {
+      margin-left: -6.2rem;
+      width: 6rem;
+    }
 
     .SearchSuggestions > button > h4 {
       font-size: 0.9rem;
@@ -855,7 +880,7 @@ button:active{
       width: 25rem;
     }
 
-    .marketNewsHeader > h3{
+    .marketNewsHeader > h3, .marketNewsHeaderMobile > h3{
         font-size: 0.8rem;
     }
 
@@ -867,20 +892,29 @@ button:active{
       font-size: 0.65rem;
     }
 
+    .TrendingStocksCarouselContainer{
+      overflow: hidden;
+    }
+
     .TrendingStocksCarouselTrack{
-      height: 5rem;
+      height: 4rem;
+      margin-top: 0.2rem;
+      width: 200%;
+	    animation: Scroll 9s linear infinite;
     }
 
     .TrendingStockDiv > img{
-      width: 2.5rem;
+      width: 1.8rem;
+      border-radius: 0.5rem;
     }
 
     .TrendingStockDiv > h2{
-      font-size: 1.5rem;
+      font-size: 1rem;
     } 
 
     .TrendingStockDiv{
-      border-radius: 1.5rem;
+      border-radius: 1.1rem;
+      gap: 0.5rem;
     }
     
     .marketNewsImage > img{
@@ -898,6 +932,14 @@ button:active{
     .StockLogo{
       width: 1rem;
       border-radius: 0.8rem;
+    }
+
+    .marketNewsContainerMobile > .marketNewsBody > p{
+      margin: 0.3rem 1rem 0 0;
+    }
+
+    .HomeNewsSection{
+      gap: 0.5rem;
     }
 
   }
@@ -926,10 +968,6 @@ button:active{
     .CompleteMarketNews{
         flex-direction: column;
         align-items: center;
-    }
-
-    .HomeNewsSection{
-      gap: 2rem;
     }
 
     .marketNewsImage{
@@ -1085,4 +1123,7 @@ button:active{
   100%{
     transform: translateX(0%);
   }
+
 }
+
+

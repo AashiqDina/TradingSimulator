@@ -95,6 +95,20 @@
     z-index: -1;
 }
 
+.LongLoadingMessage{
+    opacity: 0;
+    position: absolute;
+    top: 17rem;
+    width: 100%;
+    font-weight: 250;
+    font-size: 1.5rem;
+    color: #e6e6e6;
+    text-shadow: 3px 3px 2px #45a049;
+    text-align: center;
+    transition: all 0.5s ease-in-out;
+    width: 24rem;
+}
+
 @keyframes FunLogoAnimation2 {
     0%{
         transform: translateY(0);
