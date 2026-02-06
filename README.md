@@ -68,3 +68,4 @@ Without these keys, the app will only work with mock or cached data.
 ##  Notes
 
 * This version uses **SQLite** instead of a full database server.
+* Due to legacy code, some aspects may be broken or may not work if the frontend and backend are not fully connected.
